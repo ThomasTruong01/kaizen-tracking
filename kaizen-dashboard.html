@@ -1,0 +1,1083 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kaizen Log — Dashboard</title>
+<style>
+  :root {
+    --red:        #d9342e;
+    --red-dark:   #b02a26;
+    --green-bg:   #dcebd9;
+    --green-text: #1f5c1f;
+    --green-dark: #2e7d32;
+    --blue:       #1976d2;
+    --blue-light: #e3f0fb;
+    --page-bg:    #f0f1f3;
+    --white:      #ffffff;
+    --border:     #d0d3d9;
+    --text:       #1e1e1e;
+    --muted:      #6b7280;
+    --shadow:     0 1px 4px rgba(0,0,0,0.10);
+
+    /* Status colors */
+    --s-open:       #1976d2;
+    --s-open-bg:    #e3f0fb;
+    --s-progress:   #f57c00;
+    --s-progress-bg:#fff3e0;
+    --s-review:     #7b1fa2;
+    --s-review-bg:  #f3e5f5;
+    --s-completed:  #2e7d32;
+    --s-completed-bg:#e8f5e9;
+    --s-cancelled:  #757575;
+    --s-cancelled-bg:#f5f5f5;
+
+    /* Priority */
+    --p-high:    #c12a25;
+    --p-high-bg: #fde8e8;
+    --p-med:     #f57c00;
+    --p-med-bg:  #fff3e0;
+    --p-low:     #2e7d32;
+    --p-low-bg:  #e8f5e9;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    background: var(--page-bg);
+    color: var(--text);
+    min-height: 100vh;
+  }
+
+  /* ── Top nav ── */
+  .topnav {
+    background: var(--red);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 28px;
+    height: 52px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.18);
+  }
+  .topnav-brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: 0.2px;
+  }
+  .topnav-brand .brand-sep {
+    opacity: 0.5;
+    font-weight: 300;
+    font-size: 18px;
+  }
+  .topnav-brand .brand-module {
+    font-weight: 400;
+    font-size: 14px;
+    opacity: 0.9;
+  }
+  .topnav-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .btn-new {
+    background: #fff;
+    color: var(--red);
+    border: none;
+    padding: 7px 18px;
+    font-size: 13px;
+    font-weight: 700;
+    border-radius: 4px;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+  }
+  .btn-new:hover { background: #f5e0e0; }
+
+  /* ── Page layout ── */
+  .page {
+    max-width: 1300px;
+    margin: 0 auto;
+    padding: 28px 24px 48px;
+  }
+
+  .page-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .page-title {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--text);
+  }
+  .page-subtitle {
+    font-size: 13px;
+    color: var(--muted);
+    margin-top: 2px;
+  }
+
+  /* ── Summary cards ── */
+  .cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(175px, 1fr));
+    gap: 14px;
+    margin-bottom: 28px;
+  }
+
+  .card {
+    background: var(--white);
+    border-radius: 6px;
+    padding: 18px 18px 14px;
+    box-shadow: var(--shadow);
+    border-top: 3px solid var(--border);
+    cursor: pointer;
+    transition: box-shadow 0.12s, transform 0.12s;
+    user-select: none;
+  }
+  .card:hover { box-shadow: 0 3px 10px rgba(0,0,0,0.14); transform: translateY(-1px); }
+  .card.active { box-shadow: 0 3px 10px rgba(0,0,0,0.18); }
+
+  .card.all       { border-top-color: var(--text); }
+  .card.open      { border-top-color: var(--s-open); }
+  .card.progress  { border-top-color: var(--s-progress); }
+  .card.review    { border-top-color: var(--s-review); }
+  .card.completed { border-top-color: var(--green-dark); }
+  .card.cancelled { border-top-color: var(--s-cancelled); }
+
+  .card-num {
+    font-size: 36px;
+    font-weight: 700;
+    line-height: 1;
+    margin-bottom: 6px;
+  }
+  .card.all       .card-num { color: var(--text); }
+  .card.open      .card-num { color: var(--s-open); }
+  .card.progress  .card-num { color: var(--s-progress); }
+  .card.review    .card-num { color: var(--s-review); }
+  .card.completed .card-num { color: var(--green-dark); }
+  .card.cancelled .card-num { color: var(--s-cancelled); }
+
+  .card-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+  }
+
+  /* ── Site breakdown row ── */
+  .site-row {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 28px;
+    flex-wrap: wrap;
+  }
+  .site-pill {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 6px 16px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.12s;
+  }
+  .site-pill:hover, .site-pill.active {
+    background: var(--red);
+    color: #fff;
+    border-color: var(--red);
+  }
+  .site-pill .site-count {
+    background: rgba(0,0,0,0.12);
+    border-radius: 10px;
+    padding: 1px 7px;
+    font-size: 11px;
+    margin-left: 6px;
+  }
+  .site-pill.active .site-count { background: rgba(255,255,255,0.25); }
+
+  /* ── Filter / search bar ── */
+  .toolbar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 14px;
+    flex-wrap: wrap;
+  }
+  .search-wrap {
+    position: relative;
+    flex: 1;
+    min-width: 200px;
+    max-width: 340px;
+  }
+  .search-wrap input {
+    width: 100%;
+    padding: 8px 12px 8px 34px;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    font-size: 13px;
+    font-family: inherit;
+    background: var(--white);
+  }
+  .search-wrap input:focus { outline: 2px solid var(--blue); outline-offset: 1px; }
+  .search-icon {
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 14px;
+    color: var(--muted);
+    pointer-events: none;
+  }
+  .filter-select {
+    padding: 8px 10px;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    font-size: 13px;
+    font-family: inherit;
+    background: var(--white);
+    color: var(--text);
+    cursor: pointer;
+  }
+  .filter-select:focus { outline: 2px solid var(--blue); outline-offset: 1px; }
+
+  .toolbar-right {
+    margin-left: auto;
+    font-size: 12px;
+    color: var(--muted);
+  }
+
+  /* ── Project table ── */
+  .table-wrap {
+    background: var(--white);
+    border-radius: 6px;
+    box-shadow: var(--shadow);
+    overflow-x: auto;
+  }
+
+  table.proj-table {
+    width: 100%;
+    min-width: 1100px;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+  table.proj-table thead {
+    background: #f7f8fa;
+    border-bottom: 2px solid var(--border);
+  }
+  table.proj-table th {
+    padding: 11px 14px;
+    text-align: left;
+    font-weight: 700;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    color: var(--muted);
+    cursor: pointer;
+    user-select: none;
+    white-space: nowrap;
+  }
+  table.proj-table th:hover { color: var(--text); }
+  table.proj-table th .sort-icon { font-size: 10px; margin-left: 3px; opacity: 0.5; }
+  table.proj-table th.sorted .sort-icon { opacity: 1; color: var(--blue); }
+
+  table.proj-table tbody tr {
+    border-bottom: 1px solid #f0f1f3;
+    transition: background 0.08s;
+    cursor: pointer;
+  }
+  table.proj-table tbody tr:last-child { border-bottom: none; }
+  table.proj-table tbody tr:hover { background: #f9f9fb; }
+
+  table.proj-table td {
+    padding: 12px 14px;
+    vertical-align: middle;
+  }
+
+  .proj-code {
+    font-family: "Consolas", "Courier New", monospace;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--green-text);
+    white-space: nowrap;
+  }
+
+  .proj-title {
+    font-weight: 600;
+    color: var(--text);
+    max-width: 240px;
+  }
+  .proj-title .proj-type {
+    display: block;
+    font-weight: 400;
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 2px;
+  }
+
+  .dept-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+  .dept-tag {
+    background: var(--green-bg);
+    color: var(--green-text);
+    border-radius: 3px;
+    padding: 2px 6px;
+    font-size: 11px;
+    font-weight: 600;
+  }
+
+  .site-badge {
+    background: #f0f1f3;
+    color: var(--text);
+    border-radius: 3px;
+    padding: 3px 8px;
+    font-size: 11px;
+    font-weight: 700;
+  }
+
+  .status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    border-radius: 12px;
+    padding: 3px 10px;
+    font-size: 11px;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+  .status-badge::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    display: inline-block;
+  }
+  .status-Open       { background: var(--s-open-bg);      color: var(--s-open);      }
+  .status-Open::before { background: var(--s-open); }
+  .status-In-Progress  { background: var(--s-progress-bg); color: var(--s-progress);  }
+  .status-In-Progress::before { background: var(--s-progress); }
+  .status-Pending-Review { background: var(--s-review-bg);  color: var(--s-review);   }
+  .status-Pending-Review::before { background: var(--s-review); }
+  .status-Completed  { background: var(--s-completed-bg); color: var(--s-completed); }
+  .status-Completed::before { background: var(--s-completed); }
+  .status-Cancelled  { background: var(--s-cancelled-bg); color: var(--s-cancelled); }
+  .status-Cancelled::before { background: var(--s-cancelled); }
+
+  .priority-badge {
+    display: inline-flex;
+    align-items: center;
+    border-radius: 10px;
+    padding: 3px 10px;
+    font-size: 11px;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+  .p-High   { background: var(--p-high-bg);  color: var(--p-high); }
+  .p-Medium { background: var(--p-med-bg);   color: var(--p-med);  }
+  .p-Low    { background: var(--p-low-bg);   color: var(--p-low);  }
+  .p-none   { background: #f5f5f5; color: #999; }
+
+  .date-col { font-size: 12px; color: var(--muted); white-space: nowrap; }
+  .date-col.overdue { color: var(--red); font-weight: 600; }
+
+  .progress-bar-wrap { width: 80px; }
+  .progress-bar-bg {
+    background: #eee;
+    border-radius: 4px;
+    height: 6px;
+    overflow: hidden;
+  }
+  .progress-bar-fill {
+    height: 100%;
+    border-radius: 4px;
+    background: var(--green-dark);
+    transition: width 0.3s;
+  }
+  .progress-label {
+    font-size: 10px;
+    color: var(--muted);
+    margin-top: 3px;
+    text-align: right;
+  }
+
+  .action-btn {
+    background: none;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 4px 10px;
+    font-size: 12px;
+    cursor: pointer;
+    color: var(--blue);
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  .action-btn:hover { background: var(--blue-light); border-color: var(--blue); }
+
+  /* ── Empty state ── */
+  .empty-state {
+    text-align: center;
+    padding: 56px 24px;
+    color: var(--muted);
+  }
+  .empty-state .empty-icon { font-size: 40px; margin-bottom: 12px; }
+  .empty-state p { font-size: 14px; }
+
+  /* ── Footer note ── */
+  .doc-ref {
+    margin-top: 16px;
+    font-size: 11px;
+    color: var(--muted);
+    text-align: center;
+  }
+
+  @media (max-width: 900px) {
+    .proj-title { max-width: 160px; }
+    .progress-bar-wrap { display: none; }
+  }
+  @media (max-width: 640px) {
+    .cards-grid { grid-template-columns: repeat(3, 1fr); }
+    table.proj-table th:nth-child(4),
+    table.proj-table td:nth-child(4),
+    table.proj-table th:nth-child(6),
+    table.proj-table td:nth-child(6) { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Top nav -->
+<nav class="topnav">
+  <div class="topnav-brand">
+    <span>Rapid Manufacturing</span>
+    <span class="brand-sep">|</span>
+    <span class="brand-module">Kaizen Log</span>
+  </div>
+  <div class="topnav-actions">
+    <button class="btn-new" id="exportBtn" style="background:rgba(255,255,255,0.15);color:#fff;border:1px solid rgba(255,255,255,0.4);margin-right:4px;">⬇ Export to Excel</button>
+    <a class="btn-new" href="kaizen-admin.html" style="background:rgba(255,255,255,0.15);color:#fff;border:1px solid rgba(255,255,255,0.4);margin-right:4px;">⚙ Admin</a>
+    <a class="btn-new" href="kaizen-request.html">+ New Kaizen Project</a>
+  </div>
+</nav>
+
+<div class="page">
+
+  <div class="page-header">
+    <div>
+      <div class="page-title">Improvement Projects</div>
+      <div class="page-subtitle">QA.P02.W04 — All sites &amp; departments</div>
+    </div>
+  </div>
+
+  <!-- Summary cards -->
+  <div class="cards-grid" id="summaryCards">
+    <div class="card all active" data-filter-status="All">
+      <div class="card-num" id="cnt-all">—</div>
+      <div class="card-label">Total Projects</div>
+    </div>
+    <div class="card open" data-filter-status="Open">
+      <div class="card-num" id="cnt-open">—</div>
+      <div class="card-label">Open</div>
+    </div>
+    <div class="card progress" data-filter-status="In Progress">
+      <div class="card-num" id="cnt-progress">—</div>
+      <div class="card-label">In Progress</div>
+    </div>
+    <div class="card review" data-filter-status="Pending Review">
+      <div class="card-num" id="cnt-review">—</div>
+      <div class="card-label">Pending Review</div>
+    </div>
+    <div class="card completed" data-filter-status="Completed">
+      <div class="card-num" id="cnt-completed">—</div>
+      <div class="card-label">Completed</div>
+    </div>
+    <div class="card cancelled" data-filter-status="Cancelled">
+      <div class="card-num" id="cnt-cancelled">—</div>
+      <div class="card-label">Cancelled</div>
+    </div>
+  </div>
+
+  <!-- Site filter pills -->
+  <div class="site-row" id="sitePills">
+    <div class="site-pill active" data-filter-site="All">All Sites</div>
+  </div>
+
+  <!-- Search + filters -->
+  <div class="toolbar">
+    <div class="search-wrap">
+      <span class="search-icon">🔍</span>
+      <input type="text" id="searchInput" placeholder="Search by title, code, or team leader...">
+    </div>
+    <select class="filter-select" id="filterYear">
+      <option value="2026" selected>2026</option>
+    </select>
+    <select class="filter-select" id="filterType">
+      <option value="All">All Types</option>
+      <option>Quality</option>
+      <option>Production</option>
+      <option>Efficiency</option>
+      <option>Money</option>
+      <option>Scrap</option>
+      <option>Safety</option>
+      <option>Other</option>
+    </select>
+    <select class="filter-select" id="filterDept">
+      <option value="All">All Departments</option>
+      <option>CQ</option>
+      <option>FI</option>
+      <option>HR</option>
+      <option>IT</option>
+      <option>MA</option>
+      <option>ME</option>
+      <option>PC</option>
+      <option>PR</option>
+      <option>QA</option>
+      <option>QC</option>
+      <option>SL</option>
+      <option>WH</option>
+    </select>
+    <span class="toolbar-right" id="rowCount"></span>
+  </div>
+
+  <!-- Project table -->
+  <div class="table-wrap">
+    <table class="proj-table" id="projTable">
+      <thead>
+        <tr>
+          <th data-col="code">Project Code <span class="sort-icon">↕</span></th>
+          <th data-col="title">Title / Type <span class="sort-icon">↕</span></th>
+          <th data-col="site">Site <span class="sort-icon">↕</span></th>
+          <th data-col="dept">Dept(s) <span class="sort-icon">↕</span></th>
+          <th data-col="leader">Team Leader <span class="sort-icon">↕</span></th>
+          <th data-col="priority">Priority <span class="sort-icon">↕</span></th>
+          <th data-col="status">Status <span class="sort-icon">↕</span></th>
+          <th data-col="target">Target Date <span class="sort-icon">↕</span></th>
+          <th data-col="completionDate">Completed <span class="sort-icon">↕</span></th>
+          <th data-col="progress">Progress <span class="sort-icon">↕</span></th>
+        </tr>
+      </thead>
+      <tbody id="projBody"></tbody>
+    </table>
+    <div class="empty-state" id="emptyState" style="display:none;">
+      <div class="empty-icon">📋</div>
+      <p>No projects match your filters.</p>
+    </div>
+  </div>
+
+  <div class="doc-ref">QA.P02.W04.F03 Rev. B1 — For Reference Only</div>
+</div>
+
+<script>
+// ── Mock project data ──────────────────────────────────────────────────────
+const PROJECTS = [
+  {
+    code: 'US-QC-2026-001',
+    title: 'Reduce Tapes/Adhesives Rejection Rate',
+    type: 'Quality',
+    site: 'US',
+    depts: ['QC', 'PR'],
+    leader: 'Thomas Truong',
+    status: 'In Progress',
+    startDate: '2026-01-15',
+    targetDate: '2026-06-30',
+    progress: 60,
+    priority: 'High',
+  },
+  {
+    code: 'US-CQ-PR-2026-002',
+    title: 'ECM Implementation Process Improvement',
+    type: 'Efficiency',
+    site: 'US',
+    depts: ['CQ', 'PR'],
+    leader: 'Samuel Castro',
+    status: 'Pending Dept. Manager Review',
+    startDate: '2026-02-01',
+    targetDate: '2026-05-31',
+    progress: 85,
+    priority: 'Medium',
+  },
+  {
+    code: 'MX-QC-2026-001',
+    title: 'Incoming Inspection DMR Backlog Reduction',
+    type: 'Quality',
+    site: 'MX',
+    depts: ['QC', 'WH'],
+    leader: 'Maria Lopez',
+    status: 'Open',
+    startDate: '2026-03-10',
+    targetDate: '2026-08-15',
+    progress: 10,
+    priority: 'Low',
+  },
+  {
+    code: 'US-MA-ME-2026-003',
+    title: 'Preventive Maintenance Schedule Standardization',
+    type: 'Efficiency',
+    site: 'US',
+    depts: ['MA', 'ME'],
+    leader: 'James Okafor',
+    status: 'In Progress',
+    startDate: '2026-01-20',
+    targetDate: '2026-04-30',
+    progress: 75,
+    priority: 'High',
+  },
+  {
+    code: 'SZ-PR-2026-001',
+    title: 'Production Line 5S Implementation',
+    type: 'Safety',
+    site: 'SZ',
+    depts: ['PR', 'QA'],
+    leader: 'Wei Zhang',
+    status: 'Completed',
+    startDate: '2025-10-01',
+    targetDate: '2026-01-31',
+    progress: 100,
+    completionDate: '2026-01-28',
+    priority: 'Medium',
+  },
+  {
+    code: 'Global-FI-CQ-2026-001',
+    title: 'COPQ Labor Cost Calculation Standardization',
+    type: 'Money',
+    site: 'Global',
+    depts: ['FI', 'CQ'],
+    leader: 'Thomas Truong',
+    status: 'Pending Finance',
+    startDate: '2026-02-15',
+    targetDate: '2026-07-31',
+    progress: 40,
+    priority: 'High',
+  },
+  {
+    code: 'MY-QC-2026-001',
+    title: 'Scrap Rate Reduction — Machined Parts',
+    type: 'Scrap',
+    site: 'MY',
+    depts: ['QC', 'ME'],
+    leader: 'Amir Raza',
+    status: 'Open',
+    startDate: '2026-04-01',
+    targetDate: '2026-09-30',
+    progress: 5,
+    priority: 'Low',
+  },
+  {
+    code: 'US-HR-2026-001',
+    title: 'Employee Retraining Compliance Tracker Rollout',
+    type: 'Efficiency',
+    site: 'US',
+    depts: ['HR', 'CQ'],
+    leader: 'Samuel Castro',
+    status: 'Completed',
+    startDate: '2025-11-01',
+    targetDate: '2026-02-28',
+    progress: 100,
+    completionDate: '2026-02-25',
+    priority: 'Medium',
+  },
+  {
+    code: 'MX-PR-MA-2026-002',
+    title: 'Packaging Line Downtime Root Cause Analysis',
+    type: 'Production',
+    site: 'MX',
+    depts: ['PR', 'MA'],
+    leader: 'Carlos Mendez',
+    status: 'Cancelled',
+    startDate: '2026-01-10',
+    targetDate: '2026-04-30',
+    progress: 20,
+    priority: 'Low',
+  },
+  {
+    code: 'US-SL-2026-001',
+    title: 'On-Time Delivery KPI Improvement Initiative',
+    type: 'Efficiency',
+    site: 'US',
+    depts: ['SL', 'WH'],
+    leader: 'Patricia Nkosi',
+    status: 'Pending CQM',
+    startDate: '2026-03-01',
+    targetDate: '2026-08-31',
+    progress: 70,
+    priority: 'Medium',
+  },
+
+  // ── 2025 completed (started & completed in 2025) ──────────────────────────
+  {
+    code: 'US-QC-2025-001',
+    title: 'First Article Inspection Process Standardization',
+    type: 'Quality',
+    site: 'US',
+    depts: ['QC', 'QA'],
+    leader: 'Thomas Truong',
+    status: 'Completed',
+    startDate: '2025-02-01',
+    targetDate: '2025-06-30',
+    progress: 100,
+    completionDate: '2025-06-15',   // → shows in 2025
+    priority: 'High',
+  },
+  {
+    code: 'MX-PR-2025-001',
+    title: 'Assembly Line Cycle Time Reduction',
+    type: 'Efficiency',
+    site: 'MX',
+    depts: ['PR', 'ME'],
+    leader: 'Carlos Mendez',
+    status: 'Completed',
+    startDate: '2025-04-10',
+    targetDate: '2025-09-30',
+    progress: 100,
+    completionDate: '2025-09-20',   // → shows in 2025
+    priority: 'Medium',
+  },
+
+  // ── Cross-year: started 2025, completed in 2026 ───────────────────────────
+  {
+    code: 'SZ-QC-2025-002',
+    title: 'Supplier Incoming Quality Gate Implementation',
+    type: 'Quality',
+    site: 'SZ',
+    depts: ['QC', 'PR'],
+    leader: 'Wei Zhang',
+    status: 'Completed',
+    startDate: '2025-09-01',
+    targetDate: '2026-01-31',
+    progress: 100,
+    completionDate: '2026-01-15',   // → shows in 2026 (cross-year)
+    priority: 'High',
+  },
+
+  // ── Started late 2025, still incomplete → shows in 2026 ──────────────────
+  {
+    code: 'MY-QA-2025-001',
+    title: 'ISO 13485 Internal Audit Program Enhancement',
+    type: 'Quality',
+    site: 'MY',
+    depts: ['QA', 'CQ'],
+    leader: 'Amir Raza',
+    status: 'In Progress',
+    startDate: '2025-11-15',
+    targetDate: '2026-05-31',
+    progress: 45,
+    priority: 'High',               // → incomplete, shows in current year (2026)
+  },
+
+  // ── 2024 completed (shows in 2024 only) ───────────────────────────────────
+  {
+    code: 'US-CQ-2024-001',
+    title: 'COPQ Tracking & Reporting Automation',
+    type: 'Money',
+    site: 'US',
+    depts: ['CQ', 'FI'],
+    leader: 'Samuel Castro',
+    status: 'Completed',
+    startDate: '2024-06-01',
+    targetDate: '2024-12-31',
+    progress: 100,
+    completionDate: '2024-12-10',   // → shows in 2024
+    priority: 'High',
+  },
+];
+
+// ── State ───────────────────────────────────────────────────────────────────
+let filterStatus = 'All';
+let filterSite   = 'All';
+let filterType   = 'All';
+let filterDept   = 'All';
+let filterYear   = String(new Date().getFullYear());
+let searchQuery  = '';
+let sortCol      = 'code';
+let sortDir      = 'asc';
+
+// ── Helpers ─────────────────────────────────────────────────────────────────
+function statusKey(s) {
+  const map = {
+    'Open': 'Open',
+    'In Progress': 'In-Progress',
+    'Pending Dept. Manager Review': 'Pending-Review',
+    'Pending Finance': 'Pending-Review',
+    'Pending CQM': 'Pending-Review',
+    'Completed': 'Completed',
+    'Cancelled': 'Cancelled',
+  };
+  return map[s] || s.replace(/\s+/g, '-');
+}
+
+function formatDate(iso) {
+  if (!iso) return '—';
+  const [y, m, d] = iso.split('-');
+  return `${m}/${d}/${y}`;
+}
+
+function isOverdue(iso, status) {
+  if (!iso || status === 'Completed' || status === 'Cancelled') return false;
+  return new Date(iso) < new Date();
+}
+
+// ── Build site pills ─────────────────────────────────────────────────────────
+function buildSitePills() {
+  const sites = ['All', ...new Set(PROJECTS.map(p => p.site))];
+  const container = document.getElementById('sitePills');
+  container.innerHTML = '';
+
+  // Get data filtered by everything EXCEPT the site filter
+  // so pill counts reflect the current status/type/dept/search context
+  let baseData = PROJECTS.slice();
+  baseData = applyYearFilter(baseData);
+  if (filterStatus !== 'All') baseData = baseData.filter(p => p.status === filterStatus);
+  if (filterType   !== 'All') baseData = baseData.filter(p => p.type === filterType);
+  if (filterDept   !== 'All') baseData = baseData.filter(p => p.depts.includes(filterDept));
+  if (searchQuery) {
+    const q = searchQuery.toLowerCase();
+    baseData = baseData.filter(p =>
+      p.code.toLowerCase().includes(q) ||
+      p.title.toLowerCase().includes(q) ||
+      p.leader.toLowerCase().includes(q)
+    );
+  }
+
+  sites.forEach(site => {
+    const count = site === 'All'
+      ? baseData.length
+      : baseData.filter(p => p.site === site).length;
+    const pill = document.createElement('div');
+    pill.className = 'site-pill' + (site === filterSite ? ' active' : '');
+    pill.dataset.filterSite = site;
+    pill.innerHTML = `${site} <span class="site-count">${count}</span>`;
+    pill.addEventListener('click', () => { filterSite = site; render(); });
+    container.appendChild(pill);
+  });
+}
+
+// ── Update summary cards ─────────────────────────────────────────────────────
+function updateCards(data) {
+  const all = PROJECTS.length;
+  document.getElementById('cnt-all').textContent       = all;
+  document.getElementById('cnt-open').textContent      = PROJECTS.filter(p => p.status === 'Open').length;
+  document.getElementById('cnt-progress').textContent  = PROJECTS.filter(p => p.status === 'In Progress').length;
+  document.getElementById('cnt-review').textContent    = PROJECTS.filter(p => p.status === 'Pending Review').length;
+  document.getElementById('cnt-completed').textContent = PROJECTS.filter(p => p.status === 'Completed').length;
+  document.getElementById('cnt-cancelled').textContent = PROJECTS.filter(p => p.status === 'Cancelled').length;
+}
+
+// ── Year helper ────────────────────────────────────────────────────────────
+function projectYear(p) {
+  // Completed → year of completion date
+  if (p.status === 'Completed' && p.completionDate) {
+    return p.completionDate.split('-')[0];
+  }
+  // Incomplete → current year (rolls forward each year until completed)
+  return String(new Date().getFullYear());
+}
+
+// ── Populate year dropdown dynamically ────────────────────────────────────
+function buildYearDropdown() {
+  const years = [...new Set(PROJECTS.map(projectYear))].filter(Boolean).sort((a,b) => b - a);
+  const sel = document.getElementById('filterYear');
+  sel.innerHTML = '<option value="All">All Years</option>';
+  years.forEach(y => {
+    const opt = document.createElement('option');
+    opt.value = y;
+    opt.textContent = y;
+    if (y === filterYear) opt.selected = true;
+    sel.appendChild(opt);
+  });
+}
+
+// ── Filter + sort ─────────────────────────────────────────────────────────────
+function applyYearFilter(data) {
+  if (filterYear === 'All') return data;
+  return data.filter(p => projectYear(p) === filterYear);
+}
+
+function getFiltered() {
+  let data = PROJECTS.slice();
+  data = applyYearFilter(data);
+  if (filterStatus !== 'All') data = data.filter(p => p.status === filterStatus);
+  if (filterSite   !== 'All') data = data.filter(p => p.site === filterSite);
+  if (filterType   !== 'All') data = data.filter(p => p.type === filterType);
+  if (filterDept   !== 'All') data = data.filter(p => p.depts.includes(filterDept));
+  if (searchQuery) {
+    const q = searchQuery.toLowerCase();
+    data = data.filter(p =>
+      p.code.toLowerCase().includes(q) ||
+      p.title.toLowerCase().includes(q) ||
+      p.leader.toLowerCase().includes(q)
+    );
+  }
+  data.sort((a, b) => {
+    let av = a[sortCol], bv = b[sortCol];
+    if (sortCol === 'dept') { av = a.depts.join(','); bv = b.depts.join(','); }
+    if (sortCol === 'progress') { av = +a.progress; bv = +b.progress; }
+    if (av < bv) return sortDir === 'asc' ? -1 : 1;
+    if (av > bv) return sortDir === 'asc' ? 1 : -1;
+    return 0;
+  });
+  return data;
+}
+
+// ── Render table ─────────────────────────────────────────────────────────────
+function renderTable(data) {
+  const tbody = document.getElementById('projBody');
+  const empty = document.getElementById('emptyState');
+  tbody.innerHTML = '';
+
+  if (data.length === 0) {
+    empty.style.display = 'block';
+    document.getElementById('rowCount').textContent = '';
+    return;
+  }
+  empty.style.display = 'none';
+  document.getElementById('rowCount').textContent = `Showing ${data.length} of ${PROJECTS.length} projects`;
+
+  data.forEach(p => {
+    const overdue = isOverdue(p.targetDate, p.status);
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td><span class="proj-code">${p.code}</span></td>
+      <td>
+        <div class="proj-title">
+          ${p.title}
+          <span class="proj-type">${p.type}</span>
+        </div>
+      </td>
+      <td><span class="site-badge">${p.site}</span></td>
+      <td>
+        <div class="dept-tags">
+          ${p.depts.map(d => `<span class="dept-tag">${d}</span>`).join('')}
+        </div>
+      </td>
+      <td style="font-size:13px;">${p.leader}</td>
+      <td><span class="priority-badge p-${p.priority || 'none'}">${p.priority || '—'}</span></td>
+      <td><span class="status-badge status-${statusKey(p.status)}">${p.status}</span></td>
+      <td class="date-col ${overdue ? 'overdue' : ''}" title="${overdue ? 'Past target date' : ''}">${formatDate(p.targetDate)}${overdue ? ' ⚠' : ''}</td>
+      <td class="date-col" style="${p.completionDate ? 'color:#2e7d32;font-weight:600;' : 'color:#bbb;'}">${p.completionDate ? formatDate(p.completionDate) : '—'}</td>
+      <td>
+        <div class="progress-bar-wrap">
+          <div class="progress-bar-bg">
+            <div class="progress-bar-fill" style="width:${p.progress}%"></div>
+          </div>
+          <div class="progress-label">${p.progress}%</div>
+        </div>
+      </td>
+    `;
+    tr.addEventListener('click', () => window.location.href = 'kaizen-request.html');
+    tbody.appendChild(tr);
+  });
+}
+
+// ── Sort headers ──────────────────────────────────────────────────────────────
+document.querySelectorAll('th[data-col]').forEach(th => {
+  th.addEventListener('click', () => {
+    const col = th.dataset.col;
+    if (sortCol === col) {
+      sortDir = sortDir === 'asc' ? 'desc' : 'asc';
+    } else {
+      sortCol = col;
+      sortDir = 'asc';
+    }
+    document.querySelectorAll('th[data-col]').forEach(t => t.classList.remove('sorted'));
+    th.classList.add('sorted');
+    th.querySelector('.sort-icon').textContent = sortDir === 'asc' ? '↑' : '↓';
+    render();
+  });
+});
+
+// ── Card filter ───────────────────────────────────────────────────────────────
+document.getElementById('summaryCards').addEventListener('click', e => {
+  const card = e.target.closest('.card[data-filter-status]');
+  if (!card) return;
+  filterStatus = card.dataset.filterStatus;
+  document.querySelectorAll('.card').forEach(c => c.classList.remove('active'));
+  card.classList.add('active');
+  render();
+});
+
+// ── Search & dropdowns ────────────────────────────────────────────────────────
+document.getElementById('searchInput').addEventListener('input', e => {
+  searchQuery = e.target.value;
+  render();
+});
+document.getElementById('filterYear').addEventListener('change', e => {
+  filterYear = e.target.value;
+  render();
+});
+document.getElementById('filterType').addEventListener('change', e => {
+  filterType = e.target.value;
+  render();
+});
+document.getElementById('filterDept').addEventListener('change', e => {
+  filterDept = e.target.value;
+  render();
+});
+
+// ── Main render ───────────────────────────────────────────────────────────────
+function render() {
+  buildYearDropdown();
+  buildSitePills();
+  updateCards();
+  renderTable(getFiltered());
+}
+
+render();
+
+// ── Export to Excel (CSV) ─────────────────────────────────────────────────
+document.getElementById('exportBtn').addEventListener('click', function () {
+  const data = getFiltered();
+
+  const headers = [
+    'Project Code', 'Title', 'Type', 'Site', 'Dept(s)',
+    'Team Leader', 'Priority', 'Status',
+    'Start Date', 'Target Date', 'Completion Date', 'Progress %'
+  ];
+
+  const rows = data.map(p => [
+    p.code,
+    p.title,
+    p.type,
+    p.site,
+    p.depts.join(', '),
+    p.leader,
+    p.priority || '',
+    p.status,
+    p.startDate      ? formatDate(p.startDate)      : '',
+    p.targetDate     ? formatDate(p.targetDate)      : '',
+    p.completionDate ? formatDate(p.completionDate)  : '',
+    p.progress + '%',
+  ]);
+
+  function escapeCSV(val) {
+    const str = String(val ?? '');
+    if (str.includes(',') || str.includes('"') || str.includes('\n')) {
+      return '"' + str.replace(/"/g, '""') + '"';
+    }
+    return str;
+  }
+
+  const csv = [headers, ...rows].map(row => row.map(escapeCSV).join(',')).join('\r\n');
+  const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a');
+  a.href     = url;
+  a.download = 'Kaizen_Log_' + new Date().toISOString().split('T')[0] + '.csv';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+});
+</script>
+</body>
+</html>

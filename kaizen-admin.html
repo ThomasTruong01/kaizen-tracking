@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kaizen — Admin Control</title>
+<style>
+  :root {
+    --red:      #d9342e;
+    --red-dark: #b02a26;
+    --green-add:#1a9e6e;
+    --green-hover:#158058;
+    --page-bg:  #e8e8e8;
+    --white:    #ffffff;
+    --border:   #d0d0d0;
+    --text:     #1e1e1e;
+    --muted:    #666;
+    --shadow:   0 1px 3px rgba(0,0,0,0.12);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    background: var(--page-bg);
+    color: var(--text);
+    font-size: 13px;
+    min-height: 100vh;
+  }
+
+  /* ── Top bar ── */
+  .topbar {
+    background: var(--white);
+    border-bottom: 1px solid var(--border);
+    padding: 8px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 12px;
+    color: var(--muted);
+  }
+  .topbar .breadcrumb a { color: var(--red); text-decoration: none; }
+  .topbar .breadcrumb a:hover { text-decoration: underline; }
+  .topbar .breadcrumb span { color: var(--muted); }
+  .topbar .user-info { font-size: 12px; color: var(--muted); }
+
+  /* ── Action bar ── */
+  .action-bar {
+    padding: 12px 20px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--page-bg);
+  }
+
+  .btn-save {
+    background: var(--red);
+    color: #fff;
+    border: none;
+    padding: 7px 20px;
+    font-size: 13px;
+    font-weight: 600;
+    border-radius: 3px;
+    cursor: pointer;
+  }
+  .btn-save:hover { background: var(--red-dark); }
+
+  .btn-cancel {
+    background: #fff;
+    color: var(--text);
+    border: 1px solid #bbb;
+    padding: 7px 20px;
+    font-size: 13px;
+    font-weight: 600;
+    border-radius: 3px;
+    cursor: pointer;
+  }
+  .btn-cancel:hover { background: #f5f5f5; }
+
+  .save-confirm {
+    font-size: 12px;
+    color: var(--green-add);
+    font-weight: 600;
+    display: none;
+  }
+
+  /* ── Page content ── */
+  .page {
+    padding: 4px 20px 40px;
+  }
+
+  /* ── 3-col grid ── */
+  .panels-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    align-items: start;
+  }
+
+  @media (max-width: 1000px) { .panels-grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 640px)  { .panels-grid { grid-template-columns: 1fr; } }
+
+  /* ── Role panel card ── */
+  .panel {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-top: 3px solid var(--red);
+    border-radius: 2px;
+    box-shadow: var(--shadow);
+    overflow: hidden;
+  }
+
+  .panel-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 12px;
+    cursor: pointer;
+    user-select: none;
+    border-bottom: 1px solid #eee;
+    background: var(--white);
+  }
+  .panel-header:hover { background: #fafafa; }
+
+  .panel-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+  }
+
+  .panel-header-right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .btn-add {
+    background: var(--green-add);
+    color: #fff;
+    border: none;
+    width: 26px;
+    height: 26px;
+    border-radius: 3px;
+    cursor: pointer;
+    font-size: 18px;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 300;
+    flex-shrink: 0;
+  }
+  .btn-add:hover { background: var(--green-hover); }
+
+  .panel-chevron {
+    font-size: 12px;
+    color: var(--muted);
+    transition: transform 0.15s;
+    flex-shrink: 0;
+  }
+  .panel.collapsed .panel-chevron { transform: rotate(-90deg); }
+  .panel.collapsed .panel-body { display: none; }
+
+  /* ── Role description tag ── */
+  .role-desc {
+    font-size: 11px;
+    color: var(--muted);
+    padding: 6px 12px;
+    background: #fafafa;
+    border-bottom: 1px solid #f0f0f0;
+    font-style: italic;
+  }
+
+  /* ── User table ── */
+  .panel-body table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+
+  .panel-body table thead tr {
+    background: #f5f5f5;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .panel-body table th {
+    padding: 7px 10px;
+    text-align: left;
+    font-weight: 600;
+    font-size: 12px;
+    color: var(--muted);
+  }
+  .panel-body table th.col-action { width: 44px; }
+  .panel-body table th.col-site   { width: 100px; }
+
+  .panel-body table tbody tr {
+    border-bottom: 1px solid #f0f0f0;
+  }
+  .panel-body table tbody tr:last-child { border-bottom: none; }
+  .panel-body table tbody tr:hover { background: #fafafa; }
+
+  .panel-body table td {
+    padding: 7px 10px;
+    vertical-align: middle;
+  }
+  .panel-body table td.col-action { width: 44px; }
+  .panel-body table td.col-site   { width: 100px; }
+
+  .panel-body table td input[type="text"] {
+    width: 100%;
+    border: 1px solid transparent;
+    background: transparent;
+    padding: 3px 4px;
+    font-size: 13px;
+    font-family: inherit;
+    color: var(--text);
+    border-radius: 2px;
+  }
+  .panel-body table td input[type="text"]:hover {
+    border-color: var(--border);
+    background: #fff;
+  }
+  .panel-body table td input[type="text"]:focus {
+    outline: none;
+    border-color: #1976d2;
+    background: #fff;
+  }
+
+  /* Site dropdown */
+  .panel-body table td select {
+    width: 100%;
+    border: 1px solid transparent;
+    background: transparent;
+    padding: 3px 4px;
+    font-size: 13px;
+    font-family: inherit;
+    color: var(--text);
+    border-radius: 2px;
+    cursor: pointer;
+  }
+  .panel-body table td select:hover { border-color: var(--border); background: #fff; }
+  .panel-body table td select:focus { outline: none; border-color: #1976d2; background: #fff; }
+
+  /* Remove button */
+  .btn-remove {
+    background: var(--red);
+    color: #fff;
+    border: none;
+    width: 26px;
+    height: 26px;
+    border-radius: 3px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .btn-remove:hover { background: var(--red-dark); }
+
+  /* Empty state */
+  .panel-empty {
+    padding: 16px 12px;
+    font-size: 12px;
+    color: #bbb;
+    text-align: center;
+    font-style: italic;
+  }
+
+  /* ── Add user row (inline form) ── */
+  .add-row {
+    display: none;
+    background: #f0f7ff;
+    border-top: 1px solid #cce0f5;
+    padding: 10px 12px;
+    gap: 8px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  .add-row.visible { display: flex; }
+  .add-row input[type="text"] {
+    flex: 1;
+    min-width: 120px;
+    padding: 6px 8px;
+    border: 1px solid #bcd;
+    border-radius: 3px;
+    font-size: 13px;
+    font-family: inherit;
+  }
+  .add-row input[type="text"]:focus { outline: 2px solid #1976d2; outline-offset: 1px; }
+  .add-row select {
+    padding: 6px 8px;
+    border: 1px solid #bcd;
+    border-radius: 3px;
+    font-size: 13px;
+    font-family: inherit;
+    width: 90px;
+  }
+  .add-row .btn-confirm-add {
+    background: var(--green-add);
+    color: #fff;
+    border: none;
+    padding: 6px 14px;
+    font-size: 12px;
+    font-weight: 600;
+    border-radius: 3px;
+    cursor: pointer;
+  }
+  .add-row .btn-confirm-add:hover { background: var(--green-hover); }
+  .add-row .btn-cancel-add {
+    background: none;
+    border: none;
+    color: var(--muted);
+    font-size: 12px;
+    cursor: pointer;
+    padding: 6px 8px;
+  }
+  .add-row .btn-cancel-add:hover { color: var(--text); }
+</style>
+</head>
+<body>
+
+<!-- Top bar -->
+<div class="topbar">
+  <div class="breadcrumb">
+    <a href="kaizen-dashboard.html">Home</a>
+    <span> / </span>
+    <a href="kaizen-dashboard.html">Kaizen Log</a>
+    <span> / Control</span>
+  </div>
+  <div class="user-info">thomas.truong ▾</div>
+</div>
+
+<!-- Action bar -->
+<div class="action-bar">
+  <button class="btn-save" id="saveBtn">Save</button>
+  <button class="btn-cancel" id="cancelBtn">Cancel</button>
+  <span class="save-confirm" id="saveConfirm">✓ Changes saved</span>
+</div>
+
+<!-- Panels -->
+<div class="page">
+  <div class="panels-grid" id="panelsGrid">
+    <!-- Panels injected by JS -->
+  </div>
+</div>
+
+<script>
+// ── Role panel definitions ─────────────────────────────────────────────────
+const ROLES = [
+  {
+    id: 'admin',
+    title: 'Admin',
+    desc: 'Full system access. Manage all users, roles, and settings.',
+    users: [],
+  },
+  {
+    id: 'corpqm',
+    title: 'Corp Quality Manager',
+    desc: 'Approves Global projects. CQM final sign-off on all sites.',
+    users: [
+      { user: 'samuelc', site: 'Global' },
+    ],
+  },
+  {
+    id: 'qamgr',
+    title: 'QA Managers / Site Designee',
+    desc: 'CQM final sign-off for their assigned site.',
+    users: [
+      { user: 'thomastr', site: 'US' },
+      { user: 'tinn',     site: 'US' },
+      { user: 'eheca_g',  site: 'US' },
+    ],
+  },
+  {
+    id: 'deptmgr',
+    title: 'Dept Managers',
+    desc: 'Approve submitted projects for their department. Assign priority.',
+    users: [
+      { user: 'alejandro_g', site: 'US' },
+      { user: 'javierf',     site: 'MX' },
+      { user: 'wei_z',       site: 'SZ' },
+      { user: 'amir_r',      site: 'MY' },
+    ],
+  },
+  {
+    id: 'finance',
+    title: 'Finance Rep',
+    desc: 'Finance Validation section only (QA.P02.W04.F05).',
+    users: [
+      { user: 'dan_l', site: 'US' },
+    ],
+  },
+  {
+    id: 'submitter',
+    title: 'Owners / Submitters',
+    desc: 'Create and edit their own Kaizen projects.',
+    users: [
+      { user: 'thomas.truong', site: 'US' },
+      { user: 'michaela',      site: 'US' },
+      { user: 'gonzalog',      site: 'MX' },
+      { user: 'josebot',       site: 'MX' },
+      { user: 'arturo_t',      site: 'SZ' },
+      { user: 'eheca_g',       site: 'MY' },
+    ],
+  },
+];
+
+const SITES = ['US', 'MX', 'SZ', 'MY', 'Global'];
+
+// ── Build panels ───────────────────────────────────────────────────────────
+function siteOptions(selected) {
+  return SITES.map(s =>
+    `<option value="${s}"${s === selected ? ' selected' : ''}>${s}</option>`
+  ).join('');
+}
+
+function buildUserRow(user, site, roleId) {
+  const tr = document.createElement('tr');
+  tr.dataset.roleId = roleId;
+  tr.innerHTML = `
+    <td class="col-action">
+      <button class="btn-remove" title="Remove user">&#x2715;</button>
+    </td>
+    <td><input type="text" value="${user}" placeholder="username"></td>
+    <td class="col-site">
+      <select>${siteOptions(site)}</select>
+    </td>
+  `;
+  tr.querySelector('.btn-remove').addEventListener('click', function () {
+    const tbody = tr.closest('tbody');
+    tr.remove();
+    refreshEmpty(tbody, roleId);
+    markDirty();
+  });
+  tr.querySelector('input, select').addEventListener('change', markDirty);
+  tr.querySelector('input').addEventListener('input', markDirty);
+  return tr;
+}
+
+function refreshEmpty(tbody, roleId) {
+  const existing = tbody.querySelector('.empty-row');
+  if (tbody.querySelectorAll('tr:not(.empty-row)').length === 0) {
+    if (!existing) {
+      const tr = document.createElement('tr');
+      tr.className = 'empty-row';
+      tr.innerHTML = `<td colspan="3"><div class="panel-empty">No users assigned</div></td>`;
+      tbody.appendChild(tr);
+    }
+  } else {
+    if (existing) existing.remove();
+  }
+}
+
+function buildPanel(role) {
+  const panel = document.createElement('div');
+  panel.className = 'panel';
+  panel.id = 'panel-' + role.id;
+
+  // Header
+  const header = document.createElement('div');
+  header.className = 'panel-header';
+  header.innerHTML = `
+    <span class="panel-title">${role.title}</span>
+    <div class="panel-header-right">
+      <button class="btn-add" title="Add user" data-role="${role.id}">+</button>
+      <span class="panel-chevron">▾</span>
+    </div>
+  `;
+  header.querySelector('.panel-chevron').addEventListener('click', function (e) {
+    e.stopPropagation();
+    panel.classList.toggle('collapsed');
+  });
+  header.querySelector('.btn-add').addEventListener('click', function (e) {
+    e.stopPropagation();
+    const addRow = panel.querySelector('.add-row');
+    addRow.classList.toggle('visible');
+    if (addRow.classList.contains('visible')) {
+      addRow.querySelector('input[type="text"]').focus();
+    }
+  });
+
+  // Body
+  const body = document.createElement('div');
+  body.className = 'panel-body';
+
+  // Role description
+  const desc = document.createElement('div');
+  desc.className = 'role-desc';
+  desc.textContent = role.desc;
+  body.appendChild(desc);
+
+  // Table
+  const table = document.createElement('table');
+  const thead = document.createElement('thead');
+  thead.innerHTML = `
+    <tr>
+      <th class="col-action"></th>
+      <th>User</th>
+      <th class="col-site">Site</th>
+    </tr>
+  `;
+  const tbody = document.createElement('tbody');
+
+  if (role.users.length === 0) {
+    const tr = document.createElement('tr');
+    tr.className = 'empty-row';
+    tr.innerHTML = `<td colspan="3"><div class="panel-empty">No users assigned</div></td>`;
+    tbody.appendChild(tr);
+  } else {
+    role.users.forEach(u => {
+      tbody.appendChild(buildUserRow(u.user, u.site, role.id));
+    });
+  }
+
+  table.appendChild(thead);
+  table.appendChild(tbody);
+  body.appendChild(table);
+
+  // Add user inline form
+  const addRow = document.createElement('div');
+  addRow.className = 'add-row';
+  addRow.innerHTML = `
+    <input type="text" placeholder="Enter username (e.g. thomastr)">
+    <select>${siteOptions('US')}</select>
+    <button class="btn-confirm-add">Add</button>
+    <button class="btn-cancel-add">Cancel</button>
+  `;
+  addRow.querySelector('.btn-confirm-add').addEventListener('click', function () {
+    const usernameInput = addRow.querySelector('input[type="text"]');
+    const siteSelect    = addRow.querySelector('select');
+    const username = usernameInput.value.trim();
+    if (!username) { usernameInput.focus(); return; }
+    const newRow = buildUserRow(username, siteSelect.value, role.id);
+    const emptyRow = tbody.querySelector('.empty-row');
+    if (emptyRow) emptyRow.remove();
+    tbody.appendChild(newRow);
+    usernameInput.value = '';
+    siteSelect.value = 'US';
+    addRow.classList.remove('visible');
+    markDirty();
+  });
+  addRow.querySelector('input').addEventListener('keydown', function (e) {
+    if (e.key === 'Enter') addRow.querySelector('.btn-confirm-add').click();
+    if (e.key === 'Escape') addRow.classList.remove('visible');
+  });
+  addRow.querySelector('.btn-cancel-add').addEventListener('click', function () {
+    addRow.classList.remove('visible');
+  });
+  body.appendChild(addRow);
+
+  panel.appendChild(header);
+  panel.appendChild(body);
+  return panel;
+}
+
+// ── Render all panels ──────────────────────────────────────────────────────
+const grid = document.getElementById('panelsGrid');
+ROLES.forEach(role => grid.appendChild(buildPanel(role)));
+
+// ── Dirty state ────────────────────────────────────────────────────────────
+let isDirty = false;
+function markDirty() { isDirty = true; }
+
+window.addEventListener('beforeunload', function (e) {
+  if (isDirty) { e.preventDefault(); e.returnValue = ''; }
+});
+
+// ── Save / Cancel ──────────────────────────────────────────────────────────
+document.getElementById('saveBtn').addEventListener('click', function () {
+  isDirty = false;
+  const confirm = document.getElementById('saveConfirm');
+  confirm.style.display = 'inline';
+  setTimeout(() => confirm.style.display = 'none', 3000);
+});
+
+document.getElementById('cancelBtn').addEventListener('click', function () {
+  if (isDirty && !window.confirm('You have unsaved changes. Discard them?')) return;
+  window.location.href = 'kaizen-dashboard.html';
+});
+</script>
+</body>
+</html>

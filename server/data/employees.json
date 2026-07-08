@@ -1,0 +1,2162 @@
+[
+  {
+    "empNum": "544",
+    "dept": "80",
+    "loc": "US",
+    "name": "Joseph Lang",
+    "deptName": "Administration",
+    "position": "Operations Manager",
+    "workCenter": "80"
+  },
+  {
+    "empNum": "4662",
+    "dept": "90",
+    "loc": "US",
+    "name": "Alejandro Gonzalez Nares",
+    "deptName": "Manufacturing Engineering",
+    "position": "Manager",
+    "workCenter": "90"
+  },
+  {
+    "empNum": "6253",
+    "dept": "60N",
+    "loc": "US",
+    "name": "Aaron Vela Peralta",
+    "deptName": "Materials",
+    "position": "Issuing Clerk",
+    "workCenter": "60N"
+  },
+  {
+    "empNum": "6212",
+    "dept": "QCI",
+    "loc": "US",
+    "name": "Sayra Bermudez",
+    "deptName": "Quality Control",
+    "position": "Lead",
+    "workCenter": "QCN"
+  },
+  {
+    "empNum": "6277",
+    "dept": "AE3",
+    "loc": "US",
+    "name": "Monica Solache Mejia",
+    "deptName": "Production",
+    "position": "Assembler AERO Lvl C",
+    "workCenter": "AE3"
+  },
+  {
+    "empNum": "6547",
+    "dept": "60AN",
+    "loc": "US",
+    "name": "Berta Yax Garcia",
+    "deptName": "Materials",
+    "position": "Issuing Clerk",
+    "workCenter": "60AN"
+  },
+  {
+    "empNum": "6548",
+    "dept": "AE3N",
+    "loc": "US",
+    "name": "Xhorxh Dunda",
+    "deptName": "Production",
+    "position": "Assembler AERO Lvl A+",
+    "workCenter": "AE3N"
+  },
+  {
+    "empNum": "5195",
+    "dept": "60A",
+    "loc": "US",
+    "name": "Nicholas Carratelli",
+    "deptName": "Materials",
+    "position": "Receiving Clerk",
+    "workCenter": "60A"
+  },
+  {
+    "empNum": "4636",
+    "dept": "70",
+    "loc": "US",
+    "name": "Steven Chan",
+    "deptName": "Sales",
+    "position": "Program Manager",
+    "workCenter": "70"
+  },
+  {
+    "empNum": "1",
+    "dept": "80",
+    "loc": "US",
+    "name": "Dan Lang",
+    "deptName": "Administration",
+    "position": "Chief Executive Officer",
+    "workCenter": "80"
+  },
+  {
+    "empNum": "6504",
+    "dept": "QCI",
+    "loc": "US",
+    "name": "Denisse E Aguilar",
+    "deptName": "Quality Control",
+    "position": "Documentation Clerk",
+    "workCenter": "QCA"
+  },
+  {
+    "empNum": "5156",
+    "dept": "60",
+    "loc": "US",
+    "name": "Zaira Alejandra Leon",
+    "deptName": "Materials",
+    "position": "Inventory Clerk",
+    "workCenter": "60"
+  },
+  {
+    "empNum": "5034",
+    "dept": "C&P",
+    "loc": "US",
+    "name": "Teresa Fermin",
+    "deptName": "Production",
+    "position": "Assembler SEMI Lvl B",
+    "workCenter": "C&P"
+  },
+  {
+    "empNum": "6523",
+    "dept": "80",
+    "loc": "US",
+    "name": "Jose L Botello Vazquez",
+    "deptName": "Information Technology",
+    "position": "Tech Support",
+    "workCenter": "80"
+  },
+  {
+    "empNum": "6242",
+    "dept": "90",
+    "loc": "US",
+    "name": "Griselda Paez Vega",
+    "deptName": "Manufacturing Engineering",
+    "position": "Engineer Jr",
+    "workCenter": "90"
+  },
+  {
+    "empNum": "4978",
+    "dept": "60A",
+    "loc": "US",
+    "name": "Priscella Chico Soto",
+    "deptName": "Materials",
+    "position": "Warehouse Lead",
+    "workCenter": "60A"
+  },
+  {
+    "empNum": "6285",
+    "dept": "60",
+    "loc": "US",
+    "name": "Alejandro Flores Jimenez",
+    "deptName": "Materials",
+    "position": "Issuing Clerk",
+    "workCenter": "60"
+  },
+  {
+    "empNum": "6281",
+    "dept": "80",
+    "loc": "US",
+    "name": "Ervin Flores",
+    "deptName": "Information Technology",
+    "position": "Tech Support",
+    "workCenter": "80"
+  },
+  {
+    "empNum": "694",
+    "dept": "AE1",
+    "loc": "US",
+    "name": "Agraciela Astudillo",
+    "deptName": "Production",
+    "position": "Assembler AERO Lvl C",
+    "workCenter": "AE1"
+  },
+  {
+    "empNum": "6280",
+    "dept": "QCT",
+    "loc": "US",
+    "name": "Mila Rambaran",
+    "deptName": "Quality Control",
+    "position": "Test Inspector",
+    "workCenter": "QCT"
+  },
+  {
+    "empNum": "4934",
+    "dept": "60",
+    "loc": "US",
+    "name": "Amada Cohetzaltitla",
+    "deptName": "Materials",
+    "position": "Inventory Clerk",
+    "workCenter": "60"
+  },
+  {
+    "empNum": "6207",
+    "dept": "C&P",
+    "loc": "US",
+    "name": "Carlos Reyes Hernandez",
+    "deptName": "Production",
+    "position": "Assembler SEMI Lvl B",
+    "workCenter": "C&P"
+  },
+  {
+    "empNum": "2071",
+    "dept": "FAN",
+    "loc": "US",
+    "name": "Olivia Contreras",
+    "deptName": "Production",
+    "position": "Assembler SEMI Lvl C",
+    "workCenter": "FAN"
+  },
+  {
+    "empNum": "5095",
+    "dept": "60",
+    "loc": "US",
+    "name": "Maria Lidia Vargas Raya",
+    "deptName": "Materials",
+    "position": "Receiving Clerk",
+    "workCenter": "60"
+  },
+  {
+    "empNum": "4659",
+    "dept": "C&P",
+    "loc": "US",
+    "name": "Cristian Garcia Martinez",
+    "deptName": "Production",
+    "position": "Assembler AERO Lvl C",
+    "workCenter": "C&P"
+  },
+  {
+    "empNum": "7093",
+    "dept": "70",
+    "loc": "US",
+    "name": "John Robert Haigh",
+    "deptName": "Sales",
+    "position": "Business Development Manager",
+    "workCenter": "70"
+  },
+  {
+    "empNum": "6936",
+    "dept": "60AN",
+    "loc": "US",
+    "name": "Juan G Longoria Garcia",
+    "deptName": "Materials",
+    "position": "Issuing Clerk",
+    "workCenter": "60AN"
+  },
+  {
+    "empNum": "7099",
+    "dept": "AE2",
+    "loc": "US",
+    "name": "Yair Salinas",
+    "deptName": "Production",
+    "position": "Assembler AERO Lvl B",
+    "workCenter": "AE2"
+  },
+  {
+    "empNum": "6932",
+    "dept": "60",
+    "loc": "US",
+    "name": "Juan Diego Gonzalez",
+    "deptName": "Materials",
+    "position": "Packaging Clerk",
+    "workCenter": "60"
+  },
+  {
+    "empNum": "5786",
+    "dept": "AE1N",
+    "loc": "US",
+    "name": "Soledad Del Carmen Luna",
+    "deptName": "Production",
+    "position": "Lead Aerospace",
+    "workCenter": "AE1N"
+  },
+  {
+    "empNum": "7095",
+    "dept": "55",
+    "loc": "US",
+    "name": "Thomas Trungbao Truong",
+    "deptName": "Quality - Corporate",
+    "position": "CI Engineer Jr",
+    "workCenter": "55"
+  },
+  {
+    "empNum": "6939",
+    "dept": "QCI",
+    "loc": "US",
+    "name": "Hematilaka Ihalagedara",
+    "deptName": "Quality Control",
+    "position": "Incoming Inspector",
+    "workCenter": "QC"
+  },
+  {
+    "empNum": "7098",
+    "dept": "AE6",
+    "loc": "US",
+    "name": "Eduardo Guerrero",
+    "deptName": "Production",
+    "position": "Assembler AERO Lvl A+",
+    "workCenter": "AE6"
+  },
+  {
+    "empNum": "6931",
+    "dept": "60",
+    "loc": "US",
+    "name": "Magdalena Castro Chomina",
+    "deptName": "Materials",
+    "position": "Issuing Clerk",
+    "workCenter": "60"
+  },
+  {
+    "empNum": "4072",
+    "dept": "50",
+    "loc": "US",
+    "name": "Karime Torres",
+    "deptName": "Production",
+    "position": "Production Assistant",
+    "workCenter": "50"
+  },
+  {
+    "empNum": "7370",
+    "dept": "AE2N",
+    "loc": "US",
+    "name": "Fatima Longoria",
+    "deptName": "Production",
+    "position": "Assembler AERO Lvl A+",
+    "workCenter": "AE2N"
+  },
+  {
+    "empNum": "7378",
+    "dept": "80",
+    "loc": "US",
+    "name": "Jennifer Diaz",
+    "deptName": "Human Resources",
+    "position": "Generalist",
+    "workCenter": "80"
+  },
+  {
+    "empNum": "6815",
+    "dept": "QCT",
+    "loc": "US",
+    "name": "Ezequiel Jr Leon",
+    "deptName": "Quality Control",
+    "position": "Test Inspector",
+    "workCenter": "QCT"
+  },
+  {
+    "empNum": "7374",
+    "dept": "AE6N",
+    "loc": "US",
+    "name": "Daniel Bagley",
+    "deptName": "Production",
+    "position": "Assembler AERO Lvl A+",
+    "workCenter": "AE6N"
+  },
+  {
+    "empNum": "6897",
+    "dept": "AE4",
+    "loc": "US",
+    "name": "Esperanza Orozco",
+    "deptName": "Production",
+    "position": "Lead Aerospace",
+    "workCenter": "AE4"
+  },
+  {
+    "empNum": "6899",
+    "dept": "AE5",
+    "loc": "US",
+    "name": "Anahi Coyotzi Ortega",
+    "deptName": "Production",
+    "position": "Assembler AERO Lvl A+",
+    "workCenter": "AE5"
+  },
+  {
+    "empNum": "5469",
+    "dept": "C&P",
+    "loc": "US",
+    "name": "Raquel Martinez Lopez",
+    "deptName": "Production",
+    "position": "Assembler AERO Lvl C",
+    "workCenter": "AE3"
+  },
+  {
+    "empNum": "7333",
+    "dept": "AE1",
+    "loc": "US",
+    "name": "Martha Guerrero Alatorre",
+    "deptName": "Production",
+    "position": "Assembler AERO Lvl A+",
+    "workCenter": "AE1"
+  },
+  {
+    "empNum": "4314",
+    "dept": "90",
+    "loc": "US",
+    "name": "Christopher Andrade",
+    "deptName": "Manufacturing Engineering",
+    "position": "Engineering Supervisor",
+    "workCenter": "90"
+  },
+  {
+    "empNum": "7058",
+    "dept": "AE6N",
+    "loc": "US",
+    "name": "Mark Grain Hughes",
+    "deptName": "Production",
+    "position": "Assembler AERO Lvl B",
+    "workCenter": "AE6N"
+  },
+  {
+    "empNum": "7051",
+    "dept": "AE3",
+    "loc": "US",
+    "name": "Grecia Loverly Cardenas",
+    "deptName": "Production",
+    "position": "Lead Aerospace",
+    "workCenter": "AE3"
+  },
+  {
+    "empNum": "7057",
+    "dept": "80",
+    "loc": "US",
+    "name": "Maria Ponce",
+    "deptName": "Human Resources",
+    "position": "Manager",
+    "workCenter": "80"
+  },
+  {
+    "empNum": "6974",
+    "dept": "AE1",
+    "loc": "US",
+    "name": "Carla Gonzalez Hernandez",
+    "deptName": "Production",
+    "position": "Assembler AERO Lvl C",
+    "workCenter": "AE1"
+  },
+  {
+    "empNum": "6877",
+    "dept": "QCT",
+    "loc": "US",
+    "name": "Erik Fuentes",
+    "deptName": "Quality Control",
+    "position": "Test Inspector",
+    "workCenter": "QCAN"
+  },
+  {
+    "empNum": "5483",
+    "dept": "60A",
+    "loc": "US",
+    "name": "Maria De J Fausto Leal",
+    "deptName": "Materials",
+    "position": "Issuing Clerk",
+    "workCenter": "60A"
+  },
+  {
+    "empNum": "6911",
+    "dept": "60",
+    "loc": "US",
+    "name": "Yusmila Salazargutierrez",
+    "deptName": "Materials",
+    "position": "Issuing Clerk",
+    "workCenter": "60"
+  },
+  {
+    "empNum": "6919",
+    "dept": "AE6N",
+    "loc": "US",
+    "name": "Maximiliano Yrupailla",
+    "deptName": "Production",
+    "position": "Assembler AERO Lvl C",
+    "workCenter": "AE6N"
+  },
+  {
+    "empNum": "5765",
+    "dept": "80",
+    "loc": "US",
+    "name": "Frank Hsiao",
+    "deptName": "Finance",
+    "position": "Controller",
+    "workCenter": "80"
+  },
+  {
+    "empNum": "6917",
+    "dept": "AE2N",
+    "loc": "US",
+    "name": "Martha Rangel",
+    "deptName": "Production",
+    "position": "Assembler AERO Lvl C",
+    "workCenter": "AE2N"
+  },
+  {
+    "empNum": "6910",
+    "dept": "60A",
+    "loc": "US",
+    "name": "Lismary Salazargutierrez",
+    "deptName": "Materials",
+    "position": "Issuing Clerk",
+    "workCenter": "60A"
+  },
+  {
+    "empNum": "7399",
+    "dept": "AE6N",
+    "loc": "US",
+    "name": "Lorenzo Flores",
+    "deptName": "Production",
+    "position": "Assembler AERO Lvl A+",
+    "workCenter": "AE6N"
+  },
+  {
+    "empNum": "7395",
+    "dept": "AE6N",
+    "loc": "US",
+    "name": "Jessica Zerdin",
+    "deptName": "Production",
+    "position": "Assembler AERO Lvl A+",
+    "workCenter": "AE6N"
+  },
+  {
+    "empNum": "3815",
+    "dept": "80",
+    "loc": "US",
+    "name": "Dennis R. Lang",
+    "deptName": "Administration",
+    "position": "Plant Manager",
+    "workCenter": "80"
+  },
+  {
+    "empNum": "7392",
+    "dept": "QCT",
+    "loc": "US",
+    "name": "Ernesto Villegas",
+    "deptName": "Quality Control",
+    "position": "Test Inspector",
+    "workCenter": "QC"
+  },
+  {
+    "empNum": "7396",
+    "dept": "AE5N",
+    "loc": "US",
+    "name": "Quang Nguyen",
+    "deptName": "Production",
+    "position": "Assembler AERO Lvl A+",
+    "workCenter": "AE5N"
+  },
+  {
+    "empNum": "7032",
+    "dept": "55",
+    "loc": "US",
+    "name": "Kurt Steven Delicana",
+    "deptName": "Quality - Corporate",
+    "position": "E.H.S. Coordinator",
+    "workCenter": "80"
+  },
+  {
+    "empNum": "7039",
+    "dept": "QCI",
+    "loc": "US",
+    "name": "Antonio M Gonzalez",
+    "deptName": "Quality Control",
+    "position": "Final Inspector",
+    "workCenter": "QC"
+  },
+  {
+    "empNum": "0",
+    "dept": "80",
+    "loc": "US",
+    "name": "Temporary Visitor",
+    "deptName": "Human Resources",
+    "position": "Receptionist",
+    "workCenter": "80"
+  },
+  {
+    "empNum": "7310",
+    "dept": "AE3N",
+    "loc": "US",
+    "name": "Khoa Nguyen",
+    "deptName": "Production",
+    "position": "Assembler AERO Lvl B",
+    "workCenter": "AE3N"
+  },
+  {
+    "empNum": "7312",
+    "dept": "AE3N",
+    "loc": "US",
+    "name": "Roberto Longoria",
+    "deptName": "Production",
+    "position": "Assembler AERO Lvl B",
+    "workCenter": "AE3N"
+  },
+  {
+    "empNum": "7313",
+    "dept": "AE5N",
+    "loc": "US",
+    "name": "Andrea Nicole Longoria",
+    "deptName": "Production",
+    "position": "Assembler AERO Lvl B",
+    "workCenter": "AE5N"
+  },
+  {
+    "empNum": "7305",
+    "dept": "65N",
+    "loc": "US",
+    "name": "Vicente Camacho",
+    "deptName": "Maintenance",
+    "position": "Technician",
+    "workCenter": "65N"
+  },
+  {
+    "empNum": "7302",
+    "dept": "80",
+    "loc": "US",
+    "name": "Jessica Alejand Montalvo",
+    "deptName": "Finance",
+    "position": "Accounts Payable Clerk",
+    "workCenter": "80"
+  },
+  {
+    "empNum": "3888",
+    "dept": "80",
+    "loc": "US",
+    "name": "Luis C. Espinoza",
+    "deptName": "Administration",
+    "position": "Chief Operating Officer",
+    "workCenter": "80"
+  },
+  {
+    "empNum": "7029",
+    "dept": "60AN",
+    "loc": "US",
+    "name": "Elisa Leobarda Lagunas",
+    "deptName": "Materials",
+    "position": "Issuing Clerk",
+    "workCenter": "60AN"
+  },
+  {
+    "empNum": "6949",
+    "dept": "60A",
+    "loc": "US",
+    "name": "Martha Hernandez Sevilla",
+    "deptName": "Materials",
+    "position": "Issuing Clerk",
+    "workCenter": "60A"
+  },
+  {
+    "empNum": "7387",
+    "dept": "AE3N",
+    "loc": "US",
+    "name": "Gabriela Cruz Narvaez",
+    "deptName": "Production",
+    "position": "Assembler AERO Lvl A+",
+    "workCenter": "AE3N"
+  },
+  {
+    "empNum": "6821",
+    "dept": "60",
+    "loc": "US",
+    "name": "Jesus Arteaga",
+    "deptName": "Materials",
+    "position": "Warehouse Lead",
+    "workCenter": "60"
+  },
+  {
+    "empNum": "6864",
+    "dept": "AE3",
+    "loc": "US",
+    "name": "Yelyana Chandra Lee",
+    "deptName": "Production",
+    "position": "Assembler AERO Lvl C",
+    "workCenter": "AE3"
+  },
+  {
+    "empNum": "6980",
+    "dept": "AE4",
+    "loc": "US",
+    "name": "Maria D Avalos Reyes",
+    "deptName": "Production",
+    "position": "Assembler AERO Lvl B",
+    "workCenter": "AE4"
+  },
+  {
+    "empNum": "6981",
+    "dept": "QCT",
+    "loc": "US",
+    "name": "Melissa Ochoa",
+    "deptName": "Quality Control",
+    "position": "Test Inspector",
+    "workCenter": "QC"
+  },
+  {
+    "empNum": "7349",
+    "dept": "90",
+    "loc": "US",
+    "name": "Jerry Reyes-Arevalo",
+    "deptName": "Manufacturing Engineering",
+    "position": "Engineer Jr",
+    "workCenter": "90"
+  },
+  {
+    "empNum": "4327",
+    "dept": "80",
+    "loc": "US",
+    "name": "Mario Richarte",
+    "deptName": "Finance",
+    "position": "Accounts Receivable Clerk",
+    "workCenter": "80"
+  },
+  {
+    "empNum": "7343",
+    "dept": "AE6",
+    "loc": "US",
+    "name": "Mayte Michelle Garcia",
+    "deptName": "Production",
+    "position": "Assembler AERO Lvl A+",
+    "workCenter": "AE6"
+  },
+  {
+    "empNum": "7342",
+    "dept": "AE5N",
+    "loc": "US",
+    "name": "Randall Justin Avilez",
+    "deptName": "Production",
+    "position": "Assembler AERO Lvl A+",
+    "workCenter": "AE5N"
+  },
+  {
+    "empNum": "7066",
+    "dept": "QCI",
+    "loc": "US",
+    "name": "Yair Mitchel Garcia",
+    "deptName": "Quality Control",
+    "position": "Test Inspector",
+    "workCenter": "QC"
+  },
+  {
+    "empNum": "4040",
+    "dept": "70",
+    "loc": "US",
+    "name": "Paula Chavez-Harte",
+    "deptName": "Sales",
+    "position": "Program Manager",
+    "workCenter": "70"
+  },
+  {
+    "empNum": "7064",
+    "dept": "AE3",
+    "loc": "US",
+    "name": "Bryan Munoz",
+    "deptName": "Production",
+    "position": "Assembler AERO Lvl B",
+    "workCenter": "AE3"
+  },
+  {
+    "empNum": "7060",
+    "dept": "AE2",
+    "loc": "US",
+    "name": "Juan Guevara Torres",
+    "deptName": "Production",
+    "position": "Assembler AERO Lvl B",
+    "workCenter": "AE2"
+  },
+  {
+    "empNum": "7063",
+    "dept": "AE5",
+    "loc": "US",
+    "name": "Angel Efrain Galindo",
+    "deptName": "Production",
+    "position": "Assembler AERO Lvl A",
+    "workCenter": "AE5"
+  },
+  {
+    "empNum": "6904",
+    "dept": "AE4N",
+    "loc": "US",
+    "name": "Patricia Fernandez",
+    "deptName": "Production",
+    "position": "Assembler AERO Lvl B",
+    "workCenter": "AE4N"
+  },
+  {
+    "empNum": "7065",
+    "dept": "60",
+    "loc": "US",
+    "name": "Silvia Rodriguez Roman",
+    "deptName": "Materials",
+    "position": "Packaging Clerk",
+    "workCenter": "60"
+  },
+  {
+    "empNum": "6902",
+    "dept": "AE6N",
+    "loc": "US",
+    "name": "Elizabeth Santibanez",
+    "deptName": "Production",
+    "position": "Lead Aerospace",
+    "workCenter": "AE6N"
+  },
+  {
+    "empNum": "6924",
+    "dept": "QCI",
+    "loc": "US",
+    "name": "Maria Ponce Contreras",
+    "deptName": "Quality Control",
+    "position": "Lead",
+    "workCenter": "QCA"
+  },
+  {
+    "empNum": "6928",
+    "dept": "60",
+    "loc": "US",
+    "name": "Elizabeth Chapman Arias",
+    "deptName": "Materials",
+    "position": "Inventory Clerk",
+    "workCenter": "60"
+  },
+  {
+    "empNum": "4064",
+    "dept": "C&P",
+    "loc": "US",
+    "name": "Ereida Marin",
+    "deptName": "Production",
+    "position": "Assembler AERO Lvl C",
+    "workCenter": "C&P"
+  },
+  {
+    "empNum": "7088",
+    "dept": "AE1",
+    "loc": "US",
+    "name": "Kendra E Alonso Oliveros",
+    "deptName": "Production",
+    "position": "Assembler AERO Lvl B",
+    "workCenter": "AE1"
+  },
+  {
+    "empNum": "6921",
+    "dept": "60AN",
+    "loc": "US",
+    "name": "Mirunalini Mylvaganam",
+    "deptName": "Materials",
+    "position": "Issuing Clerk",
+    "workCenter": "60AN"
+  },
+  {
+    "empNum": "6925",
+    "dept": "60",
+    "loc": "US",
+    "name": "Rosa Y Salazar Gutierrez",
+    "deptName": "Materials",
+    "position": "Inventory Clerk",
+    "workCenter": "60"
+  },
+  {
+    "empNum": "7360",
+    "dept": "AE4N",
+    "loc": "US",
+    "name": "Jose Torres",
+    "deptName": "Production",
+    "position": "Assembler AERO Lvl A+",
+    "workCenter": "AE4N"
+  },
+  {
+    "empNum": "7368",
+    "dept": "55",
+    "loc": "US",
+    "name": "Tin Nguyen",
+    "deptName": "Quality - Corporate",
+    "position": "CI Engineer",
+    "workCenter": "55"
+  },
+  {
+    "empNum": "5452",
+    "dept": "60",
+    "loc": "US",
+    "name": "Gabriel Linares Garcia",
+    "deptName": "Materials",
+    "position": "Warehouse Lead",
+    "workCenter": "60"
+  },
+  {
+    "empNum": "7321",
+    "dept": "AE2N",
+    "loc": "US",
+    "name": "Charles Epps",
+    "deptName": "Production",
+    "position": "Assembler AERO Lvl A+",
+    "workCenter": "AE2N"
+  },
+  {
+    "empNum": "7043",
+    "dept": "60N",
+    "loc": "US",
+    "name": "Mayra J Saavedra Barojas",
+    "deptName": "Materials",
+    "position": "Warehouse Lead",
+    "workCenter": "60N"
+  },
+  {
+    "empNum": "6962",
+    "dept": "60N",
+    "loc": "US",
+    "name": "Leticia Mendoza Sanchez",
+    "deptName": "Materials",
+    "position": "Inventory Clerk",
+    "workCenter": "60N"
+  },
+  {
+    "empNum": "5412",
+    "dept": "AE3",
+    "loc": "US",
+    "name": "Araceli Bautista Cruz",
+    "deptName": "Production",
+    "position": "Lead Aerospace",
+    "workCenter": "AE3"
+  },
+  {
+    "empNum": "6653",
+    "dept": "80",
+    "loc": "US",
+    "name": "Marcello Benito Herrera",
+    "deptName": "Quality Assurance",
+    "position": "Supervisor",
+    "workCenter": "55"
+  },
+  {
+    "empNum": "5387",
+    "dept": "QCT",
+    "loc": "US",
+    "name": "Cecilito C. Cenabre",
+    "deptName": "Quality Control",
+    "position": "Test Inspector",
+    "workCenter": "QCA"
+  },
+  {
+    "empNum": "5269",
+    "dept": "60AN",
+    "loc": "US",
+    "name": "Jacinta Caracheo",
+    "deptName": "Materials",
+    "position": "Packaging Clerk",
+    "workCenter": "60N"
+  },
+  {
+    "empNum": "7133",
+    "dept": "60AN",
+    "loc": "US",
+    "name": "Sarath C. Mudannayaka",
+    "deptName": "Materials",
+    "position": "Issuing Clerk",
+    "workCenter": "60AN"
+  },
+  {
+    "empNum": "6410",
+    "dept": "AE6",
+    "loc": "US",
+    "name": "Kelly James Piccirillo",
+    "deptName": "Production",
+    "position": "Assembler AERO Lvl B",
+    "workCenter": "AE6"
+  },
+  {
+    "empNum": "4116",
+    "dept": "80",
+    "loc": "US",
+    "name": "Arturo Torres Chavez",
+    "deptName": "Materials",
+    "position": "SCM Director",
+    "workCenter": "80"
+  },
+  {
+    "empNum": "7134",
+    "dept": "60N",
+    "loc": "US",
+    "name": "Sheela V. Mudannayaka",
+    "deptName": "Materials",
+    "position": "Inventory Clerk",
+    "workCenter": "60N"
+  },
+  {
+    "empNum": "6416",
+    "dept": "AE5",
+    "loc": "US",
+    "name": "Rigoberto Magno",
+    "deptName": "Production",
+    "position": "Assembler AERO Lvl C",
+    "workCenter": "AE5"
+  },
+  {
+    "empNum": "7138",
+    "dept": "60",
+    "loc": "US",
+    "name": "Esmeralda A Montano",
+    "deptName": "Materials",
+    "position": "Issuing Clerk",
+    "workCenter": "60"
+  },
+  {
+    "empNum": "6619",
+    "dept": "50",
+    "loc": "US",
+    "name": "Tommy Do",
+    "deptName": "Production",
+    "position": "Tech. Supervisor",
+    "workCenter": "50"
+  },
+  {
+    "empNum": "4150",
+    "dept": "C&P",
+    "loc": "US",
+    "name": "Marisol Guerrero",
+    "deptName": "Production",
+    "position": "Assembler AERO Lvl C",
+    "workCenter": "C&P"
+  },
+  {
+    "empNum": "5584",
+    "dept": "90",
+    "loc": "US",
+    "name": "Julia Paz",
+    "deptName": "Manufacturing Engineering",
+    "position": "Assistant",
+    "workCenter": "90"
+  },
+  {
+    "empNum": "5581",
+    "dept": "QCT",
+    "loc": "US",
+    "name": "Bryan Ruiz",
+    "deptName": "Quality Control",
+    "position": "Test Inspector",
+    "workCenter": "QCAN"
+  },
+  {
+    "empNum": "5346",
+    "dept": "AE1",
+    "loc": "US",
+    "name": "Carmen Campos",
+    "deptName": "Production",
+    "position": "Assembler AERO Lvl C",
+    "workCenter": "AE1"
+  },
+  {
+    "empNum": "5500",
+    "dept": "C&P",
+    "loc": "US",
+    "name": "Maria Del Rocio Gallegos",
+    "deptName": "Production",
+    "position": "Assembler SEMI Lvl C",
+    "workCenter": "C&P"
+  },
+  {
+    "empNum": "7112",
+    "dept": "AE3",
+    "loc": "US",
+    "name": "Adriana Garcia De Sanchez",
+    "deptName": "Production",
+    "position": "Assembler AERO Lvl A+",
+    "workCenter": "AE3"
+  },
+  {
+    "empNum": "5240",
+    "dept": "70",
+    "loc": "US",
+    "name": "Maria D Dominguez Farfan",
+    "deptName": "Sales",
+    "position": "Program Manager",
+    "workCenter": "70"
+  },
+  {
+    "empNum": "3979",
+    "dept": "80",
+    "loc": "US",
+    "name": "Mila K. Beckers",
+    "deptName": "Quoting",
+    "position": "Manager",
+    "workCenter": "70"
+  },
+  {
+    "empNum": "7116",
+    "dept": "AE3",
+    "loc": "US",
+    "name": "Brenda Yadira Ortiz",
+    "deptName": "Production",
+    "position": "Assembler AERO Lvl A+",
+    "workCenter": "AE3"
+  },
+  {
+    "empNum": "6635",
+    "dept": "SPX",
+    "loc": "US",
+    "name": "Ailyn Cordero",
+    "deptName": "Production",
+    "position": "Lead Aerospace",
+    "workCenter": "AE6"
+  },
+  {
+    "empNum": "7195",
+    "dept": "60N",
+    "loc": "US",
+    "name": "Ana M Lupercio",
+    "deptName": "Materials",
+    "position": "Packaging Clerk",
+    "workCenter": "60N"
+  },
+  {
+    "empNum": "4886",
+    "dept": "60",
+    "loc": "US",
+    "name": "Jenifer Arriaga Chavez",
+    "deptName": "Materials",
+    "position": "Warehouse Lead",
+    "workCenter": "60"
+  },
+  {
+    "empNum": "6751",
+    "dept": "80",
+    "loc": "US",
+    "name": "Yogendran Krishnamurthy",
+    "deptName": "Administration",
+    "position": "Operations Manager",
+    "workCenter": "80"
+  },
+  {
+    "empNum": "5208",
+    "dept": "60A",
+    "loc": "US",
+    "name": "Rafael Sanchez",
+    "deptName": "Materials",
+    "position": "Issuing Clerk",
+    "workCenter": "60A"
+  },
+  {
+    "empNum": "6790",
+    "dept": "C&P",
+    "loc": "US",
+    "name": "Sergio Arteaga Pacheco",
+    "deptName": "Production",
+    "position": "Assembler SEMI Lvl B",
+    "workCenter": "SB3"
+  },
+  {
+    "empNum": "6710",
+    "dept": "90",
+    "loc": "US",
+    "name": "Maria Arteaga",
+    "deptName": "Manufacturing Engineering",
+    "position": "Assistant",
+    "workCenter": "90"
+  },
+  {
+    "empNum": "5564",
+    "dept": "60AN",
+    "loc": "US",
+    "name": "Maribel Chavez",
+    "deptName": "Materials",
+    "position": "Shipping Clerk",
+    "workCenter": "60"
+  },
+  {
+    "empNum": "6718",
+    "dept": "60",
+    "loc": "US",
+    "name": "Edwin Flores",
+    "deptName": "Materials",
+    "position": "Issuing Clerk",
+    "workCenter": "60"
+  },
+  {
+    "empNum": "7152",
+    "dept": "AE1",
+    "loc": "US",
+    "name": "Masood Shariff",
+    "deptName": "Production",
+    "position": "Assembler AERO Lvl A+",
+    "workCenter": "AE1"
+  },
+  {
+    "empNum": "7150",
+    "dept": "AE4N",
+    "loc": "US",
+    "name": "Rodolfo A Ponce De Leon",
+    "deptName": "Production",
+    "position": "Assembler AERO Lvl A+",
+    "workCenter": "AE4N"
+  },
+  {
+    "empNum": "7140",
+    "dept": "AE1N",
+    "loc": "US",
+    "name": "Samantha Gomez Rafael",
+    "deptName": "Production",
+    "position": "Assembler AERO Lvl B",
+    "workCenter": "AE1N"
+  },
+  {
+    "empNum": "7143",
+    "dept": "QCI",
+    "loc": "US",
+    "name": "Laura Cifuentes S.",
+    "deptName": "Quality Control",
+    "position": "Final Inspector",
+    "workCenter": "QC"
+  },
+  {
+    "empNum": "7145",
+    "dept": "80",
+    "loc": "US",
+    "name": "Titus Lang",
+    "deptName": "Materials",
+    "position": "Administrative Clerk",
+    "workCenter": "80"
+  },
+  {
+    "empNum": "5239",
+    "dept": "90",
+    "loc": "US",
+    "name": "Maria G. Gonzalez",
+    "deptName": "Manufacturing Engineering",
+    "position": "Field Support Technician",
+    "workCenter": "90"
+  },
+  {
+    "empNum": "6789",
+    "dept": "AE2",
+    "loc": "US",
+    "name": "Miguel Arteaga Pacheco",
+    "deptName": "Production",
+    "position": "Assembler AERO Lvl C",
+    "workCenter": "AE2"
+  },
+  {
+    "empNum": "6788",
+    "dept": "50",
+    "loc": "US",
+    "name": "Javier Franco Viveros",
+    "deptName": "Production",
+    "position": "Manager",
+    "workCenter": "80"
+  },
+  {
+    "empNum": "5238",
+    "dept": "FAN",
+    "loc": "US",
+    "name": "Luz Lechuga",
+    "deptName": "Production",
+    "position": "Assembler SEMI Lvl C",
+    "workCenter": "FAN"
+  },
+  {
+    "empNum": "5512",
+    "dept": "AE5",
+    "loc": "US",
+    "name": "Fatima Puga Rojas",
+    "deptName": "Production",
+    "position": "Lead Aerospace",
+    "workCenter": "AE5"
+  },
+  {
+    "empNum": "5357",
+    "dept": "60",
+    "loc": "US",
+    "name": "Eduardo Rios Pedroza",
+    "deptName": "Materials",
+    "position": "Inventory Clerk",
+    "workCenter": "60"
+  },
+  {
+    "empNum": "4832",
+    "dept": "AE1",
+    "loc": "US",
+    "name": "Claudia Ojeda De Barcenas",
+    "deptName": "Production",
+    "position": "Assembler AERO Lvl C",
+    "workCenter": "AE1"
+  },
+  {
+    "empNum": "4839",
+    "dept": "70",
+    "loc": "US",
+    "name": "Eric Schuessler",
+    "deptName": "Sales",
+    "position": "Business Development Manager",
+    "workCenter": "70"
+  },
+  {
+    "empNum": "5557",
+    "dept": "80",
+    "loc": "US",
+    "name": "Rachelle Dieu Ho",
+    "deptName": "Finance",
+    "position": "Senior Staff Accountant",
+    "workCenter": "80"
+  },
+  {
+    "empNum": "7109",
+    "dept": "AE1N",
+    "loc": "US",
+    "name": "Daniela Mueller",
+    "deptName": "Production",
+    "position": "Assembler AERO Lvl C",
+    "workCenter": "AE1N"
+  },
+  {
+    "empNum": "3967",
+    "dept": "80",
+    "loc": "US",
+    "name": "Claudia A. Gonzalez",
+    "deptName": "Human Resources",
+    "position": "Payroll Clerk",
+    "workCenter": "80"
+  },
+  {
+    "empNum": "5270",
+    "dept": "65N",
+    "loc": "US",
+    "name": "Gregorio De La Riva",
+    "deptName": "Maintenance",
+    "position": "Technician",
+    "workCenter": "65N"
+  },
+  {
+    "empNum": "5312",
+    "dept": "50",
+    "loc": "US",
+    "name": "Sergio M Ortega",
+    "deptName": "Production",
+    "position": "Supervisor 1",
+    "workCenter": "50"
+  },
+  {
+    "empNum": "6462",
+    "dept": "FAN",
+    "loc": "US",
+    "name": "Erik Jack Vanrooy",
+    "deptName": "Production",
+    "position": "Assembler SEMI Lvl C",
+    "workCenter": "FAN"
+  },
+  {
+    "empNum": "4168",
+    "dept": "80",
+    "loc": "US",
+    "name": "Hiliana E. Villalvazo",
+    "deptName": "Materials",
+    "position": "Planner / Scheduler",
+    "workCenter": "80"
+  },
+  {
+    "empNum": "7187",
+    "dept": "AE1N",
+    "loc": "US",
+    "name": "Timothy Barham",
+    "deptName": "Production",
+    "position": "Assembler AERO Lvl A+",
+    "workCenter": "AE1N"
+  },
+  {
+    "empNum": "5313",
+    "dept": "AE2",
+    "loc": "US",
+    "name": "Richard De Leon",
+    "deptName": "Production",
+    "position": "Assembler AERO Lvl C",
+    "workCenter": "AE2"
+  },
+  {
+    "empNum": "7189",
+    "dept": "AE3",
+    "loc": "US",
+    "name": "Pedro Misael Teso",
+    "deptName": "Production",
+    "position": "Assembler AERO Lvl A+",
+    "workCenter": "AE3"
+  },
+  {
+    "empNum": "6626",
+    "dept": "AE5N",
+    "loc": "US",
+    "name": "Martin Covarrubias Diaz",
+    "deptName": "Production",
+    "position": "Assembler AERO Lvl C",
+    "workCenter": "AE5N"
+  },
+  {
+    "empNum": "6767",
+    "dept": "AE3",
+    "loc": "US",
+    "name": "Kevin Tran",
+    "deptName": "Production",
+    "position": "Assembler AERO Lvl C",
+    "workCenter": "AE3"
+  },
+  {
+    "empNum": "5213",
+    "dept": "AE3N",
+    "loc": "US",
+    "name": "Jose Luis Delgado",
+    "deptName": "Production",
+    "position": "Lead Aerospace",
+    "workCenter": "AE3N"
+  },
+  {
+    "empNum": "5335",
+    "dept": "60",
+    "loc": "US",
+    "name": "Aldo Jair Lopez",
+    "deptName": "Materials",
+    "position": "Warehouse Supervisor",
+    "workCenter": "60"
+  },
+  {
+    "empNum": "6405",
+    "dept": "AE2N",
+    "loc": "US",
+    "name": "Jesus Samuel Pineda Leon",
+    "deptName": "Production",
+    "position": "Assembler AERO Lvl B",
+    "workCenter": "AE2N"
+  },
+  {
+    "empNum": "7127",
+    "dept": "QCI",
+    "loc": "US",
+    "name": "Yurielem Pineda Mondragon",
+    "deptName": "Quality Control",
+    "position": "Final Inspector",
+    "workCenter": "QC"
+  },
+  {
+    "empNum": "7126",
+    "dept": "QCI",
+    "loc": "US",
+    "name": "Nansi Mounir Saledis",
+    "deptName": "Quality Control",
+    "position": "Final Inspector",
+    "workCenter": "QC"
+  },
+  {
+    "empNum": "6606",
+    "dept": "60",
+    "loc": "US",
+    "name": "Stefanie C Colcol",
+    "deptName": "Materials",
+    "position": "Issuing Clerk",
+    "workCenter": "60"
+  },
+  {
+    "empNum": "5255",
+    "dept": "60N",
+    "loc": "US",
+    "name": "Gabriel Zepeda",
+    "deptName": "Materials",
+    "position": "Warehouse Lead",
+    "workCenter": "60"
+  },
+  {
+    "empNum": "5252",
+    "dept": "60",
+    "loc": "US",
+    "name": "Liliana Chavez",
+    "deptName": "Materials",
+    "position": "Inventory Clerk",
+    "workCenter": "60"
+  },
+  {
+    "empNum": "5948",
+    "dept": "SPXN",
+    "loc": "US",
+    "name": "Daniel Hernandez",
+    "deptName": "Production",
+    "position": "Assembler AERO Lvl A",
+    "workCenter": "20N"
+  },
+  {
+    "empNum": "7412",
+    "dept": "50",
+    "loc": "US",
+    "name": "Miguel Gaytan Velazquez",
+    "deptName": "Production",
+    "position": "Supervisor 2",
+    "workCenter": "50"
+  },
+  {
+    "empNum": "7251",
+    "dept": "AE1",
+    "loc": "US",
+    "name": "Luis Eduardo Maravilla",
+    "deptName": "Production",
+    "position": "Assembler AERO Lvl B",
+    "workCenter": "AE1"
+  },
+  {
+    "empNum": "5660",
+    "dept": "80",
+    "loc": "US",
+    "name": "Abdullahi Yusuf Diriye",
+    "deptName": "Quality Assurance",
+    "position": "Technician",
+    "workCenter": "55"
+  },
+  {
+    "empNum": "5825",
+    "dept": "C&P",
+    "loc": "US",
+    "name": "Sandy Ariann Orduno",
+    "deptName": "Production",
+    "position": "Lead SEMI",
+    "workCenter": "C&P"
+  },
+  {
+    "empNum": "2805",
+    "dept": "FAN",
+    "loc": "US",
+    "name": "Alexa Duarte",
+    "deptName": "Production",
+    "position": "Lead SEMI",
+    "workCenter": "FAN"
+  },
+  {
+    "empNum": "4752",
+    "dept": "70",
+    "loc": "US",
+    "name": "Ryan Murray",
+    "deptName": "Sales",
+    "position": "Business Development Manager",
+    "workCenter": "70"
+  },
+  {
+    "empNum": "6348",
+    "dept": "AE3",
+    "loc": "US",
+    "name": "Berenice Ramirez",
+    "deptName": "Production",
+    "position": "Assembler AERO Lvl B",
+    "workCenter": "AE3"
+  },
+  {
+    "empNum": "6060",
+    "dept": "AE4N",
+    "loc": "US",
+    "name": "Diana L Luna Ayala",
+    "deptName": "Production",
+    "position": "Lead Aerospace",
+    "workCenter": "AE4N"
+  },
+  {
+    "empNum": "7210",
+    "dept": "80",
+    "loc": "US",
+    "name": "Alesandra Marie Meyer",
+    "deptName": "Quality Assurance",
+    "position": "Technician",
+    "workCenter": "55"
+  },
+  {
+    "empNum": "7455",
+    "dept": "QCT",
+    "loc": "US",
+    "name": "Shaid Arellano",
+    "deptName": "Quality Control",
+    "position": "Test Inspector",
+    "workCenter": "QC"
+  },
+  {
+    "empNum": "7451",
+    "dept": "SPXN",
+    "loc": "US",
+    "name": "Patricia Luna",
+    "deptName": "Production",
+    "position": "Assembler AERO Lvl A",
+    "workCenter": "SPXN"
+  },
+  {
+    "empNum": "7453",
+    "dept": "QCI",
+    "loc": "US",
+    "name": "Julian Vargas",
+    "deptName": "Quality Control",
+    "position": "Test Inspector",
+    "workCenter": "QCI"
+  },
+  {
+    "empNum": "5985",
+    "dept": "80",
+    "loc": "US",
+    "name": "Mayra A. Palacio Torres",
+    "deptName": "Materials",
+    "position": "Supply Chain Inventory Analyst",
+    "workCenter": "80"
+  },
+  {
+    "empNum": "7456",
+    "dept": "QCT",
+    "loc": "US",
+    "name": "Aysha Delgado",
+    "deptName": "Quality Control",
+    "position": "Test Inspector",
+    "workCenter": "QC"
+  },
+  {
+    "empNum": "7293",
+    "dept": "AE6",
+    "loc": "US",
+    "name": "Samuel Santiago",
+    "deptName": "Production",
+    "position": "Assembler AERO Lvl A+",
+    "workCenter": "AE6"
+  },
+  {
+    "empNum": "7452",
+    "dept": "AE4N",
+    "loc": "US",
+    "name": "Catalina Zaragoza",
+    "deptName": "Production",
+    "position": "Assembler AERO Lvl A",
+    "workCenter": "AE4N"
+  },
+  {
+    "empNum": "7454",
+    "dept": "AE3N",
+    "loc": "US",
+    "name": "Ryan Grady",
+    "deptName": "Production",
+    "position": "Assembler AERO Lvl A",
+    "workCenter": "AE3N"
+  },
+  {
+    "empNum": "7299",
+    "dept": "80",
+    "loc": "US",
+    "name": "Fernando Lopez",
+    "deptName": "Quality Assurance",
+    "position": "Engineer Jr",
+    "workCenter": "55"
+  },
+  {
+    "empNum": "7450",
+    "dept": "65N",
+    "loc": "US",
+    "name": "Jacob Denissen",
+    "deptName": "Maintenance",
+    "position": "Technician",
+    "workCenter": "65N"
+  },
+  {
+    "empNum": "4715",
+    "dept": "60",
+    "loc": "US",
+    "name": "Roberto Moreno",
+    "deptName": "Materials",
+    "position": "Receiving Clerk",
+    "workCenter": "60"
+  },
+  {
+    "empNum": "4711",
+    "dept": "C&P",
+    "loc": "US",
+    "name": "Rocio Morales",
+    "deptName": "Production",
+    "position": "Assembler SEMI Lvl C",
+    "workCenter": "C&P"
+  },
+  {
+    "empNum": "4710",
+    "dept": "70",
+    "loc": "US",
+    "name": "Julio C. Rubi",
+    "deptName": "Sales",
+    "position": "Program Manager",
+    "workCenter": "70"
+  },
+  {
+    "empNum": "5880",
+    "dept": "SPXN",
+    "loc": "US",
+    "name": "Steven Jennings Reimer",
+    "deptName": "Production",
+    "position": "Lead Aerospace",
+    "workCenter": "SPXN"
+  },
+  {
+    "empNum": "6129",
+    "dept": "80",
+    "loc": "US",
+    "name": "Ahmed Azzawi",
+    "deptName": "Information Technology",
+    "position": "Systems Administrator",
+    "workCenter": "80"
+  },
+  {
+    "empNum": "5803",
+    "dept": "QCI",
+    "loc": "US",
+    "name": "Crystal Marie Dominguez",
+    "deptName": "Quality Control",
+    "position": "Incoming Inspector",
+    "workCenter": "QC"
+  },
+  {
+    "empNum": "6364",
+    "dept": "AE1",
+    "loc": "US",
+    "name": "Julian Solorio Beltran",
+    "deptName": "Production",
+    "position": "Assembler AERO Lvl C",
+    "workCenter": "AE1"
+  },
+  {
+    "empNum": "6365",
+    "dept": "80",
+    "loc": "US",
+    "name": "Luis Alvarez",
+    "deptName": "Human Resources",
+    "position": "Operations Trainer",
+    "workCenter": "80"
+  },
+  {
+    "empNum": "6081",
+    "dept": "AE2",
+    "loc": "US",
+    "name": "Laura I Powers",
+    "deptName": "Production",
+    "position": "Assembler AERO Lvl C",
+    "workCenter": "AE2"
+  },
+  {
+    "empNum": "7231",
+    "dept": "AE2N",
+    "loc": "US",
+    "name": "Arely Montes Ortiz",
+    "deptName": "Production",
+    "position": "Assembler AERO Lvl A+",
+    "workCenter": "AE2N"
+  },
+  {
+    "empNum": "7232",
+    "dept": "AE4",
+    "loc": "US",
+    "name": "Brandon Ortiz",
+    "deptName": "Production",
+    "position": "Assembler AERO Lvl A+",
+    "workCenter": "AE4"
+  },
+  {
+    "empNum": "7276",
+    "dept": "AE4",
+    "loc": "US",
+    "name": "Jonathan Cuevas",
+    "deptName": "Production",
+    "position": "Assembler AERO Lvl A+",
+    "workCenter": "AE4"
+  },
+  {
+    "empNum": "7433",
+    "dept": "SPX",
+    "loc": "US",
+    "name": "Paul Rodriguez",
+    "deptName": "Production",
+    "position": "Assembler AERO Lvl A",
+    "workCenter": "SPX"
+  },
+  {
+    "empNum": "7275",
+    "dept": "QCT",
+    "loc": "US",
+    "name": "Nam Cao",
+    "deptName": "Quality Control",
+    "position": "Test Inspector",
+    "workCenter": "QCN"
+  },
+  {
+    "empNum": "7438",
+    "dept": "QCT",
+    "loc": "US",
+    "name": "Diana Pulotu",
+    "deptName": "Quality Control",
+    "position": "Test Inspector",
+    "workCenter": "QC"
+  },
+  {
+    "empNum": "7434",
+    "dept": "SPXN",
+    "loc": "US",
+    "name": "Teodoro Flores",
+    "deptName": "Production",
+    "position": "Assembler AERO Lvl A",
+    "workCenter": "SPXN"
+  },
+  {
+    "empNum": "6044",
+    "dept": "AE2N",
+    "loc": "US",
+    "name": "Brenda Fuentes",
+    "deptName": "Production",
+    "position": "Lead Aerospace",
+    "workCenter": "AE2N"
+  },
+  {
+    "empNum": "6320",
+    "dept": "AE4",
+    "loc": "US",
+    "name": "Kyle Andrew Hill",
+    "deptName": "Production",
+    "position": "Assembler AERO Lvl C",
+    "workCenter": "AE4"
+  },
+  {
+    "empNum": "6161",
+    "dept": "AE1",
+    "loc": "US",
+    "name": "Elvia T Felix Farias",
+    "deptName": "Production",
+    "position": "Lead Aerospace",
+    "workCenter": "AE1"
+  },
+  {
+    "empNum": "5632",
+    "dept": "60",
+    "loc": "US",
+    "name": "Jodi Lynn Benn",
+    "deptName": "Materials",
+    "position": "Inventory Clerk",
+    "workCenter": "60"
+  },
+  {
+    "empNum": "7264",
+    "dept": "QCT",
+    "loc": "US",
+    "name": "Mirella Gonzalez",
+    "deptName": "Quality Control",
+    "position": "Test Inspector",
+    "workCenter": "QCN"
+  },
+  {
+    "empNum": "7425",
+    "dept": "SPX",
+    "loc": "US",
+    "name": "Andre Campbell",
+    "deptName": "Production",
+    "position": "Assembler AERO Lvl A",
+    "workCenter": "50"
+  },
+  {
+    "empNum": "7262",
+    "dept": "C&P",
+    "loc": "US",
+    "name": "Martha Alvarado",
+    "deptName": "Production",
+    "position": "Assembler AERO Lvl A+",
+    "workCenter": "C&P"
+  },
+  {
+    "empNum": "7420",
+    "dept": "SPXN",
+    "loc": "US",
+    "name": "Jerry Lam",
+    "deptName": "Production",
+    "position": "Assembler AERO Lvl A",
+    "workCenter": "SPXN"
+  },
+  {
+    "empNum": "6033",
+    "dept": "AE2",
+    "loc": "US",
+    "name": "Marcella Rodriguez",
+    "deptName": "Production",
+    "position": "Assembler AERO Lvl C",
+    "workCenter": "AE2"
+  },
+  {
+    "empNum": "4724",
+    "dept": "60",
+    "loc": "US",
+    "name": "Margot Abasto",
+    "deptName": "Materials",
+    "position": "Label Clerk",
+    "workCenter": "60"
+  },
+  {
+    "empNum": "6317",
+    "dept": "AE2",
+    "loc": "US",
+    "name": "Naomi Johanna Moreno",
+    "deptName": "Production",
+    "position": "Assembler AERO Lvl B",
+    "workCenter": "AE2"
+  },
+  {
+    "empNum": "6159",
+    "dept": "QCI",
+    "loc": "US",
+    "name": "Brian Ross Bateman",
+    "deptName": "Quality Control",
+    "position": "Final Inspector",
+    "workCenter": "QC"
+  },
+  {
+    "empNum": "6310",
+    "dept": "AE3",
+    "loc": "US",
+    "name": "Sharon Moreno Luna",
+    "deptName": "Production",
+    "position": "Assembler AERO Lvl B",
+    "workCenter": "AE3"
+  },
+  {
+    "empNum": "5835",
+    "dept": "C&P",
+    "loc": "US",
+    "name": "Marlene Gutierrez Mendoza",
+    "deptName": "Production",
+    "position": "Assembler SEMI Lvl C",
+    "workCenter": "C&P"
+  },
+  {
+    "empNum": "5833",
+    "dept": "65",
+    "loc": "US",
+    "name": "Michael Thomas Alford",
+    "deptName": "Maintenance",
+    "position": "Supervisor",
+    "workCenter": "65"
+  },
+  {
+    "empNum": "7225",
+    "dept": "AE4N",
+    "loc": "US",
+    "name": "Matthew Watson",
+    "deptName": "Production",
+    "position": "Assembler AERO Lvl B",
+    "workCenter": "AE4N"
+  },
+  {
+    "empNum": "7226",
+    "dept": "80",
+    "loc": "US",
+    "name": "Jason De Santiago",
+    "deptName": "Quality Assurance",
+    "position": "Engineer Jr",
+    "workCenter": "55"
+  },
+  {
+    "empNum": "7228",
+    "dept": "QCT",
+    "loc": "US",
+    "name": "Melanie Zambrano",
+    "deptName": "Quality Control",
+    "position": "Test Inspector",
+    "workCenter": "QC"
+  },
+  {
+    "empNum": "7409",
+    "dept": "AE4N",
+    "loc": "US",
+    "name": "Matthew Guerrero",
+    "deptName": "Production",
+    "position": "Assembler AERO Lvl A+",
+    "workCenter": "AE4N"
+  },
+  {
+    "empNum": "7401",
+    "dept": "SPXN",
+    "loc": "US",
+    "name": "Mindi Denise Feagin",
+    "deptName": "Production",
+    "position": "Assembler AERO Lvl A",
+    "workCenter": "SPXN"
+  },
+  {
+    "empNum": "7241",
+    "dept": "QCT",
+    "loc": "US",
+    "name": "Thelma Montes De Oca",
+    "deptName": "Quality Control",
+    "position": "Test Inspector",
+    "workCenter": "QCN"
+  },
+  {
+    "empNum": "7249",
+    "dept": "60",
+    "loc": "US",
+    "name": "Martha C Matute Ortega",
+    "deptName": "Materials",
+    "position": "Inventory Clerk",
+    "workCenter": "60"
+  },
+  {
+    "empNum": "5854",
+    "dept": "C&P",
+    "loc": "US",
+    "name": "Livier Villanueva",
+    "deptName": "Production",
+    "position": "Assembler SEMI Lvl B",
+    "workCenter": "C&P"
+  },
+  {
+    "empNum": "265",
+    "dept": "AE1",
+    "loc": "US",
+    "name": "Maria L. Canales",
+    "deptName": "Production",
+    "position": "Assembler AERO Lvl C",
+    "workCenter": "AE1"
+  },
+  {
+    "empNum": "4745",
+    "dept": "QCP",
+    "loc": "US",
+    "name": "Elizabeth Magallon",
+    "deptName": "Quality Control",
+    "position": "Supervisor",
+    "workCenter": "QC"
+  },
+  {
+    "empNum": "6335",
+    "dept": "AE3",
+    "loc": "US",
+    "name": "Jairo R Alaniz Robles",
+    "deptName": "Production",
+    "position": "Assembler AERO Lvl C",
+    "workCenter": "AE3"
+  },
+  {
+    "empNum": "5616",
+    "dept": "50",
+    "loc": "US",
+    "name": "Zackary Moeller",
+    "deptName": "Production",
+    "position": "Supervisor 1",
+    "workCenter": "50"
+  },
+  {
+    "empNum": "5813",
+    "dept": "AE2",
+    "loc": "US",
+    "name": "Esbeidy Alonso Oliveros",
+    "deptName": "Production",
+    "position": "Lead Aerospace",
+    "workCenter": "AE2"
+  },
+  {
+    "empNum": "7209",
+    "dept": "QCT",
+    "loc": "US",
+    "name": "Chau Quang Vuong",
+    "deptName": "Quality Control",
+    "position": "Test Inspector",
+    "workCenter": "QCN"
+  },
+  {
+    "empNum": "6132",
+    "dept": "70",
+    "loc": "US",
+    "name": "Todd Sliski",
+    "deptName": "Sales",
+    "position": "Buisness Development Manager",
+    "workCenter": "70"
+  },
+  {
+    "empNum": "7443",
+    "dept": "AE2N",
+    "loc": "US",
+    "name": "Ly Chhay",
+    "deptName": "Production",
+    "position": "Assembler AERO Lvl A",
+    "workCenter": "AE2N"
+  },
+  {
+    "empNum": "7447",
+    "dept": "AE3N",
+    "loc": "US",
+    "name": "Victor Castro",
+    "deptName": "Production",
+    "position": "Assembler AERO Lvl A",
+    "workCenter": "AE3N"
+  },
+  {
+    "empNum": "7441",
+    "dept": "65",
+    "loc": "US",
+    "name": "Bryan Pedroza",
+    "deptName": "Maintenance",
+    "position": "Technician",
+    "workCenter": "65"
+  },
+  {
+    "empNum": "7449",
+    "dept": "AE1N",
+    "loc": "US",
+    "name": "Josi Calderon",
+    "deptName": "Production",
+    "position": "Assembler AERO Lvl A",
+    "workCenter": "AE1N"
+  },
+  {
+    "empNum": "7445",
+    "dept": "65",
+    "loc": "US",
+    "name": "Justin Dart",
+    "deptName": "Maintenance",
+    "position": "Technician",
+    "workCenter": "65"
+  },
+  {
+    "empNum": "7440",
+    "dept": "65",
+    "loc": "US",
+    "name": "Alvin Alfredo Zarate",
+    "deptName": "Maintenance",
+    "position": "Technician",
+    "workCenter": "65"
+  },
+  {
+    "empNum": "7448",
+    "dept": "AE1N",
+    "loc": "US",
+    "name": "Kevin Gutierrez",
+    "deptName": "Production",
+    "position": "Assembler AERO Lvl A",
+    "workCenter": "AE1N"
+  },
+  {
+    "empNum": "4704",
+    "dept": "80",
+    "loc": "US",
+    "name": "Eheca Gutierrez",
+    "deptName": "Quality Assurance",
+    "position": "Manager",
+    "workCenter": "80"
+  },
+  {
+    "empNum": "4981",
+    "dept": "80",
+    "loc": "US",
+    "name": "Gonzalo Guitron-Ramos",
+    "deptName": "Materials",
+    "position": "Supply Chain Business Manager",
+    "workCenter": "80"
+  },
+  {
+    "empNum": "5066",
+    "dept": "55",
+    "loc": "US",
+    "name": "Samuel Castro",
+    "deptName": "Quality - Corporate",
+    "position": "QA Corporate Manager",
+    "workCenter": "80"
+  },
+  {
+    "empNum": "4925",
+    "dept": "QCI",
+    "loc": "US",
+    "name": "Oscar Aguilar",
+    "deptName": "Quality Control",
+    "position": "Final Inspector",
+    "workCenter": "QCA"
+  },
+  {
+    "empNum": "4968",
+    "dept": "90",
+    "loc": "US",
+    "name": "Eric Enrique Bojorquez",
+    "deptName": "Manufacturing Engineering",
+    "position": "Engineer",
+    "workCenter": "90"
+  }
+]

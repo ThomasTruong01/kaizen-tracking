@@ -1,0 +1,3521 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kaizen Request</title>
+<style>
+  :root {
+    --header-red: #d9342e;
+    --header-red-dark: #c12a25;
+    --section-green-bg: #dcebd9;
+    --section-green-text: #1f5c1f;
+    --border-gray: #c9ccd1;
+    --border-teal: #5bbfae;
+    --text-dark: #2b2b2b;
+    --text-label: #1a1a1a;
+    --blue-link: #0d6efd;
+    --blue-btn: #1976d2;
+    --blue-btn-hover: #1561ad;
+    --field-bg: #ffffff;
+    --field-disabled-bg: #f5f5f5;
+    --page-bg: #e9e9e9;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    background: var(--page-bg);
+    color: var(--text-dark);
+    padding: 24px;
+  }
+
+  .modal {
+    max-width: 1000px;
+    margin: 0 auto;
+    background: #fff;
+    border: 1px solid var(--border-teal);
+    border-radius: 6px;
+    overflow: hidden;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.18);
+  }
+
+  .modal-header {
+    background: var(--header-red);
+    color: #fff;
+    padding: 14px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 17px;
+    font-weight: 600;
+  }
+
+  .modal-header .close-btn {
+    background: none;
+    border: none;
+    color: #fff;
+    font-size: 20px;
+    cursor: pointer;
+    line-height: 1;
+    padding: 2px 6px;
+  }
+  .modal-header .close-btn:hover { opacity: 0.8; }
+
+  .toolbar {
+    display: flex;
+    align-items: center;
+    gap: 28px;
+    padding: 16px 20px 18px;
+    flex-wrap: wrap;
+  }
+
+  .field-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .field-group label {
+    font-weight: 700;
+    font-size: 14px;
+    white-space: nowrap;
+  }
+
+  input[type="text"], select, textarea {
+    font-family: inherit;
+    font-size: 14px;
+    border: 1px solid var(--border-gray);
+    border-radius: 3px;
+    padding: 6px 8px;
+    color: var(--text-dark);
+    background: var(--field-bg);
+  }
+
+  input[type="text"]:focus, select:focus, textarea:focus {
+    outline: 2px solid var(--blue-btn);
+    outline-offset: 1px;
+  }
+
+  #requestNum { width: 80px; }
+
+  .status-select-wrap select { width: 160px; }
+
+  .btn {
+    background: var(--blue-btn);
+    color: #fff;
+    border: none;
+    padding: 8px 18px;
+    font-size: 14px;
+    font-weight: 600;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  .btn:hover { background: var(--blue-btn-hover); }
+  .btn:disabled { background: #9fb8cc; cursor: not-allowed; }
+
+  .pdca-section {
+    border-top: 1px solid #d8d8d8;
+  }
+  .pdca-section:first-child {
+    border-top: none;
+  }
+
+  .section-banner {
+    background: var(--section-green-bg);
+    color: var(--section-green-text);
+    text-align: center;
+    font-size: 19px;
+    font-weight: 700;
+    padding: 14px 0;
+    border-top: 1px solid #cfe3cb;
+    border-bottom: 1px solid #cfe3cb;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    user-select: none;
+    position: relative;
+  }
+  .section-banner:hover {
+    background: #d2e6cd;
+  }
+
+  .section-banner .chevron {
+    font-size: 14px;
+    transition: transform 0.18s ease;
+    display: inline-block;
+  }
+  .pdca-section.collapsed .section-banner .chevron {
+    transform: rotate(-90deg);
+  }
+
+  .section-banner .stage-tag {
+    position: absolute;
+    left: 32px;
+    font-size: 12px;
+    font-weight: 700;
+    background: #1f5c1f;
+    color: #fff;
+    border-radius: 3px;
+    padding: 3px 9px;
+    letter-spacing: 0.5px;
+  }
+
+  .section-body {
+    padding: 24px 32px 32px;
+    overflow: hidden;
+    max-height: 4000px;
+    transition: max-height 0.25s ease, padding 0.25s ease, opacity 0.2s ease;
+    opacity: 1;
+  }
+
+  .pdca-section.collapsed .section-body {
+    max-height: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+    opacity: 0;
+  }
+
+  .stage-subhead {
+    font-weight: 700;
+    font-size: 15px;
+    color: var(--text-dark);
+    margin: 0 0 4px;
+  }
+
+  .stage-help {
+    font-size: 12px;
+    color: #888;
+    margin: 0 0 10px;
+  }
+
+  .stage-block {
+    margin-bottom: 28px;
+    max-width: 686px;
+  }
+  .stage-block:last-child {
+    margin-bottom: 0;
+  }
+
+  .form-row {
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    align-items: start;
+    gap: 6px 16px;
+    margin-bottom: 18px;
+  }
+
+  .form-row > label {
+    font-weight: 700;
+    font-size: 14px;
+    text-align: right;
+    padding-top: 6px;
+  }
+
+  .req::after {
+    content: ' *';
+    color: #c12a25;
+    font-weight: 700;
+  }
+
+  .form-row .value-link {
+    color: var(--blue-link);
+    font-weight: 700;
+    font-size: 14px;
+    padding-top: 4px;
+  }
+
+  .form-row .empty-value {
+    padding-top: 4px;
+    color: #777;
+    font-size: 14px;
+  }
+
+  select.full, input.full {
+    width: 100%;
+    max-width: 460px;
+  }
+
+  textarea.full {
+    width: 100%;
+    max-width: 686px;
+    min-height: 70px;
+    resize: vertical;
+  }
+
+  table.emp-table {
+    border-collapse: collapse;
+    width: 100%;
+    max-width: 686px;
+    font-size: 14px;
+  }
+
+  table.emp-table th, table.emp-table td {
+    border: 1px solid var(--border-gray);
+    padding: 8px 10px;
+    text-align: center;
+  }
+
+  table.emp-table th {
+    background: #f2f2f2;
+    font-weight: 700;
+  }
+
+  table.emp-table td.name-cell {
+    text-align: left;
+  }
+
+  table.emp-table .row-actions {
+    width: 40px;
+  }
+
+  .remove-row {
+    background: none;
+    border: none;
+    color: #c12a25;
+    cursor: pointer;
+    font-weight: 700;
+    font-size: 15px;
+  }
+  .remove-row:hover { text-decoration: underline; }
+
+  .add-row-btn {
+    margin-top: 8px;
+    background: #fff;
+    border: 1px dashed var(--blue-btn);
+    color: var(--blue-btn);
+    padding: 6px 14px;
+    font-size: 13px;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  .add-row-btn:hover { background: #eef5fc; }
+
+  /* Numbered add-line list (Key Measurements, Root Causes, Solutions, etc.) */
+  .line-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+
+  .line-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .line-item .line-num {
+    font-weight: 700;
+    font-size: 13px;
+    color: #555;
+    width: 22px;
+    flex-shrink: 0;
+    text-align: right;
+  }
+
+  .line-item input[type="text"] {
+    flex: 1;
+  }
+
+  .line-item .remove-line {
+    background: none;
+    border: none;
+    color: #c12a25;
+    cursor: pointer;
+    font-weight: 700;
+    font-size: 16px;
+    flex-shrink: 0;
+    width: 22px;
+  }
+  .line-item .remove-line:hover { text-decoration: underline; }
+
+  /* Approval gate overlay on PDCA sections */
+  .pdca-lock-wrap {
+    position: relative;
+  }
+  .pdca-lock-overlay {
+    display: none;
+    position: absolute;
+    inset: 0;
+    background: rgba(240,240,240,0.82);
+    z-index: 10;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 10px;
+    border-radius: 4px;
+  }
+  .pdca-lock-overlay.active {
+    display: flex;
+  }
+  .lock-message {
+    background: #fff;
+    border: 1px solid #c9ccd1;
+    border-radius: 6px;
+    padding: 18px 28px;
+    text-align: center;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.10);
+  }
+  .lock-message .lock-icon { font-size: 28px; display: block; margin-bottom: 6px; }
+  .lock-message p { margin: 0 0 4px; font-weight: 700; font-size: 14px; color: var(--text-dark); }
+  .lock-message span { font-size: 12px; color: #888; }
+
+  /* Approve button (simulates manager action) */
+  .btn-approve {
+    background: #2e7d32;
+    color: #fff;
+    border: none;
+    padding: 8px 20px;
+    font-size: 14px;
+    font-weight: 700;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-top: 10px;
+  }
+  .btn-approve:hover { background: #1b5e20; }
+
+  /* Project Info submit bar */
+  .project-info-submit-bar {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 16px 32px 24px;
+    border-top: 1px solid #eee;
+    flex-wrap: wrap;
+  }
+  .submit-status {
+    font-size: 13px;
+    font-weight: 600;
+    padding: 5px 12px;
+    border-radius: 12px;
+    display: none;
+  }
+  .submit-status.pending { background: #fff8e1; color: #f57f17; border: 1px solid #ffe082; display: inline-block; }
+  .submit-status.approved { background: #e8f5e9; color: #2e7d32; border: 1px solid #a5d6a7; display: inline-block; }
+
+  /* Start Date stamp display */
+  .date-stamp {
+    font-size: 13px;
+    color: #555;
+    font-style: italic;
+  }
+
+  /* Other tool free-text input */
+  .other-tool-input-wrap {
+    display: none;
+    margin-top: 8px;
+    max-width: 400px;
+  }
+  .other-tool-input-wrap.visible { display: block; }
+  .other-tool-input-wrap input {
+    width: 100%;
+    font-size: 13px;
+  }
+
+  /* Root cause tool selector & sub-sections */
+  .tool-selector {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    max-width: 686px;
+    margin-bottom: 6px;
+  }
+  .tool-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    border: 1px solid var(--border-gray);
+    border-radius: 16px;
+    padding: 5px 12px 5px 8px;
+    font-size: 13px;
+    cursor: pointer;
+    background: #f9f9f9;
+    user-select: none;
+    transition: background 0.12s, border-color 0.12s, color 0.12s;
+  }
+  .tool-chip input[type="checkbox"] { margin: 0; accent-color: var(--blue-btn); }
+  .tool-chip:hover { border-color: var(--blue-btn); }
+  .tool-chip.selected { background: #1976d2; border-color: #1976d2; color: #fff; }
+
+  .tool-sections { display: flex; flex-direction: column; gap: 14px; margin-top: 16px; max-width: 686px; }
+  .tool-section { border: 1px solid var(--border-gray); border-radius: 5px; overflow: hidden; display: none; }
+  .tool-section.active { display: block; }
+  .tool-section-header {
+    display: flex; align-items: center; justify-content: space-between;
+    background: #f2f2f2; padding: 9px 14px;
+    border-bottom: 1px solid var(--border-gray); cursor: pointer; user-select: none;
+  }
+  .tool-section-header:hover { background: #eaeaea; }
+  .tool-section-title { font-weight: 700; font-size: 13px; color: var(--text-dark); display: flex; align-items: center; gap: 8px; }
+  .tool-section-title .tool-icon { font-size: 15px; }
+  .tool-section-chevron { font-size: 12px; transition: transform 0.15s; color: #666; }
+  .tool-section.collapsed .tool-section-chevron { transform: rotate(-90deg); }
+  .tool-section-body {
+    padding: 14px 16px; max-height: 2000px; overflow: hidden;
+    transition: max-height 0.2s ease, padding 0.2s ease;
+  }
+  .tool-section.collapsed .tool-section-body { max-height: 0; padding-top: 0; padding-bottom: 0; }
+
+  .tool-paste-zone {
+    border: 2px dashed var(--border-gray); border-radius: 4px; background: #fafafa;
+    padding: 14px; text-align: center; color: #777; font-size: 12px; cursor: pointer;
+    transition: border-color 0.12s, background 0.12s; margin-bottom: 10px;
+  }
+  .tool-paste-zone:hover, .tool-paste-zone:focus { border-color: var(--blue-btn); background: #f5f9fd; outline: none; }
+  .tool-paste-zone .paste-icon { font-size: 16px; display: block; margin-bottom: 2px; }
+  .tool-paste-zone.drag-over { border-color: var(--blue-btn); background: #eaf2fb; }
+  .tool-thumbs { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 10px; }
+  .tool-thumb {
+    position: relative; width: 100px; height: 72px;
+    border: 1px solid var(--border-gray); border-radius: 3px; overflow: hidden;
+  }
+  .tool-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .tool-thumb .thumb-remove {
+    position: absolute; top: 2px; right: 2px; width: 18px; height: 18px;
+    line-height: 16px; border-radius: 50%; background: rgba(0,0,0,0.55);
+    color: #fff; border: none; cursor: pointer; font-size: 12px; font-weight: 700;
+  }
+  .tool-thumb .thumb-remove:hover { background: rgba(193,42,37,0.85); }
+  .tool-notes {
+    width: 100%; min-height: 70px; resize: vertical; font-family: inherit;
+    font-size: 13px; border: 1px solid var(--border-gray); border-radius: 3px;
+    padding: 7px 9px; box-sizing: border-box; color: var(--text-dark);
+  }
+  .tool-notes:focus { outline: 2px solid var(--blue-btn); outline-offset: 1px; }
+
+  /* 5-Why chain cards */
+  .why-chain {
+    border: 1px solid var(--border-gray);
+    border-radius: 5px;
+    background: #fafafa;
+    padding: 16px 18px;
+    margin-bottom: 14px;
+    max-width: 686px;
+  }
+
+  .why-chain-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+  }
+
+  .why-chain-title {
+    font-weight: 700;
+    font-size: 13px;
+    color: #555;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+  }
+
+  .why-chain .remove-chain {
+    background: none;
+    border: none;
+    color: #c12a25;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 600;
+  }
+  .why-chain .remove-chain:hover { text-decoration: underline; }
+
+  .why-row {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin-bottom: 12px;
+  }
+
+  .why-row .why-prompt {
+    font-weight: 700;
+    font-size: 13px;
+    color: var(--text-dark);
+  }
+
+  .why-row .because-label {
+    font-weight: 600;
+    font-size: 11px;
+    color: #888;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    margin-top: 2px;
+  }
+
+  .why-row textarea.because-input {
+    width: 100%;
+    min-height: 52px;
+    resize: vertical;
+    font-family: inherit;
+    font-size: 13px;
+    border: 1px solid var(--border-gray);
+    border-radius: 3px;
+    padding: 6px 8px;
+    box-sizing: border-box;
+    color: var(--text-dark);
+  }
+  .why-row textarea.because-input:focus {
+    outline: 2px solid var(--blue-btn);
+    outline-offset: 1px;
+  }
+
+  .why-row.why-hidden {
+    display: none;
+  }
+
+  .root-cause-row {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px dashed var(--border-gray);
+  }
+
+  .root-cause-row .why-label {
+    font-weight: 700;
+    font-size: 13px;
+    color: #1f5c1f;
+  }
+
+  .root-cause-row textarea {
+    width: 100%;
+    min-height: 52px;
+    resize: vertical;
+    font-family: inherit;
+    font-size: 13px;
+    border: 1px solid #cfe3cb;
+    border-radius: 3px;
+    padding: 6px 8px;
+    box-sizing: border-box;
+    background: #f3f9f2;
+  }
+  .root-cause-row textarea:focus {
+    outline: 2px solid var(--blue-btn);
+    outline-offset: 1px;
+  }
+
+  .add-chain-btn {
+    background: #fff;
+    border: 1px dashed var(--blue-btn);
+    color: var(--blue-btn);
+    padding: 6px 14px;
+    font-size: 13px;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  .add-chain-btn:hover { background: #eef5fc; }
+
+  /* KPI Indicator cards (DO - Measurement Tracking) */
+  .kpi-cards-container {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    max-width: 686px;
+  }
+  .kpi-card {
+    border: 1px solid var(--border-gray);
+    border-radius: 5px;
+    overflow: hidden;
+  }
+  .kpi-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #f2f2f2;
+    padding: 9px 14px;
+    border-bottom: 1px solid var(--border-gray);
+  }
+  .kpi-card-title {
+    font-weight: 700;
+    font-size: 13px;
+    color: var(--text-dark);
+  }
+  .kpi-card-title .kpi-num { color: #888; font-weight: 600; margin-right: 6px; }
+  .kpi-card .remove-kpi-card {
+    background: none; border: none; color: #c12a25; font-size: 12px; font-weight: 600; cursor: pointer;
+  }
+  .kpi-card .remove-kpi-card:hover { text-decoration: underline; }
+  .kpi-card-body { padding: 14px; display: flex; flex-direction: column; gap: 10px; }
+  .kpi-paste-zone {
+    border: 2px dashed var(--border-gray);
+    border-radius: 4px;
+    background: #fafafa;
+    padding: 14px;
+    text-align: center;
+    color: #777;
+    font-size: 12px;
+    cursor: pointer;
+    transition: border-color 0.12s, background 0.12s;
+  }
+  .kpi-paste-zone:hover, .kpi-paste-zone:focus {
+    border-color: var(--blue-btn); background: #f5f9fd; outline: none;
+  }
+  .kpi-paste-zone.drag-over { border-color: var(--blue-btn); background: #eaf2fb; }
+  .kpi-paste-zone .paste-icon { font-size: 16px; display: block; margin-bottom: 2px; }
+  .kpi-thumbs { display: flex; flex-wrap: wrap; gap: 8px; }
+  .kpi-thumb {
+    position: relative; width: 100px; height: 72px;
+    border: 1px solid var(--border-gray); border-radius: 3px; overflow: hidden; background: #fff; cursor: pointer;
+  }
+  .kpi-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; cursor: zoom-in; }
+  .kpi-thumb .thumb-remove {
+    position: absolute; top: 2px; right: 2px; width: 18px; height: 18px;
+    line-height: 16px; border-radius: 50%; background: rgba(0,0,0,0.55);
+    color: #fff; border: none; cursor: pointer; font-size: 12px; font-weight: 700;
+  }
+  .kpi-thumb .thumb-remove:hover { background: rgba(193,42,37,0.85); }
+  .kpi-notes {
+    width: 100%; min-height: 60px; resize: vertical; font-family: inherit;
+    font-size: 13px; border: 1px solid var(--border-gray); border-radius: 3px;
+    padding: 7px 9px; box-sizing: border-box; color: var(--text-dark);
+  }
+  .kpi-notes:focus { outline: 2px solid var(--blue-btn); outline-offset: 1px; }
+  .kpi-source-label { font-size: 11px; color: #aaa; font-style: italic; }
+
+  /* ── Lightbox ── */
+  .lightbox-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.88);
+    z-index: 2000;
+    align-items: center;
+    justify-content: center;
+    cursor: zoom-out;
+  }
+  .lightbox-overlay.open { display: flex; }
+  .lightbox-overlay img {
+    max-width: 92vw;
+    max-height: 90vh;
+    object-fit: contain;
+    border-radius: 4px;
+    box-shadow: 0 8px 40px rgba(0,0,0,0.5);
+    cursor: default;
+  }
+  .lightbox-close {
+    position: fixed;
+    top: 18px; right: 22px;
+    color: #fff; font-size: 36px; font-weight: 300;
+    cursor: pointer; line-height: 1; opacity: 0.8;
+    background: none; border: none; z-index: 2001;
+  }
+  .lightbox-close:hover { opacity: 1; }
+
+  /* ── Change History Modal ── */
+  .ch-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.45);
+    z-index: 1000;
+    align-items: flex-start;
+    justify-content: center;
+    padding-top: 60px;
+  }
+  .ch-overlay.open { display: flex; }
+
+  .ch-modal {
+    background: #fff;
+    border-radius: 6px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.22);
+    width: 680px;
+    max-width: 95vw;
+    max-height: 78vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  .ch-modal-header {
+    background: var(--header-red);
+    color: #fff;
+    padding: 14px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 16px;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+  .ch-modal-header .ch-close {
+    background: none;
+    border: none;
+    color: #fff;
+    font-size: 20px;
+    cursor: pointer;
+    line-height: 1;
+    padding: 2px 6px;
+  }
+  .ch-modal-header .ch-close:hover { opacity: 0.8; }
+
+  .ch-modal-body {
+    overflow-y: auto;
+    padding: 16px 20px;
+    flex: 1;
+  }
+
+  .ch-empty {
+    text-align: center;
+    color: #aaa;
+    font-size: 13px;
+    padding: 40px 0;
+  }
+
+  /* Timeline entries */
+  .ch-entry {
+    position: relative;
+    padding-left: 28px;
+    margin-bottom: 4px;
+  }
+
+  .ch-entry::before {
+    content: '';
+    position: absolute;
+    left: 9px;
+    top: 22px;
+    bottom: -4px;
+    width: 2px;
+    background: #e8e8e8;
+  }
+  .ch-entry:last-child::before { display: none; }
+
+  .ch-entry-dot {
+    position: absolute;
+    left: 4px;
+    top: 13px;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #ccc;
+    border: 2px solid #fff;
+    box-shadow: 0 0 0 1px #ccc;
+  }
+  .ch-action .ch-entry-dot  { background: var(--blue-btn); box-shadow: 0 0 0 1px var(--blue-btn); }
+  .ch-section .ch-entry-dot { background: #1f5c1f;         box-shadow: 0 0 0 1px #1f5c1f; }
+
+  /* Action entry */
+  .ch-action-row {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    padding: 10px 0 10px 0;
+  }
+  .ch-action-icon { font-size: 14px; flex-shrink: 0; }
+  .ch-action-text { font-size: 13px; color: var(--text-dark); flex: 1; }
+  .ch-action-text strong { font-weight: 700; }
+  .ch-action-meta { font-size: 11px; color: #aaa; white-space: nowrap; flex-shrink: 0; }
+
+  /* Section entry (collapsible) */
+  .ch-section-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 0 6px;
+    cursor: pointer;
+    user-select: none;
+  }
+  .ch-section-header:hover .ch-section-label { color: var(--blue-btn); }
+
+  .ch-section-chevron {
+    font-size: 11px;
+    color: #888;
+    transition: transform 0.15s;
+    flex-shrink: 0;
+  }
+  .ch-entry.collapsed .ch-section-chevron { transform: rotate(-90deg); }
+
+  .ch-section-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-dark);
+    flex: 1;
+  }
+  .ch-section-label .ch-section-tag {
+    display: inline-block;
+    background: var(--section-green-bg);
+    color: var(--green-text);
+    border-radius: 3px;
+    padding: 1px 6px;
+    font-size: 11px;
+    font-weight: 700;
+    margin-right: 6px;
+  }
+  .ch-section-meta { font-size: 11px; color: #aaa; white-space: nowrap; }
+
+  .ch-field-list {
+    margin: 0 0 8px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    overflow: hidden;
+    max-height: 800px;
+    transition: max-height 0.2s ease;
+  }
+  .ch-entry.collapsed .ch-field-list {
+    max-height: 0;
+  }
+
+  .ch-field-row {
+    background: #f9f9f9;
+    border: 1px solid #eee;
+    border-radius: 4px;
+    padding: 7px 12px;
+    font-size: 12px;
+    color: #444;
+  }
+  .ch-field-row .ch-field-name { font-weight: 700; color: var(--text-dark); }
+  .ch-field-row .ch-from { color: #c12a25; text-decoration: line-through; }
+  .ch-field-row .ch-to   { color: #2e7d32; font-weight: 600; }
+  .ch-field-row .ch-new  { color: #2e7d32; font-weight: 600; }
+  .signoff-block {
+    max-width: 686px;
+    border: 1px solid var(--border-gray);
+    border-radius: 5px;
+    overflow: hidden;
+    margin-top: 4px;
+  }
+  .signoff-block-header {
+    background: #f7f8fa;
+    border-bottom: 1px solid var(--border-gray);
+    padding: 10px 16px;
+    font-weight: 700;
+    font-size: 13px;
+    color: var(--text-dark);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .signoff-block-header .doc-ref-tag { font-size: 11px; font-weight: 400; color: #888; margin-left: auto; }
+  .signoff-block-body { padding: 16px; display: flex; flex-direction: column; gap: 14px; }
+  .signoff-meta-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .signoff-meta-field label { display: block; font-size: 12px; font-weight: 700; color: #555; margin-bottom: 4px; }
+  .signoff-meta-field input { width: 100%; font-size: 13px; padding: 6px 8px; border: 1px solid var(--border-gray); border-radius: 3px; }
+  .finance-question { display: flex; flex-direction: column; gap: 4px; }
+  .finance-question .fq-label { font-size: 13px; font-weight: 600; color: var(--text-dark); }
+  .finance-question textarea, .finance-sub-field textarea {
+    width: 100%; min-height: 52px; resize: vertical; font-family: inherit;
+    font-size: 13px; border: 1px solid var(--border-gray); border-radius: 3px;
+    padding: 6px 8px; box-sizing: border-box;
+  }
+  .finance-question textarea:focus, .finance-sub-field textarea:focus { outline: 2px solid var(--blue-btn); outline-offset: 1px; }
+  .finance-sub-fields { display: flex; flex-direction: column; gap: 8px; padding-left: 16px; }
+  .finance-sub-field label { font-size: 12px; font-weight: 600; color: #666; display: block; margin-bottom: 3px; }
+  .finance-sub-field textarea { min-height: 44px; }
+  .signoff-divider { border: none; border-top: 1px dashed var(--border-gray); margin: 2px 0; }
+  .finance-approval-box { background: #f9f9f9; border: 1px solid var(--border-gray); border-radius: 4px; padding: 14px 16px; }
+  .finance-approval-box .fa-title { font-size: 12px; font-weight: 700; color: #888; text-transform: uppercase; letter-spacing: 0.4px; margin-bottom: 10px; }
+  .radio-group { display: flex; gap: 20px; margin-bottom: 10px; }
+  .radio-group label { display: flex; align-items: center; gap: 6px; font-size: 14px; font-weight: 600; cursor: pointer; }
+  .radio-group input[type="radio"] { accent-color: var(--blue-btn); }
+  .rejection-reason-wrap { display: none; margin-bottom: 10px; }
+  .rejection-reason-wrap.visible { display: block; }
+  .rejection-reason-wrap label { font-size: 12px; font-weight: 600; color: #666; display: block; margin-bottom: 4px; }
+  .rejection-reason-wrap input { width: 100%; font-size: 13px; padding: 6px 8px; border: 1px solid var(--border-gray); border-radius: 3px; }
+  .signoff-sig-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 4px; }
+  .sig-field label { font-size: 11px; font-weight: 700; color: #888; text-transform: uppercase; display: block; margin-bottom: 4px; }
+  .sig-field input[type="text"], .sig-field input[type="date"] { width: 100%; font-size: 13px; padding: 6px 8px; border: 1px solid var(--border-gray); border-radius: 3px; }
+  .cqm-decision-row { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 10px; align-items: center; }
+  .cqm-btn { padding: 8px 20px; font-size: 13px; font-weight: 700; border-radius: 4px; border: 2px solid transparent; cursor: pointer; }
+  .cqm-btn-complete { background: #e8f5e9; color: #2e7d32; border-color: #a5d6a7; }
+  .cqm-btn-complete:hover, .cqm-btn-complete.selected { background: #2e7d32; color: #fff; border-color: #2e7d32; }
+  .cqm-btn-reject { background: #fde8e8; color: #c12a25; border-color: #f5a5a3; }
+  .cqm-btn-reject:hover, .cqm-btn-reject.selected { background: #c12a25; color: #fff; border-color: #c12a25; }
+  .cqm-status-stamp { display: none; font-size: 13px; font-weight: 700; padding: 5px 14px; border-radius: 12px; }
+  .cqm-status-stamp.completed { background: #e8f5e9; color: #2e7d32; display: inline-block; }
+  .cqm-status-stamp.rejected  { background: #fde8e8; color: #c12a25; display: inline-block; }
+
+  /* Priority badge */
+  .priority-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    border-radius: 10px;
+    padding: 3px 10px;
+    font-size: 12px;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+  .priority-High   { background: #fde8e8; color: #c12a25; border: 1px solid #f5a5a3; }
+  .priority-Medium { background: #fff3e0; color: #f57c00; border: 1px solid #ffcc80; }
+  .priority-Low    { background: #e8f5e9; color: #2e7d32; border: 1px solid #a5d6a7; }
+  .priority-none   { background: #f5f5f5; color: #999;    border: 1px solid #ddd; }
+
+  .priority-select-wrap {
+    display: none;
+    align-items: center;
+    gap: 8px;
+  }
+  .priority-select-wrap.visible { display: inline-flex; }
+  .priority-select-wrap label { font-size: 13px; font-weight: 700; color: var(--text-dark); }
+  .priority-select-wrap select {
+    font-size: 13px;
+    padding: 5px 8px;
+    border: 1px solid var(--border-gray);
+    border-radius: 4px;
+    font-family: inherit;
+  }
+  .fv-status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    border-radius: 10px;
+    padding: 3px 10px;
+    font-size: 12px;
+    font-weight: 700;
+    margin-left: 10px;
+  }
+  .fv-status-badge::before {
+    content: '';
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    display: inline-block;
+    background: currentColor;
+    opacity: 0.6;
+  }
+  .fvs-not-started  { background: #f5f5f5;  color: #757575; }
+  .fvs-in-progress  { background: #fff3e0;  color: #f57c00; }
+  .fvs-pending      { background: #e3f0fb;  color: #1976d2; }
+  .fvs-approved     { background: #e8f5e9;  color: #2e7d32; }
+  .fvs-rejected     { background: #fde8e8;  color: #c12a25; }
+
+  .signoff-block-header.collapsible { cursor: pointer; user-select: none; }
+  .signoff-block-header.collapsible:hover { background: #eaeaea; }
+  .fv-chevron { font-size: 12px; transition: transform 0.15s; color: #666; margin-left: 4px; }
+  .signoff-block.collapsed .fv-chevron { transform: rotate(-90deg); }
+  .signoff-block.collapsed .signoff-block-body { display: none; }
+
+  /* File attach zone inside finance questions */
+  .fq-attach-zone {
+    border: 2px dashed var(--border-gray);
+    border-radius: 4px;
+    background: #fafafa;
+    padding: 10px 14px;
+    text-align: center;
+    color: #777;
+    font-size: 12px;
+    cursor: pointer;
+    transition: border-color 0.12s, background 0.12s;
+    margin-top: 4px;
+  }
+  .fq-attach-zone:hover, .fq-attach-zone:focus {
+    border-color: var(--blue-btn); background: #f5f9fd; outline: none;
+  }
+  .fq-attach-zone.drag-over { border-color: var(--blue-btn); background: #eaf2fb; }
+  .fq-attach-thumbs { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+  .fq-attach-thumb {
+    position: relative; width: 80px; height: 58px;
+    border: 1px solid var(--border-gray); border-radius: 3px; overflow: hidden;
+  }
+  .fq-attach-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .fq-attach-thumb .thumb-remove {
+    position: absolute; top: 2px; right: 2px; width: 16px; height: 16px;
+    line-height: 14px; border-radius: 50%; background: rgba(0,0,0,0.55);
+    color: #fff; border: none; cursor: pointer; font-size: 11px; font-weight: 700;
+  }
+
+  /* Finance action buttons */
+  .fv-action-bar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding-top: 4px;
+    flex-wrap: wrap;
+  }
+  .btn-fv-draft {
+    background: #fff;
+    border: 1px solid var(--border-gray);
+    color: var(--text-dark);
+    padding: 8px 18px;
+    font-size: 13px;
+    font-weight: 600;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  .btn-fv-draft:hover { background: #f5f5f5; }
+  .btn-fv-send {
+    background: var(--blue-btn);
+    color: #fff;
+    border: none;
+    padding: 8px 18px;
+    font-size: 13px;
+    font-weight: 700;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  .btn-fv-send:hover { background: var(--blue-btn-hover); }
+  .btn-fv-send:disabled { background: #9fb8cc; cursor: not-allowed; }
+  .fv-save-status { font-size: 12px; color: #888; font-style: italic; }
+
+  /* Weekly history entries inside KPI cards */
+  .kpi-history {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-top: 4px;
+  }
+
+  .kpi-history-entry {
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
+    background: #f9f9f9;
+    overflow: hidden;
+  }
+
+  .kpi-history-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 6px 12px;
+    cursor: pointer;
+    user-select: none;
+    background: #f2f2f2;
+    border-bottom: 1px solid #e0e0e0;
+    font-size: 12px;
+    font-weight: 600;
+    color: #444;
+    gap: 8px;
+  }
+  .kpi-history-header:hover { background: #eaeaea; }
+  .kpi-history-header .hist-chevron {
+    font-size: 11px;
+    transition: transform 0.15s;
+    flex-shrink: 0;
+  }
+  .kpi-history-entry.collapsed .hist-chevron { transform: rotate(-90deg); }
+
+  .kpi-history-body {
+    padding: 10px 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    max-height: 600px;
+    overflow: hidden;
+    transition: max-height 0.2s ease, padding 0.2s ease;
+  }
+  .kpi-history-entry.collapsed .kpi-history-body {
+    max-height: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+
+  .kpi-history-thumbs { display: flex; flex-wrap: wrap; gap: 6px; }
+  .kpi-history-thumb {
+    width: 90px; height: 64px;
+    border: 1px solid var(--border-gray); border-radius: 3px; overflow: hidden;
+  }
+  .kpi-history-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; cursor: zoom-in; }
+
+  .kpi-history-notes {
+    font-size: 12px;
+    color: #444;
+    white-space: pre-wrap;
+    background: #fff;
+    border: 1px solid #eee;
+    border-radius: 3px;
+    padding: 6px 8px;
+    margin: 0;
+  }
+
+  .kpi-update-btn {
+    align-self: flex-start;
+    background: #1976d2;
+    color: #fff;
+    border: none;
+    padding: 7px 16px;
+    font-size: 13px;
+    font-weight: 600;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-top: 2px;
+  }
+  .kpi-update-btn:hover { background: #1561ad; }
+
+  /* Do section — solution cards with nested implementation tables */
+  .solution-card {
+    border: 1px solid var(--border-gray);
+    border-radius: 5px;
+    overflow: hidden;
+    max-width: 686px;
+    margin-bottom: 14px;
+  }
+  .solution-card-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: #f2f2f2;
+    border-bottom: 1px solid var(--border-gray);
+    padding: 9px 14px;
+  }
+  .solution-card-num { font-size: 12px; font-weight: 700; color: #888; flex-shrink: 0; width: 24px; }
+  .solution-card-input {
+    flex: 1; font-size: 13px; font-weight: 600;
+    border: 1px solid transparent; background: transparent;
+    padding: 3px 6px; border-radius: 3px; font-family: inherit; color: var(--text-dark);
+  }
+  .solution-card-input:hover { border-color: var(--border-gray); background: #fff; }
+  .solution-card-input:focus { outline: 2px solid var(--blue-btn); outline-offset: 1px; background: #fff; border-color: transparent; }
+  .solution-card-input::placeholder { color: #aaa; font-weight: 400; }
+  .solution-card .remove-solution-card {
+    background: none; border: none; color: #c12a25;
+    font-size: 12px; font-weight: 600; cursor: pointer; flex-shrink: 0;
+  }
+  .solution-card .remove-solution-card:hover { text-decoration: underline; }
+  .solution-card-body { padding: 12px 14px; }
+  .solution-card-body .activity-table { max-width: 100%; }
+  .activity-main-row td { border-bottom: none !important; padding-bottom: 4px; }
+  .activity-detail-row td { padding-top: 2px; border-bottom: 1px solid #e8e8e8 !important; padding-bottom: 10px; }
+  .activity-detail-row td:first-child { border-right: none; }
+
+  /* Solutions Select table */
+  table.solutions-table {
+    border-collapse: collapse;
+    width: 100%;
+    max-width: 686px;
+    font-size: 14px;
+  }
+  table.solutions-table th, table.solutions-table td {
+    border: 1px solid var(--border-gray);
+    padding: 8px 10px;
+  }
+  table.solutions-table th {
+    background: var(--header-red);
+    color: #fff;
+    font-weight: 700;
+    text-align: center;
+  }
+  table.solutions-table td {
+    text-align: left;
+  }
+  table.solutions-table td input[type="text"] {
+    width: 100%;
+  }
+  table.solutions-table td.sol-ecd input[type="text"] {
+    text-align: center;
+  }
+  table.solutions-table td.sol-status select {
+    width: 100%;
+  }
+  table.solutions-table .row-actions {
+    width: 32px;
+    text-align: center;
+  }
+  table.activity-table {
+    border-collapse: collapse;
+    width: 100%;
+    max-width: 686px;
+    font-size: 14px;
+  }
+  table.activity-table th, table.activity-table td {
+    border: 1px solid var(--border-gray);
+    padding: 8px 10px;
+  }
+  table.activity-table th {
+    background: var(--header-red);
+    color: #fff;
+    font-weight: 700;
+    text-align: center;
+  }
+  table.activity-table td {
+    text-align: left;
+  }
+  table.activity-table td input[type="text"] {
+    width: 100%;
+  }
+  table.activity-table td.act-ecd input[type="text"] {
+    text-align: center;
+  }
+  table.activity-table td.act-status select {
+    width: 100%;
+  }
+  table.activity-table .row-actions {
+    width: 32px;
+    text-align: center;
+  }
+
+  /* Department multi-select (tag/checkbox style) */
+  .dept-picker {
+    width: 100%;
+    max-width: 460px;
+    border: 1px solid var(--border-gray);
+    border-radius: 3px;
+    background: #fff;
+    padding: 10px 12px;
+  }
+
+  .dept-options {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .dept-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    border: 1px solid var(--border-gray);
+    border-radius: 16px;
+    padding: 5px 12px 5px 8px;
+    font-size: 13px;
+    cursor: pointer;
+    background: #f9f9f9;
+    user-select: none;
+    transition: background 0.12s, border-color 0.12s, color 0.12s;
+  }
+
+  .dept-chip input[type="checkbox"] {
+    margin: 0;
+    accent-color: var(--blue-btn);
+  }
+
+  .dept-chip:hover {
+    border-color: var(--blue-btn);
+  }
+
+  .dept-chip.selected {
+    background: #1976d2;
+    border-color: #1976d2;
+    color: #fff;
+  }
+
+  .dept-selected-summary {
+    margin-top: 8px;
+    font-size: 12px;
+    color: #555;
+    min-height: 16px;
+  }
+
+  .dept-selected-summary strong {
+    color: var(--text-dark);
+  }
+
+  /* Baseline (Background) image paste/drop zone */
+  .baseline-wrap {
+    width: 100%;
+    max-width: 686px;
+  }
+
+  .paste-zone {
+    margin-top: 10px;
+    border: 2px dashed var(--border-gray);
+    border-radius: 5px;
+    background: #fafafa;
+    padding: 18px;
+    text-align: center;
+    color: #777;
+    font-size: 13px;
+    cursor: text;
+    transition: border-color 0.12s, background 0.12s;
+  }
+
+  .paste-zone:hover {
+    border-color: var(--blue-btn);
+    background: #f5f9fd;
+  }
+
+  .paste-zone.drag-over {
+    border-color: var(--blue-btn);
+    background: #eaf2fb;
+    color: var(--blue-btn);
+  }
+
+  .paste-zone .paste-zone-icon {
+    font-size: 20px;
+    display: block;
+    margin-bottom: 4px;
+  }
+
+  .baseline-thumbs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 10px;
+  }
+
+  .baseline-thumb {
+    position: relative;
+    width: 110px;
+    height: 80px;
+    border: 1px solid var(--border-gray);
+    border-radius: 4px;
+    overflow: hidden;
+    background: #fff;
+  }
+
+  .baseline-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .baseline-thumb .thumb-remove {
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    width: 20px;
+    height: 20px;
+    line-height: 18px;
+    border-radius: 50%;
+    background: rgba(0,0,0,0.6);
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 700;
+  }
+  .baseline-thumb .thumb-remove:hover { background: rgba(193,42,37,0.85); }
+  .project-code-box {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    max-width: 460px;
+  }
+
+  .project-code-value {
+    font-family: "Consolas", "Courier New", monospace;
+    font-size: 15px;
+    font-weight: 700;
+    color: #1f5c1f;
+    background: #f3f9f2;
+    border: 1px solid #cfe3cb;
+    border-radius: 4px;
+    padding: 8px 12px;
+    flex: 1;
+    min-height: 18px;
+  }
+
+  .project-code-value.placeholder {
+    color: #999;
+    font-weight: 400;
+    font-style: italic;
+  }
+
+  .footer-bar {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    padding: 18px 32px 28px;
+    border-top: 1px solid #eee;
+  }
+
+  .btn-secondary {
+    background: #fff;
+    color: var(--text-dark);
+    border: 1px solid var(--border-gray);
+  }
+  .btn-secondary:hover { background: #f5f5f5; }
+
+  @media (max-width: 700px) {
+    .form-row { grid-template-columns: 1fr; }
+    .form-row > label { text-align: left; padding-top: 0; }
+    .toolbar { gap: 14px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="modal">
+  <div class="modal-header">
+    <span id="modalTitle">Kaizen Project — New</span>
+    <button class="close-btn" title="Close" aria-label="Close">&times;</button>
+  </div>
+
+  <div class="toolbar">
+    <div class="field-group">
+      <label for="requestNum">Request#</label>
+      <input type="text" id="requestNum" value="92">
+    </div>
+
+    <div class="field-group status-select-wrap">
+      <label for="statusSelect">Status:</label>
+      <select id="statusSelect">
+        <option>Open</option>
+        <option selected>In Progress</option>
+        <option>Pending Dept. Manager Review</option>
+        <option>Pending Finance</option>
+        <option>Pending CQM</option>
+        <option>Completed</option>
+        <option>Cancelled</option>
+      </select>
+    </div>
+
+    <div class="field-group">
+      <label>Priority:</label>
+      <span class="priority-badge priority-none" id="priorityBadge">Not Set</span>
+      <select id="prioritySelect" style="display:none; font-size:13px; padding:5px 8px; border:1px solid #c9ccd1; border-radius:4px; font-family:inherit;">
+        <option value="">— Select —</option>
+        <option value="High">High</option>
+        <option value="Medium">Medium</option>
+        <option value="Low">Low</option>
+      </select>
+    </div>
+
+    <button class="btn" id="changeHistBtn">Change Hist</button>
+  </div>
+
+  <div class="pdca-section" id="section-projectInfo">
+  <div class="section-banner" data-target="section-projectInfo">
+    <span class="chevron">▾</span>
+    <span>Project Information</span>
+  </div>
+
+  <div class="section-body">
+
+    <div class="form-row">
+      <label class="req">Location:</label>
+      <div>
+        <div class="dept-picker" id="sitePicker">
+          <div class="dept-options">
+            <label class="dept-chip"><input type="checkbox" value="US" checked><span>US</span></label>
+            <label class="dept-chip"><input type="checkbox" value="MX"><span>MX</span></label>
+            <label class="dept-chip"><input type="checkbox" value="SZ"><span>SZ</span></label>
+            <label class="dept-chip"><input type="checkbox" value="MY"><span>MY</span></label>
+            <label class="dept-chip"><input type="checkbox" value="Global" data-exclusive="true"><span>Global</span></label>
+          </div>
+        </div>
+        <div class="dept-selected-summary" id="siteSummary">No locations selected</div>
+        <div class="field-note">Select one or more locations. Selecting "Global" clears individual site selections.</div>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <label class="req">Departments:</label>
+      <div>
+        <div class="dept-picker" id="deptPicker">
+          <div class="dept-options">
+            <label class="dept-chip"><input type="checkbox" value="CQ"><span>CQ</span></label>
+            <label class="dept-chip"><input type="checkbox" value="FI"><span>FI</span></label>
+            <label class="dept-chip"><input type="checkbox" value="HR"><span>HR</span></label>
+            <label class="dept-chip"><input type="checkbox" value="IT"><span>IT</span></label>
+            <label class="dept-chip"><input type="checkbox" value="MA"><span>MA</span></label>
+            <label class="dept-chip"><input type="checkbox" value="ME"><span>ME</span></label>
+            <label class="dept-chip"><input type="checkbox" value="PC"><span>PC</span></label>
+            <label class="dept-chip"><input type="checkbox" value="PR"><span>PR</span></label>
+            <label class="dept-chip"><input type="checkbox" value="QA"><span>QA</span></label>
+            <label class="dept-chip"><input type="checkbox" value="QC"><span>QC</span></label>
+            <label class="dept-chip"><input type="checkbox" value="SL"><span>SL</span></label>
+            <label class="dept-chip"><input type="checkbox" value="WH"><span>WH</span></label>
+          </div>
+        </div>
+        <div class="dept-selected-summary" id="deptSummary">No departments selected</div>
+        <div class="field-note">Select one or more departments involved in this project.</div>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <label for="projectTitle" class="req">Project Title:</label>
+      <input type="text" id="projectTitle" class="full" placeholder="Enter project title">
+    </div>
+
+    <div class="form-row">
+      <label>Project Code:</label>
+      <div>
+        <div class="project-code-box">
+          <div class="project-code-value placeholder" id="projectCodePreview">Select a site and department(s) to generate</div>
+        </div>
+        <div class="field-note">Auto-generated as Site-Dept(s)-Year-### based on your selections.</div>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <label for="teamLeader" class="req">Team Leader:</label>
+      <input type="text" id="teamLeader" class="full" placeholder="Enter team leader name">
+    </div>
+
+    <div class="form-row">
+      <label>Team Member(s):</label>
+      <div>
+        <table class="emp-table" id="empTable">
+          <thead>
+            <tr>
+              <th class="row-actions"></th>
+              <th>Emp#</th>
+              <th>Emp Loc</th>
+              <th>Dept</th>
+              <th>Name</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="row-actions"><button class="remove-row" title="Remove team member">&times;</button></td>
+              <td><input type="text" value="5066" style="width:70px;text-align:center;"></td>
+              <td><input type="text" value="W" style="width:50px;text-align:center;"></td>
+              <td><input type="text" value="55" style="width:50px;text-align:center;"></td>
+              <td class="name-cell"><input type="text" value="Samuel Castro" style="width:100%;"></td>
+            </tr>
+          </tbody>
+        </table>
+        <button class="add-row-btn" id="addEmpBtn">+ Add Team Member</button>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <label for="baselineText">Baseline (Background):</label>
+      <div class="baseline-wrap">
+        <textarea id="baselineText" class="full" placeholder="Provide the facts, data, statistics, etc. of the problem you are referring to, impacting the organization business KPIs or customer, or any new projects that will be treated through PDCA Kaizen."></textarea>
+        <div class="paste-zone" id="baselinePasteZone" tabindex="0">
+          <span class="paste-zone-icon">📋</span>
+          Click here, then paste (Ctrl/Cmd+V) a screenshot — or drag and drop an image
+        </div>
+        <div class="baseline-thumbs" id="baselineThumbs"></div>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <label for="typeSelect" class="req">Type:</label>
+      <select id="typeSelect" class="full">
+        <option value="" selected disabled>Select...</option>
+        <option>Quality</option>
+        <option>Production</option>
+        <option>Efficiency</option>
+        <option>Money</option>
+        <option>Scrap</option>
+        <option>Safety</option>
+        <option>Other</option>
+      </select>
+    </div>
+
+    <div class="form-row">
+      <label for="problemDesc" class="req">Project Description (Problem Statement):</label>
+      <textarea id="problemDesc" class="full" placeholder="Describe the current state (...this is where we are...), describe future state set up by voice of the customer (VOC) (...this is what we want/this is where we want to be)."></textarea>
+    </div>
+
+    <div class="form-row">
+      <label for="objective" class="req">Objective:</label>
+      <textarea id="objective" class="full" placeholder="To increase/decrease {metric} from ___ to ___ by DD/MM/YY"></textarea>
+    </div>
+
+    <div class="form-row">
+      <label for="businessBenefit">Business Benefit:</label>
+      <textarea id="businessBenefit" class="full" placeholder="By how much and when. Refer to your department KPI, which you aim to improve."></textarea>
+    </div>
+
+    <div class="form-row">
+      <label for="targetCompletion" class="req">Target Completion Date:</label>
+      <input type="date" id="targetCompletion" class="full" style="max-width:200px;">
+    </div>
+
+    <div class="form-row">
+      <label>Start Date:</label>
+      <span class="date-stamp" id="startDateStamp">Auto-stamped on submission</span>
+    </div>
+
+    <div class="form-row">
+      <label>Completion Date:</label>
+      <span class="date-stamp" id="completionDateStamp" style="color:#2e7d32;">—</span>
+      <span style="font-size:11px;color:#aaa;margin-left:8px;">Auto-stamped when CQM marks project Completed</span>
+    </div>
+
+    <div class="project-info-submit-bar">
+      <button class="btn" id="submitProjectInfoBtn">Submit for Approval</button>
+      <span class="submit-status" id="submitStatus">⏳ Pending Dept. Manager Review</span>
+      <!-- Simulate manager approve — in real app this would be a separate manager view -->
+      <div class="priority-select-wrap" id="prioritySelectWrap">
+        <label>Set Priority:</label>
+        <select id="prioritySelectApproval">
+          <option value="">— Select —</option>
+          <option value="High">🔴 High</option>
+          <option value="Medium">🟡 Medium</option>
+          <option value="Low">🟢 Low</option>
+        </select>
+      </div>
+      <button class="btn btn-approve" id="approveBtn" style="display:none;" disabled>✓ Approve (Manager)</button>
+    </div>
+
+  </div>
+  </div>
+  <!-- /Project Information -->
+
+  <!-- PDCA lock wrapper — greyed out until Project Info is approved -->
+  <div class="pdca-lock-wrap" id="pdcaLockWrap">
+    <div class="pdca-lock-overlay active" id="pdcaLockOverlay">
+      <div class="lock-message">
+        <span class="lock-icon">🔒</span>
+        <p>Awaiting Manager Approval</p>
+        <span>Complete and submit Project Information first.</span>
+      </div>
+    </div>
+
+    <!-- /pdca-lock-overlay -->
+
+  <!-- PLAN -->
+  <div class="pdca-section collapsed" id="section-plan">
+    <div class="section-banner" data-target="section-plan">
+      <span class="stage-tag">PLAN</span>
+      <span class="chevron">▾</span>
+      <span>Plan</span>
+    </div>
+    <div class="section-body">
+
+      <div class="stage-block">
+        <p class="stage-subhead">Key Measurements</p>
+        <p class="stage-help">Define KPIs that provide a baseline of the project; based on the objective. How will we measure what we're trying to achieve? Each entry will automatically generate a KPI tracking card in the <strong>Check</strong> section.</p>
+        <div class="line-list" id="keyMeasurementsList">
+          <div class="line-item">
+            <span class="line-num">1.</span>
+            <input type="text" placeholder="Ref. to data, provide proof">
+            <button class="remove-line" title="Remove">&times;</button>
+          </div>
+        </div>
+        <button class="add-row-btn" data-add-line="keyMeasurementsList">+ Add Line</button>
+      </div>
+
+      <div class="stage-block" id="rootCauseBlock">
+        <p class="stage-subhead">Main Root-Cause</p>
+        <p class="stage-help">Select one or more analysis tools. Each selected tool expands its own section below. Refer to <strong>QA.P02.W04 Table 1</strong> for tool guidance.</p>
+
+        <div class="tool-selector" id="toolSelector">
+          <label class="tool-chip selected" data-tool="fivewhys"><input type="checkbox" value="fivewhys" checked><span>5-Whys</span></label>
+          <label class="tool-chip" data-tool="fishbone"><input type="checkbox" value="fishbone"><span>Cause &amp; Effect (Fishbone)</span></label>
+          <label class="tool-chip" data-tool="fmea"><input type="checkbox" value="fmea"><span>FMEA</span></label>
+          <label class="tool-chip" data-tool="pareto"><input type="checkbox" value="pareto"><span>Pareto Diagram</span></label>
+          <label class="tool-chip" data-tool="controlchart"><input type="checkbox" value="controlchart"><span>Control Chart</span></label>
+          <label class="tool-chip" data-tool="other"><input type="checkbox" value="other"><span>Other</span></label>
+        </div>
+        <div class="other-tool-input-wrap" id="otherToolInputWrap">
+          <input type="text" id="otherToolName" placeholder="Describe the tool or method used (e.g. Flow Chart, VSM, Histogram, DOE...)">
+        </div>
+
+        <div class="tool-sections" id="toolSections">
+
+          <!-- 5-Whys: interactive template -->
+          <div class="tool-section active" id="tool-fivewhys">
+            <div class="tool-section-header">
+              <span class="tool-section-title"><span class="tool-icon">🔍</span>5-Whys</span>
+              <span class="tool-section-chevron">▾</span>
+            </div>
+            <div class="tool-section-body">
+              <div id="whyChainsContainer">
+                <div class="why-chain" data-chain-id="1">
+                  <div class="why-chain-header">
+                    <span class="why-chain-title">5-Why #1</span>
+                    <button class="remove-chain" title="Remove this 5-Why">Remove</button>
+                  </div>
+                  <div class="why-row problem-row" data-why="0">
+                    <span class="why-label" style="color:#c12a25;font-weight:700;">Problem Statement:</span>
+                    <textarea class="problem-input" placeholder="Describe the problem (e.g. High rejection rate on Tapes/Adhesives)..." style="width:100%;min-height:52px;resize:vertical;font-family:inherit;font-size:13px;border:1px solid #c9ccd1;border-radius:3px;padding:6px 8px;box-sizing:border-box;"></textarea>
+                  </div>
+                  <div class="why-row why-hidden" data-why="1">
+                    <span class="why-label why-prompt">Why?</span>
+                    <span class="because-label">Because</span>
+                    <textarea class="because-input" placeholder="..." rows="2"></textarea>
+                  </div>
+                  <div class="why-row why-hidden" data-why="2">
+                    <span class="why-label why-prompt">Why?</span>
+                    <span class="because-label">Because</span>
+                    <textarea class="because-input" placeholder="..." rows="2"></textarea>
+                  </div>
+                  <div class="why-row why-hidden" data-why="3">
+                    <span class="why-label why-prompt">Why?</span>
+                    <span class="because-label">Because</span>
+                    <textarea class="because-input" placeholder="..." rows="2"></textarea>
+                  </div>
+                  <div class="why-row why-hidden" data-why="4">
+                    <span class="why-label why-prompt">Why?</span>
+                    <span class="because-label">Because</span>
+                    <textarea class="because-input" placeholder="..." rows="2"></textarea>
+                  </div>
+                  <div class="why-row why-hidden" data-why="5">
+                    <span class="why-label why-prompt">Why?</span>
+                    <span class="because-label">Because</span>
+                    <textarea class="because-input" placeholder="..." rows="2"></textarea>
+                  </div>
+                  <div class="root-cause-row">
+                    <span class="why-label">Root Cause:</span>
+                    <textarea placeholder="Summarize the root cause identified by this 5-Why" rows="2"></textarea>
+                  </div>
+                </div>
+              </div>
+              <button class="add-chain-btn" id="addWhyChainBtn" style="margin-top:10px;">+ Add Another 5-Why</button>
+            </div>
+          </div>
+
+          <!-- Cause & Effect (Fishbone): paste + notes -->
+          <div class="tool-section" id="tool-fishbone">
+            <div class="tool-section-header">
+              <span class="tool-section-title"><span class="tool-icon">🐟</span>Cause &amp; Effect (Fishbone)</span>
+              <span class="tool-section-chevron">▾</span>
+            </div>
+            <div class="tool-section-body">
+              <div class="tool-paste-zone" tabindex="0"><span class="paste-icon">📋</span>Paste or drag-drop your Fishbone diagram here</div>
+              <div class="tool-thumbs"></div>
+              <textarea class="tool-notes" placeholder="Notes: identify the major cause categories (Man, Machine, Method, Material, Environment) and key contributing factors..."></textarea>
+            </div>
+          </div>
+
+          <!-- FMEA -->
+          <div class="tool-section" id="tool-fmea">
+            <div class="tool-section-header">
+              <span class="tool-section-title"><span class="tool-icon">⚠️</span>FMEA (Failure Mode &amp; Effect Analysis)</span>
+              <span class="tool-section-chevron">▾</span>
+            </div>
+            <div class="tool-section-body">
+              <div class="tool-paste-zone" tabindex="0"><span class="paste-icon">📋</span>Paste or drag-drop your FMEA table/chart here</div>
+              <div class="tool-thumbs"></div>
+              <textarea class="tool-notes" placeholder="Notes: list failure modes, effects, severity/occurrence/detection ratings, and recommended actions..."></textarea>
+            </div>
+          </div>
+
+          <!-- Pareto Diagram -->
+          <div class="tool-section" id="tool-pareto">
+            <div class="tool-section-header">
+              <span class="tool-section-title"><span class="tool-icon">📊</span>Pareto Diagram</span>
+              <span class="tool-section-chevron">▾</span>
+            </div>
+            <div class="tool-section-body">
+              <div class="tool-paste-zone" tabindex="0"><span class="paste-icon">📋</span>Paste or drag-drop your Pareto chart here</div>
+              <div class="tool-thumbs"></div>
+              <textarea class="tool-notes" placeholder="Notes: describe the top defect categories, their frequencies, and cumulative % — identify the vital few causes..."></textarea>
+            </div>
+          </div>
+
+          <!-- Flow Chart -->
+          <div class="tool-section" id="tool-flowchart">
+            <div class="tool-section-header">
+              <span class="tool-section-title"><span class="tool-icon">🔄</span>Flow Chart</span>
+              <span class="tool-section-chevron">▾</span>
+            </div>
+            <div class="tool-section-body">
+              <div class="tool-paste-zone" tabindex="0"><span class="paste-icon">📋</span>Paste or drag-drop your Flow Chart here</div>
+              <div class="tool-thumbs"></div>
+              <textarea class="tool-notes" placeholder="Notes: describe the process steps, decision points, and where the breakdown/gap occurs in the flow..."></textarea>
+            </div>
+          </div>
+
+          <!-- Control Chart -->
+          <div class="tool-section" id="tool-controlchart">
+            <div class="tool-section-header">
+              <span class="tool-section-title"><span class="tool-icon">📈</span>Control Chart</span>
+              <span class="tool-section-chevron">▾</span>
+            </div>
+            <div class="tool-section-body">
+              <div class="tool-paste-zone" tabindex="0"><span class="paste-icon">📋</span>Paste or drag-drop your Control Chart here</div>
+              <div class="tool-thumbs"></div>
+              <textarea class="tool-notes" placeholder="Notes: note control limits, out-of-control signals, trends, and when the process went out of spec..."></textarea>
+            </div>
+          </div>
+
+          <!-- Other: free-form tool -->
+          <div class="tool-section" id="tool-other">
+            <div class="tool-section-header">
+              <span class="tool-section-title"><span class="tool-icon">🔧</span><span id="otherToolSectionLabel">Other Tool / Method</span></span>
+              <span class="tool-section-chevron">▾</span>
+            </div>
+            <div class="tool-section-body">
+              <div class="tool-paste-zone" tabindex="0"><span class="paste-icon">📋</span>Paste or drag-drop your diagram, chart, or analysis output here</div>
+              <div class="tool-thumbs"></div>
+              <textarea class="tool-notes" placeholder="Notes: describe the tool used, findings, and how it supports the root cause analysis..."></textarea>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- DO -->
+  <div class="pdca-section collapsed" id="section-do">
+    <div class="section-banner" data-target="section-do">
+      <span class="stage-tag">DO</span>
+      <span class="chevron">▾</span>
+      <span>Do</span>
+    </div>
+    <div class="section-body">
+
+      <div class="stage-block">
+        <p class="stage-subhead">Solutions Selected & Implemented</p>
+        <p class="stage-help">Add each solution identified from your root-cause analysis. Each solution gets its own implementation table — add the activities needed to execute that solution underneath it.</p>
+
+        <div id="solutionCardsContainer"></div>
+        <button class="add-row-btn" id="addSolutionCardBtn">+ Add Solution</button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- CHECK -->
+  <div class="pdca-section collapsed" id="section-check">
+    <div class="section-banner" data-target="section-check">
+      <span class="stage-tag">CHECK</span>
+      <span class="chevron">▾</span>
+      <span>Check</span>
+    </div>
+    <div class="section-body">
+
+      <div class="stage-block">
+        <p class="stage-subhead">Measurement Tracking Indicators</p>
+        <p class="stage-help">One card per KPI from <strong>Key Measurements</strong> in PLAN. Updated weekly — click <strong>+ Update</strong> to save the current chart &amp; notes as a weekly snapshot, then paste fresh charts for the new week. Notes carry forward automatically.</p>
+        <div class="kpi-cards-container" id="kpiCardsContainer">
+          <!-- Cards synced from Key Measurements in PLAN -->
+        </div>
+      </div>
+
+      <div class="stage-block">
+        <p class="stage-subhead">Achieved Results</p>
+        <p class="stage-help">Results achieved based on the objective(s) and business benefit(s) acquired in the main project page.</p>
+        <div class="line-list" id="achievedResultsList">
+          <div class="line-item">
+            <span class="line-num">1.</span>
+            <input type="text" placeholder="Result achieved">
+            <button class="remove-line" title="Remove">&times;</button>
+          </div>
+        </div>
+        <button class="add-row-btn" data-add-line="achievedResultsList">+ Add Line</button>
+      </div>
+
+      <div class="stage-block">
+        <p class="stage-subhead">Analysis of Gaps</p>
+        <p class="stage-help">Compare current state vs. future state. Document the last gaps found that were not achieved.</p>
+        <textarea class="full" id="gapsAnalysis" placeholder="Describe gaps between current state and future state..."></textarea>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ACT -->
+  <div class="pdca-section collapsed" id="section-act">
+    <div class="section-banner" data-target="section-act">
+      <span class="stage-tag">ACT</span>
+      <span class="chevron">▾</span>
+      <span>Act</span>
+    </div>
+    <div class="section-body">
+
+      <div class="stage-block">
+        <p class="stage-subhead">Standardize – Actions Implemented</p>
+        <p class="stage-help">Refer to SOPs, visual aids, process/sub-process. Any documents created? Procedure established?</p>
+        <div class="line-list" id="standardizeList">
+          <div class="line-item">
+            <span class="line-num">1.</span>
+            <input type="text" placeholder="Action implemented">
+            <button class="remove-line" title="Remove">&times;</button>
+          </div>
+        </div>
+        <button class="add-row-btn" data-add-line="standardizeList">+ Add Line</button>
+      </div>
+
+      <div class="stage-block">
+        <p class="stage-subhead">Assure Maintenance / Actions Implemented</p>
+        <p class="stage-help">Refer to monitoring of SOPs, visual aids, process/sub-process, layered process audit (LPA), internal audits. Any training provided? How? To whom?</p>
+        <div class="line-list" id="maintenanceList">
+          <div class="line-item">
+            <span class="line-num">1.</span>
+            <input type="text" placeholder="Maintenance / monitoring action">
+            <button class="remove-line" title="Remove">&times;</button>
+          </div>
+        </div>
+        <button class="add-row-btn" data-add-line="maintenanceList">+ Add Line</button>
+      </div>
+
+    </div>
+  </div>
+  <!-- /ACT -->
+
+  <!-- WRAP-UP / CLOSURE -->
+  <div class="pdca-section collapsed" id="section-wrapup">
+    <div class="section-banner" data-target="section-wrapup">
+      <span class="stage-tag" style="background:#555;">CLOSE</span>
+      <span class="chevron">▾</span>
+      <span>Wrap-Up / Closure</span>
+    </div>
+    <div class="section-body">
+
+      <div class="stage-block">
+        <p class="stage-subhead">Suggestions for Solutions Extension</p>
+        <p class="stage-help">Consider expanding to other sites or operation lines. Recommendations can be based on gaps from the Check stage.</p>
+        <div class="line-list" id="extensionList">
+          <div class="line-item">
+            <span class="line-num">1.</span>
+            <input type="text" placeholder="Suggestion / recommendation">
+            <button class="remove-line" title="Remove">&times;</button>
+          </div>
+        </div>
+        <button class="add-row-btn" data-add-line="extensionList">+ Add Line</button>
+      </div>
+
+      <div class="stage-block">
+        <p class="stage-subhead">Lessons Learned (+ and -)</p>
+        <div class="line-list" id="lessonsLearnedList">
+          <div class="line-item">
+            <span class="line-num">1.</span>
+            <input type="text" placeholder="Lesson learned">
+            <button class="remove-line" title="Remove">&times;</button>
+          </div>
+        </div>
+        <button class="add-row-btn" data-add-line="lessonsLearnedList">+ Add Line</button>
+      </div>
+
+      <div class="stage-block">
+        <p class="stage-subhead">Problems Remaining and Future Projects</p>
+        <p class="stage-help">Based on recommendations, observations, and limitations from this project. Includes gaps from the Check stage that weren't resolved — these can become opportunities or objectives for future projects.</p>
+        <div class="line-list" id="remainingProblemsList">
+          <div class="line-item">
+            <span class="line-num">1.</span>
+            <input type="text" placeholder="Remaining problem / future opportunity">
+            <button class="remove-line" title="Remove">&times;</button>
+          </div>
+        </div>
+        <button class="add-row-btn" data-add-line="remainingProblemsList">+ Add Line</button>
+      </div>
+
+      <!-- Finance Validation -->
+      <div class="stage-block">
+        <p class="stage-subhead">Finance Validation</p>
+        <p class="stage-help">Fill in questions 1–9, then click <strong>Save Draft</strong> to save progress or <strong>Send for Approval</strong> to send to the Finance Representative. The Finance Rep section is revealed once sent.</p>
+
+        <div class="signoff-block" id="fvBlock">
+          <div class="signoff-block-header collapsible" id="fvHeader">
+            <span>📋 Kaizen Project Finance Validation Form</span>
+            <span class="fv-status-badge fvs-not-started" id="fvStatusBadge">Not Started</span>
+            <span class="doc-ref-tag" style="margin-left:auto;">QA.P02.W04.F05 Rev. B</span>
+            <span class="fv-chevron">▾</span>
+          </div>
+          <div class="signoff-block-body" id="fvBody">
+
+            <!-- Header meta fields -->
+            <div class="signoff-meta-row">
+              <div class="signoff-meta-field">
+                <label>Project Leader</label>
+                <input type="text" id="fv-leader" placeholder="First & Last Name">
+              </div>
+              <div class="signoff-meta-field">
+                <label>Department Manager</label>
+                <input type="text" id="fv-manager" placeholder="First & Last Name">
+              </div>
+            </div>
+            <div class="signoff-meta-row">
+              <div class="signoff-meta-field">
+                <label>Project Code and Title</label>
+                <input type="text" id="fv-code-title" placeholder="Auto-fill from Project Information">
+              </div>
+              <div class="signoff-meta-field">
+                <label>Corp QA / Site Representative</label>
+                <input type="text" id="fv-cqm" placeholder="First & Last Name">
+              </div>
+            </div>
+
+            <hr class="signoff-divider">
+
+            <!-- Q1 -->
+            <div class="finance-question">
+              <span class="fq-label">1. Risk Assessment</span>
+              <textarea id="fvQ1" placeholder="Describe risks identified and mitigation measures taken..."></textarea>
+            </div>
+
+            <!-- Q2 -->
+            <div class="finance-question">
+              <span class="fq-label">2. Resources Used</span>
+              <textarea id="fvQ2" placeholder="List people, equipment, materials, and time invested..."></textarea>
+            </div>
+
+            <!-- Q3 — with file attach -->
+            <div class="finance-question">
+              <span class="fq-label">3. Cost of Utilized Resources</span>
+              <div class="finance-sub-fields">
+                <div class="finance-sub-field">
+                  <label>a. Total cost breakdown</label>
+                  <textarea id="fvQ3" placeholder="e.g. Labor hours × avg. rate, materials cost, tooling..."></textarea>
+                  <div class="fq-attach-zone" tabindex="0" data-attach="fvAttach3">📎 Paste or drag-drop supporting file / screenshot</div>
+                  <div class="fq-attach-thumbs" id="fvAttach3"></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Q4 -->
+            <div class="finance-question">
+              <span class="fq-label">4. Quantifiable Project Benefits</span>
+              <div class="finance-sub-fields">
+                <div class="finance-sub-field">
+                  <label>a. Hard (tangible – actual savings)</label>
+                  <textarea id="fvQ4a" placeholder="e.g. $X saved in scrap reduction, reduced rework hours..."></textarea>
+                </div>
+                <div class="finance-sub-field">
+                  <label>b. Soft (intangible – not reconcilable in financial statements)</label>
+                  <textarea id="fvQ4b" placeholder="e.g. Improved team morale, customer satisfaction, process visibility..."></textarea>
+                </div>
+              </div>
+            </div>
+
+            <!-- Q5 — with file attach -->
+            <div class="finance-question">
+              <span class="fq-label">5. Was the original root-cause addressed and resolved?</span>
+              <div class="finance-sub-fields">
+                <div class="finance-sub-field">
+                  <label>a. Explanation / supporting evidence</label>
+                  <textarea id="fvQ5" placeholder="Describe how the root cause was addressed and provide evidence..."></textarea>
+                  <div class="fq-attach-zone" tabindex="0" data-attach="fvAttach5">📎 Paste or drag-drop supporting file / screenshot</div>
+                  <div class="fq-attach-thumbs" id="fvAttach5"></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Q6 — with file attach -->
+            <div class="finance-question">
+              <span class="fq-label">6. How do we ensure process sustainability of the financial benefit?</span>
+              <div class="finance-sub-fields">
+                <div class="finance-sub-field">
+                  <label>a. Sustainability plan</label>
+                  <textarea id="fvQ6" placeholder="e.g. Updated SOPs, training matrix, monitoring KPIs, LPA schedule..."></textarea>
+                  <div class="fq-attach-zone" tabindex="0" data-attach="fvAttach6">📎 Paste or drag-drop supporting file / screenshot</div>
+                  <div class="fq-attach-thumbs" id="fvAttach6"></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Q7 -->
+            <div class="finance-question">
+              <span class="fq-label">7. Project Bottom-Line Impact Evaluation</span>
+              <textarea id="fvQ7" placeholder="Overall financial impact on the business — net benefit after costs..."></textarea>
+            </div>
+
+            <!-- Q8 — with file attach -->
+            <div class="finance-question">
+              <span class="fq-label">8. Estimation of Money Saved Per Year</span>
+              <div class="finance-sub-fields">
+                <div class="finance-sub-field">
+                  <label>a. Annual savings estimate</label>
+                  <textarea id="fvQ8" placeholder="e.g. $XX,XXX/year based on reduced defect rate × production volume..."></textarea>
+                  <div class="fq-attach-zone" tabindex="0" data-attach="fvAttach8">📎 Paste or drag-drop supporting file / screenshot</div>
+                  <div class="fq-attach-thumbs" id="fvAttach8"></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Q9 -->
+            <div class="finance-question">
+              <span class="fq-label">9. Approval / Validation of Actual Benefit Claimed After Launching Improvement Project</span>
+              <textarea id="fvQ9" placeholder="Summarize the validated benefit achieved post-implementation..."></textarea>
+            </div>
+
+            <hr class="signoff-divider">
+
+            <!-- Action buttons -->
+            <div class="fv-action-bar">
+              <button class="btn-fv-draft" id="fvSaveDraftBtn">💾 Save Draft</button>
+              <button class="btn-fv-send"  id="fvSendBtn">📤 Send for Approval</button>
+              <span class="fv-save-status" id="fvSaveStatus"></span>
+            </div>
+
+            <!-- Finance Rep sign-off box — hidden until sent -->
+            <div class="finance-approval-box" id="financeRepBox" style="display:none;">
+              <div class="fa-title">⚠ Section to be filled in by Finance Representative only</div>
+              <div class="radio-group">
+                <label><input type="radio" name="financeDecision" value="approve" id="financeApprove"> Approve</label>
+                <label><input type="radio" name="financeDecision" value="reject"  id="financeReject">  Reject</label>
+              </div>
+              <div class="rejection-reason-wrap" id="financeRejectionWrap">
+                <label>Reason for rejection</label>
+                <input type="text" id="financeRejectionReason" placeholder="Describe reason for rejection...">
+              </div>
+              <div class="signoff-sig-row">
+                <div class="sig-field">
+                  <label>Department Manager</label>
+                  <input type="text" placeholder="Signature / Name">
+                </div>
+                <div class="sig-field">
+                  <label>Finance Representative</label>
+                  <input type="text" placeholder="Signature / Name">
+                </div>
+                <div class="sig-field">
+                  <label>Date (MM/DD/YY)</label>
+                  <input type="date">
+                </div>
+                <div class="sig-field">
+                  <label>Date (MM/DD/YY)</label>
+                  <input type="date">
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <!-- CQM Final Sign-Off -->
+      <div class="stage-block">
+        <p class="stage-subhead">CQM Final Sign-Off</p>
+        <p class="stage-help">To be completed by the Corporate Quality Manager / Site Designee. Reviews the completed Kaizen project and determines whether it meets the expected objective before marking it Completed.</p>
+
+        <div class="signoff-block">
+          <div class="signoff-block-header">
+            ✅ Corporate Quality Manager / Site Designee Review
+          </div>
+          <div class="signoff-block-body">
+
+            <div class="finance-question">
+              <span class="fq-label">Review Notes</span>
+              <textarea id="cqmNotes" placeholder="Summarize whether the project met its objective, any outstanding items, or recommendations..."></textarea>
+            </div>
+
+            <div class="signoff-divider" style="border-top: 1px dashed #ccc; margin: 0;"></div>
+
+            <div>
+              <div class="fa-title" style="font-size:12px;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:0.4px;margin-bottom:10px;">Decision</div>
+              <div class="cqm-decision-row">
+                <button class="cqm-btn cqm-btn-complete" id="cqmCompleteBtn">✓ Mark as Completed</button>
+                <button class="cqm-btn cqm-btn-reject"   id="cqmRejectBtn">✕ Request Revision</button>
+                <span class="cqm-status-stamp" id="cqmStatusStamp"></span>
+              </div>
+              <div class="rejection-reason-wrap" id="cqmRevisionWrap">
+                <label>Revision requested</label>
+                <input type="text" id="cqmRevisionReason" placeholder="Describe what needs to be revised before completion can be approved...">
+              </div>
+            </div>
+
+            <div class="signoff-sig-row">
+              <div class="sig-field">
+                <label>Corp QA / Site Representative</label>
+                <input type="text" id="cqmSignature" placeholder="Signature / Name">
+              </div>
+              <div class="sig-field">
+                <label>Date</label>
+                <input type="date" id="cqmDate">
+              </div>
+            </div>
+
+            <div id="completionDateDisplay" style="display:none; padding-top:10px; border-top:1px dashed #cfe3cb; margin-top:8px;">
+              <span style="font-size:13px;font-weight:700;color:#2e7d32;">🎉 Project Completion Date: </span>
+              <span id="completionDateWrapup" style="font-size:13px;font-weight:700;color:#2e7d32;"></span>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+  <!-- /WRAP-UP / CLOSURE -->
+
+  </div>
+  <!-- /PDCA lock wrapper -->
+
+  <div class="footer-bar">
+    <button class="btn btn-secondary" id="cancelBtn">Cancel</button>
+    <button class="btn" id="saveBtn">Save Changes</button>
+  </div>
+</div>
+
+<!-- Change History Modal -->
+<div class="ch-overlay" id="chOverlay">
+  <div class="ch-modal">
+    <div class="ch-modal-header">
+      <span>📋 Change History</span>
+      <button class="ch-close" id="chClose">&times;</button>
+    </div>
+    <div class="ch-modal-body" id="chModalBody">
+      <div class="ch-empty" id="chEmpty">No history yet. History is recorded as you work on this project.</div>
+      <div id="chTimeline"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Lightbox -->
+<div class="lightbox-overlay" id="lightboxOverlay">
+  <button class="lightbox-close" id="lightboxClose">&times;</button>
+  <img id="lightboxImg" src="" alt="Full size view">
+</div>
+
+<script>
+  // ---- Project Code generation (mirrors VBA CreateProject logic) ----
+  // Simulated "table" of existing projects (O:R columns in the original workbook).
+  // nextNum mirrors CountA(O:O) including header, so first new project = 001.
+  let existingProjectCount = 0; // increment this as projects are "created" in this session
+
+  const sitePicker = document.getElementById('sitePicker');
+  const siteSummary = document.getElementById('siteSummary');
+  const deptPicker = document.getElementById('deptPicker');
+  const deptSummary = document.getElementById('deptSummary');
+  const projectTitleInput = document.getElementById('projectTitle');
+  const projectCodePreview = document.getElementById('projectCodePreview');
+
+  function getSelectedSites() {
+    return Array.from(sitePicker.querySelectorAll('input[type="checkbox"]:checked'))
+      .map(cb => cb.value);
+  }
+
+  function getSelectedDepts() {
+    return Array.from(deptPicker.querySelectorAll('input[type="checkbox"]:checked'))
+      .map(cb => cb.value);
+  }
+
+  function updateSiteSummary() {
+    const sites = getSelectedSites();
+    siteSummary.innerHTML = sites.length
+      ? `Selected: <strong>${sites.join(', ')}</strong>`
+      : 'No locations selected';
+  }
+
+  function updateProjectCode() {
+    const sites = getSelectedSites();
+    const depts = getSelectedDepts();
+    const year = new Date().getFullYear();
+
+    if (sites.length === 0 || depts.length === 0) {
+      projectCodePreview.textContent = 'Select a site and department(s) to generate';
+      projectCodePreview.classList.add('placeholder');
+      document.getElementById('modalTitle').textContent = 'Kaizen Project \u2014 New';
+      return;
+    }
+
+    const nextNum = String(existingProjectCount + 1).padStart(3, '0');
+    const code = `${sites.join('-')}-${depts.join('-')}-${year}-${nextNum}`;
+    projectCodePreview.textContent = code;
+    projectCodePreview.classList.remove('placeholder');
+    document.getElementById('modalTitle').textContent = 'Kaizen Project \u2014 ' + code;
+  }
+
+
+  function updateDeptSummary() {
+    const depts = getSelectedDepts();
+    deptSummary.innerHTML = depts.length
+      ? `Selected: <strong>${depts.join(', ')}</strong>`
+      : 'No departments selected';
+  }
+
+  sitePicker.addEventListener('change', function (e) {
+    const checkbox = e.target;
+    const chip = checkbox.closest('.dept-chip');
+    const isGlobal = checkbox.dataset.exclusive === 'true';
+    const allCheckboxes = Array.from(sitePicker.querySelectorAll('input[type="checkbox"]'));
+
+    if (isGlobal && checkbox.checked) {
+      // Selecting Global deselects every other site
+      allCheckboxes.forEach(cb => {
+        if (cb !== checkbox) {
+          cb.checked = false;
+          cb.closest('.dept-chip').classList.remove('selected');
+        }
+      });
+    } else if (!isGlobal && checkbox.checked) {
+      // Selecting any individual site deselects Global
+      allCheckboxes.forEach(cb => {
+        if (cb.dataset.exclusive === 'true') {
+          cb.checked = false;
+          cb.closest('.dept-chip').classList.remove('selected');
+        }
+      });
+
+      // If all 4 individual sites are now selected, auto-select Global instead
+      const individualSites = allCheckboxes.filter(cb => cb.dataset.exclusive !== 'true');
+      const allIndividualSelected = individualSites.every(cb => cb.checked);
+      if (allIndividualSelected) {
+        individualSites.forEach(cb => {
+          cb.checked = false;
+          cb.closest('.dept-chip').classList.remove('selected');
+        });
+        const globalCheckbox = allCheckboxes.find(cb => cb.dataset.exclusive === 'true');
+        globalCheckbox.checked = true;
+        globalCheckbox.closest('.dept-chip').classList.add('selected');
+      }
+    }
+
+    if (chip) chip.classList.toggle('selected', checkbox.checked);
+    updateSiteSummary();
+    updateProjectCode();
+  });
+
+  deptPicker.addEventListener('change', function (e) {
+    const chip = e.target.closest('.dept-chip');
+    if (chip) chip.classList.toggle('selected', e.target.checked);
+    updateDeptSummary();
+    updateProjectCode();
+  });
+
+  // Initialize on load
+  updateSiteSummary();
+  updateDeptSummary();
+  updateProjectCode();
+  document.querySelector('#sitePicker input[value="US"]').closest('.dept-chip').classList.add('selected');
+
+  // ---- Baseline (Background) image paste / drag-drop ----
+  const baselinePasteZone = document.getElementById('baselinePasteZone');
+  const baselineThumbs = document.getElementById('baselineThumbs');
+
+  function addBaselineImage(file) {
+    if (!file || !file.type.startsWith('image/')) return;
+    const reader = new FileReader();
+    reader.onload = function (e) {
+      const thumb = document.createElement('div');
+      thumb.className = 'baseline-thumb';
+      thumb.innerHTML = `<img src="${e.target.result}" alt="Pasted screenshot"><button class="thumb-remove" title="Remove image">&times;</button>`;
+      baselineThumbs.appendChild(thumb);
+    };
+    reader.readAsDataURL(file);
+  }
+
+  baselinePasteZone.addEventListener('paste', function (e) {
+    const items = (e.clipboardData || window.clipboardData).items;
+    for (const item of items) {
+      if (item.type.startsWith('image/')) {
+        addBaselineImage(item.getAsFile());
+      }
+    }
+  });
+
+  baselinePasteZone.addEventListener('dragover', function (e) {
+    e.preventDefault();
+    baselinePasteZone.classList.add('drag-over');
+  });
+
+  baselinePasteZone.addEventListener('dragleave', function () {
+    baselinePasteZone.classList.remove('drag-over');
+  });
+
+  baselinePasteZone.addEventListener('drop', function (e) {
+    e.preventDefault();
+    baselinePasteZone.classList.remove('drag-over');
+    const files = e.dataTransfer.files;
+    for (const file of files) addBaselineImage(file);
+  });
+
+  baselineThumbs.addEventListener('click', function (e) {
+    if (e.target.classList.contains('thumb-remove')) {
+      e.target.closest('.baseline-thumb').remove();
+    }
+  });
+
+  // ---- Accordion collapse/expand for PDCA sections ----
+  document.querySelectorAll('.section-banner[data-target]').forEach(function (banner) {
+    banner.addEventListener('click', function () {
+      const section = document.getElementById(banner.dataset.target);
+      section.classList.toggle('collapsed');
+    });
+  });
+
+  // ---- Numbered add-line lists (Key Measurements, Root Cause, Solutions, etc.) ----
+  function renumberLineList(list) {
+    list.querySelectorAll('.line-item').forEach(function (item, idx) {
+      item.querySelector('.line-num').textContent = (idx + 1) + '.';
+    });
+  }
+
+  document.querySelectorAll('.add-row-btn[data-add-line]').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      const list = document.getElementById(btn.dataset.addLine);
+      const item = document.createElement('div');
+      item.className = 'line-item';
+      item.innerHTML = `
+        <span class="line-num"></span>
+        <input type="text" placeholder="">
+        <button class="remove-line" title="Remove">&times;</button>
+      `;
+      list.appendChild(item);
+      renumberLineList(list);
+      item.querySelector('input').focus();
+    });
+  });
+
+  document.querySelectorAll('.line-list').forEach(function (list) {
+    list.addEventListener('click', function (e) {
+      if (e.target.classList.contains('remove-line')) {
+        if (list.querySelectorAll('.line-item').length > 1) {
+          e.target.closest('.line-item').remove();
+          renumberLineList(list);
+        } else {
+          // Keep at least one line, just clear it
+          list.querySelector('input').value = '';
+        }
+      }
+    });
+  });
+
+  // ---- Project Info: Submit for Approval + Approval gate ----
+  const pdcaLockOverlay = document.getElementById('pdcaLockOverlay');
+  const submitBtn = document.getElementById('submitProjectInfoBtn');
+  const submitStatus = document.getElementById('submitStatus');
+  const approveBtn = document.getElementById('approveBtn');
+  const startDateStamp = document.getElementById('startDateStamp');
+
+  submitBtn.addEventListener('click', function () {
+    const missing = [];
+    if (getSelectedSites().length === 0) missing.push('Location');
+    if (getSelectedDepts().length === 0) missing.push('Departments');
+    if (!document.getElementById('projectTitle').value.trim()) missing.push('Project Title');
+    if (!document.getElementById('teamLeader').value.trim()) missing.push('Team Leader');
+    if (!document.getElementById('typeSelect').value) missing.push('Type');
+    if (!document.getElementById('problemDesc').value.trim()) missing.push('Project Description');
+    if (!document.getElementById('objective').value.trim()) missing.push('Objective');
+    if (!document.getElementById('targetCompletion').value) missing.push('Target Completion Date');
+
+    if (missing.length > 0) {
+      alert('Please fill in all required fields (*) before submitting:\n\n• ' + missing.join('\n• '));
+      return;
+    }
+
+    // Stamp start date
+    const now = new Date();
+    const dateStr = now.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+    startDateStamp.textContent = dateStr;
+
+    // Lock Project Info fields (exclude the priority selector and approve button)
+    document.querySelectorAll('#section-projectInfo input, #section-projectInfo select, #section-projectInfo textarea')
+      .forEach(el => {
+        if (el.id !== 'prioritySelectApproval') el.disabled = true;
+      });
+
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Submitted';
+    submitStatus.className = 'submit-status pending';
+    submitStatus.style.display = 'inline-block';
+
+    // Show priority selector + approve button (approve disabled until priority chosen)
+    document.getElementById('prioritySelectWrap').classList.add('visible');
+    approveBtn.style.display = 'inline-block';
+
+    // Update overlay message to reflect submitted state
+    pdcaLockOverlay.querySelector('p').textContent = 'Awaiting Manager Approval';
+    pdcaLockOverlay.querySelector('span').textContent = 'Project Information has been submitted.';
+  });
+
+  approveBtn.addEventListener('click', function () {
+    pdcaLockOverlay.classList.remove('active');
+    submitStatus.className = 'submit-status approved';
+    submitStatus.textContent = '✓ Approved';
+    approveBtn.style.display = 'none';
+
+    // Hide priority selector from approval bar — priority is now set
+    document.getElementById('prioritySelectWrap').classList.remove('visible');
+
+    // Update toolbar badge with the selected priority
+    const selectedPriority = document.getElementById('prioritySelectApproval').value;
+    updatePriorityBadge(selectedPriority);
+    document.getElementById('priorityBadge').style.display = 'inline-flex';
+    document.getElementById('prioritySelect').style.display = 'none';
+
+    // Auto-open PLAN section
+    const planSection = document.getElementById('section-plan');
+    if (planSection) planSection.classList.remove('collapsed');
+
+    // Update status
+    document.getElementById('statusSelect').value = 'In Progress';
+  });
+
+  // ---- Priority: sync approval selector → toolbar badge/select ----
+  function updatePriorityBadge(val) {
+    const badge = document.getElementById('priorityBadge');
+    const toolbarSelect = document.getElementById('prioritySelect');
+    if (val) {
+      badge.textContent = val;
+      badge.className = 'priority-badge priority-' + val;
+      toolbarSelect.value = val;
+    } else {
+      badge.textContent = 'Not Set';
+      badge.className = 'priority-badge priority-none';
+    }
+  }
+
+  // Approval bar priority selector — enables Approve button when chosen
+  document.getElementById('prioritySelectApproval').addEventListener('change', function () {
+    approveBtn.disabled = !this.value;
+  });
+
+  // Toolbar priority select (manager updates after approval)
+  document.getElementById('prioritySelect').addEventListener('change', function () {
+    updatePriorityBadge(this.value);
+    if (this.value) {
+      document.getElementById('priorityBadge').style.display = 'inline-flex';
+      document.getElementById('prioritySelect').style.display = 'none';
+    }
+  });
+
+  // Click badge to change priority (toggle back to select)
+  document.getElementById('priorityBadge').addEventListener('click', function () {
+    this.style.display = 'none';
+    document.getElementById('prioritySelect').style.display = 'inline-block';
+  });
+
+  // ---- PLAN stage: Root-cause tool selector ----
+  const toolSelector = document.getElementById('toolSelector');
+  const toolSections = document.getElementById('toolSections');
+
+  // Toggle tool section visibility when chip is checked/unchecked
+  toolSelector.addEventListener('change', function (e) {
+    const chip = e.target.closest('.tool-chip');
+    if (!chip) return;
+    const toolId = e.target.value;
+    chip.classList.toggle('selected', e.target.checked);
+    const section = document.getElementById('tool-' + toolId);
+    if (section) section.classList.toggle('active', e.target.checked);
+
+    // Special handling for "Other" — show/hide free-text input
+    if (toolId === 'other') {
+      const wrap = document.getElementById('otherToolInputWrap');
+      wrap.classList.toggle('visible', e.target.checked);
+    }
+  });
+
+  // Sync Other tool name to section header label in real time
+  const otherToolName = document.getElementById('otherToolName');
+  const otherToolSectionLabel = document.getElementById('otherToolSectionLabel');
+  if (otherToolName && otherToolSectionLabel) {
+    otherToolName.addEventListener('input', function () {
+      otherToolSectionLabel.textContent = otherToolName.value.trim() || 'Other Tool / Method';
+    });
+  }
+
+  // Collapse/expand each tool section on header click
+  toolSections.addEventListener('click', function (e) {
+    const header = e.target.closest('.tool-section-header');
+    if (!header) return;
+    // Don't collapse if clicking inside the body
+    header.closest('.tool-section').classList.toggle('collapsed');
+  });
+
+  // Wire paste/drop for all non-5-Why tool sections
+  document.querySelectorAll('.tool-section:not(#tool-fivewhys)').forEach(function (section) {
+    const pasteZone = section.querySelector('.tool-paste-zone');
+    const thumbs = section.querySelector('.tool-thumbs');
+    if (!pasteZone || !thumbs) return;
+
+    function addToolImage(file) {
+      if (!file || !file.type.startsWith('image/')) return;
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        const thumb = document.createElement('div');
+        thumb.className = 'tool-thumb';
+        thumb.innerHTML = `<img src="${e.target.result}" alt="Diagram"><button class="thumb-remove" title="Remove">&times;</button>`;
+        thumbs.appendChild(thumb);
+      };
+      reader.readAsDataURL(file);
+    }
+
+    pasteZone.addEventListener('paste', function (e) {
+      for (const item of (e.clipboardData || window.clipboardData).items) {
+        if (item.type.startsWith('image/')) addToolImage(item.getAsFile());
+      }
+    });
+    pasteZone.addEventListener('dragover', function (e) { e.preventDefault(); pasteZone.classList.add('drag-over'); });
+    pasteZone.addEventListener('dragleave', function () { pasteZone.classList.remove('drag-over'); });
+    pasteZone.addEventListener('drop', function (e) {
+      e.preventDefault(); pasteZone.classList.remove('drag-over');
+      for (const file of e.dataTransfer.files) addToolImage(file);
+    });
+    thumbs.addEventListener('click', function (e) {
+      if (e.target.classList.contains('thumb-remove')) e.target.closest('.tool-thumb').remove();
+    });
+  });
+
+  // ---- PLAN stage: 5-Why chains ----
+  const whyChainsContainer = document.getElementById('whyChainsContainer');
+  let whyChainCounter = 1; // chain #1 already exists in the markup
+
+  function wireWhyChain(chain) {
+    // Problem statement input: reveals Why 1 and sets its prompt to "Why [problem]?"
+    const problemInput = chain.querySelector('.problem-input');
+    const why1Row = chain.querySelector('.why-row[data-why="1"]');
+
+    if (problemInput && why1Row) {
+      problemInput.addEventListener('input', function () {
+        const problem = problemInput.value.trim();
+        if (problem !== '') {
+          why1Row.querySelector('.why-prompt').textContent = `Why ${problem}?`;
+          why1Row.classList.remove('why-hidden');
+        } else {
+          why1Row.classList.add('why-hidden');
+          why1Row.querySelector('.why-prompt').textContent = 'Why?';
+          // Cascade-hide all downstream rows
+          let rowToReset = why1Row;
+          while (rowToReset) {
+            rowToReset.classList.add('why-hidden');
+            const prompt = rowToReset.querySelector('.why-prompt');
+            if (prompt) prompt.textContent = 'Why?';
+            const input = rowToReset.querySelector('.because-input');
+            if (input) input.value = '';
+            const n = parseInt(rowToReset.dataset.why, 10);
+            rowToReset = chain.querySelector(`.why-row[data-why="${n + 1}"]`);
+          }
+        }
+      });
+    }
+
+    // As each "Because" answer is typed, the next "Why [answer]?" prompt updates live
+    chain.addEventListener('input', function (e) {
+      if (!e.target.matches('.because-input')) return;
+      const row = e.target.closest('.why-row');
+      const currentWhy = parseInt(row.dataset.why, 10);
+      const answer = e.target.value.trim();
+      const nextRow = chain.querySelector(`.why-row[data-why="${currentWhy + 1}"]`);
+      if (!nextRow) return;
+
+      if (answer !== '') {
+        nextRow.querySelector('.why-prompt').textContent = `Why ${answer}?`;
+        nextRow.classList.remove('why-hidden');
+      } else {
+        let rowToReset = nextRow;
+        while (rowToReset) {
+          rowToReset.classList.add('why-hidden');
+          rowToReset.querySelector('.why-prompt').textContent = 'Why?';
+          rowToReset.querySelector('.because-input').value = '';
+          const n = parseInt(rowToReset.dataset.why, 10);
+          rowToReset = chain.querySelector(`.why-row[data-why="${n + 1}"]`);
+        }
+      }
+    });
+  }
+
+  // Wire the initial chain present in the markup
+  wireWhyChain(whyChainsContainer.querySelector('.why-chain'));
+
+  document.getElementById('addWhyChainBtn').addEventListener('click', function () {
+    whyChainCounter += 1;
+    const chain = document.createElement('div');
+    chain.className = 'why-chain';
+    chain.dataset.chainId = whyChainCounter;
+    chain.innerHTML = `
+      <div class="why-chain-header">
+        <span class="why-chain-title">5-Why #${whyChainCounter}</span>
+        <button class="remove-chain" title="Remove this 5-Why">Remove</button>
+      </div>
+      <div class="why-row problem-row" data-why="0">
+        <span class="why-label" style="color:#c12a25;font-weight:700;">Problem Statement:</span>
+        <textarea class="problem-input" placeholder="Describe the problem (e.g. High rejection rate on Tapes/Adhesives)..." style="width:100%;min-height:52px;resize:vertical;font-family:inherit;font-size:13px;border:1px solid #c9ccd1;border-radius:3px;padding:6px 8px;box-sizing:border-box;"></textarea>
+      </div>
+      <div class="why-row why-hidden" data-why="1">
+        <span class="why-label why-prompt">Why?</span>
+        <span class="because-label">Because</span>
+        <textarea class="because-input" placeholder="..." rows="2"></textarea>
+      </div>
+      <div class="why-row why-hidden" data-why="2">
+        <span class="why-label why-prompt">Why?</span>
+        <span class="because-label">Because</span>
+        <textarea class="because-input" placeholder="..." rows="2"></textarea>
+      </div>
+      <div class="why-row why-hidden" data-why="3">
+        <span class="why-label why-prompt">Why?</span>
+        <span class="because-label">Because</span>
+        <textarea class="because-input" placeholder="..." rows="2"></textarea>
+      </div>
+      <div class="why-row why-hidden" data-why="4">
+        <span class="why-label why-prompt">Why?</span>
+        <span class="because-label">Because</span>
+        <textarea class="because-input" placeholder="..." rows="2"></textarea>
+      </div>
+      <div class="why-row why-hidden" data-why="5">
+        <span class="why-label why-prompt">Why?</span>
+        <span class="because-label">Because</span>
+        <textarea class="because-input" placeholder="..." rows="2"></textarea>
+      </div>
+      <div class="root-cause-row">
+        <span class="why-label">Root Cause:</span>
+        <textarea placeholder="Summarize the root cause identified by this 5-Why" rows="2"></textarea>
+      </div>
+    `;
+    whyChainsContainer.appendChild(chain);
+    wireWhyChain(chain);
+    chain.querySelector('.problem-input').focus();
+  });
+
+  whyChainsContainer.addEventListener('click', function (e) {
+    if (e.target.classList.contains('remove-chain')) {
+      const chains = whyChainsContainer.querySelectorAll('.why-chain');
+      if (chains.length > 1) {
+        e.target.closest('.why-chain').remove();
+      } else {
+        // Keep at least one chain, just clear its inputs and reset visibility
+        const chain = e.target.closest('.why-chain');
+        chain.querySelectorAll('input[type="text"]').forEach(input => input.value = '');
+        chain.querySelectorAll('.why-row[data-why]').forEach(row => {
+          row.classList.add('why-hidden');
+          const prompt = row.querySelector('.why-prompt');
+          if (prompt) prompt.textContent = 'Why?';
+        });
+      }
+    }
+  });
+
+  // ---- CHECK stage: KPI Measurement Tracking cards (synced from PLAN Key Measurements) ----
+  const kpiCardsContainer = document.getElementById('kpiCardsContainer');
+  let kpiCardCounter = 0;
+
+  function buildKpiCard(label, fromPlan) {
+    kpiCardCounter++;
+    const card = document.createElement('div');
+    card.className = 'kpi-card';
+    card.dataset.cardId = kpiCardCounter;
+    if (fromPlan) card.dataset.fromPlan = 'true';
+
+    card.innerHTML = `
+      <div class="kpi-card-header">
+        <span class="kpi-card-title">
+          <span class="kpi-num">${kpiCardCounter}.</span>
+          <span class="kpi-label-text">${fromPlan ? label : 'KPI'}</span>
+        </span>
+        <button class="remove-kpi-card" title="Remove this KPI card">Remove</button>
+      </div>
+      <div class="kpi-card-body">
+        ${!fromPlan ? `<input type="text" placeholder="KPI name / metric" style="width:100%;" class="kpi-name-input">` : ''}
+
+        <div class="kpi-history" id="kpi-history-${kpiCardCounter}"></div>
+
+        <div class="kpi-paste-zone" tabindex="0">
+          <span class="paste-icon">📊</span>
+          Click here then paste (Ctrl/Cmd+V) a chart — or drag and drop
+        </div>
+        <div class="kpi-thumbs"></div>
+        <textarea class="kpi-notes" placeholder="Notes: describe performance trend, whether KPI target was met, reference data...&#10;&#10;e.g. YTD Rejection rate: 0.50%&#10;  Jan – 0.20%&#10;  Feb – 0.78%&#10;  Mar – 1.58%"></textarea>
+        <button class="kpi-update-btn">+ Update</button>
+      </div>
+    `;
+
+    wireKpiCard(card);
+    return card;
+  }
+
+  function wireKpiCard(card) {
+    const pasteZone = card.querySelector('.kpi-paste-zone');
+    const thumbsEl = card.querySelector('.kpi-thumbs');
+    const notesEl = card.querySelector('.kpi-notes');
+    const updateBtn = card.querySelector('.kpi-update-btn');
+    const historyEl = card.querySelector('.kpi-history');
+
+    // --- Image paste / drag-drop ---
+    function addKpiImage(file) {
+      if (!file || !file.type.startsWith('image/')) return;
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        const thumb = document.createElement('div');
+        thumb.className = 'kpi-thumb';
+        thumb.innerHTML = `<img src="${e.target.result}" alt="Chart"><button class="thumb-remove" title="Remove">&times;</button>`;
+        thumbsEl.appendChild(thumb);
+      };
+      reader.readAsDataURL(file);
+    }
+
+    pasteZone.addEventListener('paste', function (e) {
+      const items = (e.clipboardData || window.clipboardData).items;
+      for (const item of items) {
+        if (item.type.startsWith('image/')) addKpiImage(item.getAsFile());
+      }
+    });
+    pasteZone.addEventListener('dragover', function (e) {
+      e.preventDefault(); pasteZone.classList.add('drag-over');
+    });
+    pasteZone.addEventListener('dragleave', function () {
+      pasteZone.classList.remove('drag-over');
+    });
+    pasteZone.addEventListener('drop', function (e) {
+      e.preventDefault(); pasteZone.classList.remove('drag-over');
+      for (const file of e.dataTransfer.files) addKpiImage(file);
+    });
+    thumbsEl.addEventListener('click', function (e) {
+      if (e.target.classList.contains('thumb-remove')) e.target.closest('.kpi-thumb').remove();
+    });
+
+    // --- "+ Update" button: save current entry as history, carry notes forward ---
+    updateBtn.addEventListener('click', function () {
+      const notes = notesEl.value.trim();
+      const thumbImgs = Array.from(thumbsEl.querySelectorAll('.kpi-thumb img')).map(img => img.src);
+
+      if (!notes && thumbImgs.length === 0) {
+        alert('Nothing to save — add a chart or notes first.');
+        return;
+      }
+
+      const now = new Date();
+      const dateStr = now.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+      const weekCount = historyEl.querySelectorAll('.kpi-history-entry').length + 1;
+
+      const entry = document.createElement('div');
+      entry.className = 'kpi-history-entry';
+      const thumbsHtml = thumbImgs.map(src =>
+        `<div class="kpi-history-thumb"><img src="${src}" alt="Chart" style="cursor:zoom-in;"></div>`
+      ).join('');
+      entry.innerHTML = `
+        <div class="kpi-history-header">
+          <span class="hist-chevron">▾</span>
+          <span style="flex:1;">Week ${weekCount} — ${dateStr}</span>
+          <button class="remove-week-entry" title="Remove this week entry" style="background:none;border:none;color:#c12a25;font-size:12px;font-weight:600;cursor:pointer;padding:0 4px;flex-shrink:0;">Remove</button>
+        </div>
+        <div class="kpi-history-body">
+          ${thumbImgs.length ? `<div class="kpi-history-thumbs">${thumbsHtml}</div>` : ''}
+          ${notes ? `<pre class="kpi-history-notes">${notes}</pre>` : ''}
+        </div>
+      `;
+
+      // Toggle collapse on header click (not on remove button)
+      entry.querySelector('.kpi-history-header').addEventListener('click', function (e) {
+        if (e.target.classList.contains('remove-week-entry')) return;
+        entry.classList.toggle('collapsed');
+      });
+
+      // Remove this week entry
+      entry.querySelector('.remove-week-entry').addEventListener('click', function (e) {
+        e.stopPropagation();
+        entry.remove();
+      });
+
+      // Append so newest is at bottom
+      historyEl.appendChild(entry);
+
+      // Clear charts, carry notes forward
+      thumbsEl.innerHTML = '';
+      // Notes stay — user edits in place for the new week
+    });
+  }
+
+  kpiCardsContainer.addEventListener('click', function (e) {
+    if (e.target.classList.contains('remove-kpi-card')) {
+      if (kpiCardsContainer.querySelectorAll('.kpi-card').length > 1) {
+        e.target.closest('.kpi-card').remove();
+        renumberKpiCards();
+      }
+    }
+  });
+
+  function renumberKpiCards() {
+    kpiCardsContainer.querySelectorAll('.kpi-card').forEach(function (card, idx) {
+      card.querySelector('.kpi-num').textContent = (idx + 1) + '.';
+    });
+  }
+
+  // Sync: when a Key Measurement input in PLAN is filled/changed, update or create a matching KPI card in DO
+  const keyMeasurementsList = document.getElementById('keyMeasurementsList');
+
+  const kpiTrackingBlock = kpiCardsContainer.closest('.stage-block');
+
+  function syncKpiCardsFromPlan() {
+    const kmInputs = keyMeasurementsList.querySelectorAll('.line-item input[type="text"]');
+    const existingCards = Array.from(kpiCardsContainer.querySelectorAll('.kpi-card[data-from-plan]'));
+
+    // Only consider inputs that have a value
+    const filledInputs = Array.from(kmInputs).filter(input => input.value.trim() !== '');
+
+    filledInputs.forEach(function (input, idx) {
+      const val = input.value.trim();
+      let card = existingCards[idx];
+      if (!card) {
+        card = buildKpiCard(val, true);
+        card.dataset.fromPlan = 'true';
+        card.dataset.kmIndex = idx;
+        kpiCardsContainer.appendChild(card);
+      } else {
+        const labelEl = card.querySelector('.kpi-label-text');
+        if (labelEl) labelEl.textContent = val;
+      }
+    });
+
+    // Remove extra synced cards if KM lines were deleted or cleared
+    const syncedCards = Array.from(kpiCardsContainer.querySelectorAll('.kpi-card[data-from-plan]'));
+    if (syncedCards.length > filledInputs.length) {
+      for (let i = filledInputs.length; i < syncedCards.length; i++) {
+        syncedCards[i].remove();
+      }
+    }
+
+    renumberKpiCards();
+
+    // Show/hide the entire block based on whether any KPIs exist
+    kpiTrackingBlock.style.display = filledInputs.length > 0 ? '' : 'none';
+  }
+
+  // Wire live sync on input changes and structural changes in the KM list
+  keyMeasurementsList.addEventListener('input', syncKpiCardsFromPlan);
+  new MutationObserver(syncKpiCardsFromPlan).observe(keyMeasurementsList, { childList: true });
+
+  // Initialize — hidden until KMs are filled
+  syncKpiCardsFromPlan();
+
+  // ---- DO stage: Nested solution cards ----
+  const solutionCardsContainer = document.getElementById('solutionCardsContainer');
+  let solutionCardCounter = 0;
+
+  function activityRowHTML() {
+    return `
+      <tr class="activity-main-row">
+        <td class="row-actions" rowspan="2"><button class="remove-row" title="Remove">&times;</button></td>
+        <td><input type="text" placeholder="Name/Description of activity"></td>
+        <td><input type="text" placeholder="First & Last Name"></td>
+        <td class="act-ecd"><input type="text" placeholder="MM/DD/YYYY"></td>
+        <td class="act-status">
+          <select>
+            <option value="" selected disabled>Select...</option>
+            <option>Open</option>
+            <option>In-Progress</option>
+            <option>Completed</option>
+          </select>
+        </td>
+      </tr>
+      <tr class="activity-detail-row">
+        <td colspan="4" style="padding-top:0;">
+          <label style="font-size:11px;font-weight:700;color:#888;display:block;margin-bottom:3px;">Expected Benefit</label>
+          <textarea placeholder="e.g. Improve from X to Y" style="width:100%;min-height:48px;resize:vertical;font-family:inherit;font-size:13px;border:1px solid #c9ccd1;border-radius:3px;padding:5px 7px;box-sizing:border-box;margin-bottom:8px;"></textarea>
+          <label style="font-size:11px;font-weight:700;color:#888;display:block;margin-bottom:3px;">Comments</label>
+          <textarea placeholder="Add a comment, blocker, or update..." style="width:100%;min-height:48px;resize:vertical;font-family:inherit;font-size:13px;border:1px solid #c9ccd1;border-radius:3px;padding:5px 7px;box-sizing:border-box;"></textarea>
+        </td>
+      </tr>`;
+  }
+
+  function buildSolutionCard(num) {
+    const card = document.createElement('div');
+    card.className = 'solution-card';
+    card.dataset.cardNum = num;
+    card.innerHTML = `
+      <div class="solution-card-header">
+        <span class="solution-card-num">${num}.</span>
+        <input type="text" class="solution-card-input" placeholder="Describe the solution (e.g. Update training class)">
+        <button class="remove-solution-card">Remove</button>
+      </div>
+      <div class="solution-card-body">
+        <table class="activity-table">
+          <thead>
+            <tr>
+              <th class="row-actions"></th>
+              <th>What</th>
+              <th>Who</th>
+              <th>When</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>${activityRowHTML()}</tbody>
+        </table>
+        <button class="add-row-btn add-activity-btn">+ Add Activity</button>
+      </div>
+    `;
+
+    // Add activity row
+    card.querySelector('.add-activity-btn').addEventListener('click', function () {
+      const tbody = card.querySelector('tbody');
+      const tmp = document.createElement('tbody');
+      tmp.innerHTML = activityRowHTML();
+      while (tmp.firstChild) tbody.appendChild(tmp.firstChild);
+    });
+
+    // Remove activity row (two rows per entry)
+    card.querySelector('tbody').addEventListener('click', function (e) {
+      if (e.target.classList.contains('remove-row')) {
+        const tbody = card.querySelector('tbody');
+        const mainRow = e.target.closest('tr.activity-main-row');
+        if (!mainRow) return;
+        const detailRow = mainRow.nextElementSibling;
+        // Keep at least one entry
+        if (tbody.querySelectorAll('.activity-main-row').length > 1) {
+          if (detailRow && detailRow.classList.contains('activity-detail-row')) detailRow.remove();
+          mainRow.remove();
+        }
+      }
+    });
+
+    // Remove solution card
+    card.querySelector('.remove-solution-card').addEventListener('click', function () {
+      if (solutionCardsContainer.querySelectorAll('.solution-card').length > 1) {
+        card.remove();
+        renumberSolutionCards();
+      } else {
+        card.querySelector('.solution-card-input').value = '';
+        card.querySelector('tbody').innerHTML = activityRowHTML().replace(/<tr>/, '').replace(/<\/tr>/, '');
+        const tmp = document.createElement('tbody');
+        tmp.innerHTML = activityRowHTML();
+        card.querySelector('tbody').innerHTML = tmp.innerHTML;
+      }
+    });
+
+    return card;
+  }
+
+  function renumberSolutionCards() {
+    solutionCardsContainer.querySelectorAll('.solution-card').forEach(function (card, idx) {
+      card.querySelector('.solution-card-num').textContent = (idx + 1) + '.';
+    });
+  }
+
+  // Initialize with one solution card
+  solutionCardCounter = 1;
+  solutionCardsContainer.appendChild(buildSolutionCard(1));
+
+  document.getElementById('addSolutionCardBtn').addEventListener('click', function () {
+    solutionCardCounter++;
+    solutionCardsContainer.appendChild(buildSolutionCard(solutionCardCounter));
+    renumberSolutionCards();
+  });
+
+  document.getElementById('addEmpBtn').addEventListener('click', function () {
+    const tbody = document.querySelector('#empTable tbody');
+    const row = document.createElement('tr');
+    row.innerHTML = `
+      <td class="row-actions"><button class="remove-row" title="Remove employee">&times;</button></td>
+      <td><input type="text" placeholder="Emp#" style="width:70px;text-align:center;"></td>
+      <td><input type="text" placeholder="Loc" style="width:50px;text-align:center;"></td>
+      <td><input type="text" placeholder="Dept" style="width:50px;text-align:center;"></td>
+      <td class="name-cell"><input type="text" placeholder="Name" style="width:100%;"></td>
+    `;
+    tbody.appendChild(row);
+  });
+
+  // Remove employee row (event delegation)
+  document.getElementById('empTable').addEventListener('click', function (e) {
+    if (e.target.classList.contains('remove-row')) {
+      const tbody = document.querySelector('#empTable tbody');
+      if (tbody.rows.length > 1) {
+        e.target.closest('tr').remove();
+      }
+    }
+  });
+
+  // Placeholder actions
+  document.getElementById('saveBtn').addEventListener('click', function () {
+    const sites = getSelectedSites();
+    const depts = getSelectedDepts();
+    const title = projectTitleInput.value.trim();
+
+    if (sites.length === 0) {
+      alert('Please select at least one Location.');
+      return;
+    }
+    if (depts.length === 0) {
+      alert('Please select at least one Department.');
+      return;
+    }
+    if (!title) {
+      alert('Please enter a Project Title.');
+      return;
+    }
+
+    existingProjectCount += 1;
+    updateProjectCode();
+    const finalCode = projectCodePreview.textContent;
+
+    alert('Project created: ' + finalCode);
+  });
+  document.getElementById('cancelBtn').addEventListener('click', function () {
+    alert('Mockup only — Cancel action not yet wired up.');
+  });
+  // ── Change History ────────────────────────────────────────────────────────
+  const chOverlay  = document.getElementById('chOverlay');
+  const chTimeline = document.getElementById('chTimeline');
+  const chEmpty    = document.getElementById('chEmpty');
+
+  // History log — each entry: { type:'action'|'section', ... }
+  const historyLog = [
+    // Pre-populated realistic example entries so you can see all three layers
+    {
+      type: 'action',
+      icon: '🆕',
+      text: '<strong>Project created</strong>',
+      user: 'thomas.truong',
+      time: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000),
+    },
+    {
+      type: 'section',
+      section: 'Project Information',
+      user: 'thomas.truong',
+      time: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000 + 5 * 60 * 1000),
+      fields: [
+        { name: 'Project Title', from: null, to: 'Reduce Tapes/Adhesives Rejection Rate' },
+        { name: 'Location', from: null, to: 'US' },
+        { name: 'Departments', from: null, to: 'QC, PR' },
+        { name: 'Type', from: null, to: 'Quality' },
+        { name: 'Team Leader', from: null, to: 'Thomas Truong' },
+        { name: 'Target Completion Date', from: null, to: '12/31/2026' },
+      ],
+    },
+    {
+      type: 'action',
+      icon: '📤',
+      text: '<strong>Submitted for Dept. Manager Review</strong> by thomas.truong',
+      user: 'thomas.truong',
+      time: new Date(Date.now() - 6 * 24 * 60 * 60 * 1000),
+    },
+    {
+      type: 'action',
+      icon: '✅',
+      text: '<strong>Approved</strong> by samuelc &mdash; Priority set to <strong>High</strong>',
+      user: 'samuelc',
+      time: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000 + 2 * 60 * 60 * 1000),
+    },
+    {
+      type: 'section',
+      section: 'Plan',
+      user: 'thomas.truong',
+      time: new Date(Date.now() - 4 * 24 * 60 * 60 * 1000),
+      fields: [
+        { name: 'Key Measurement 1', from: null, to: 'Defect Tier 2: Tapes/Adhesives Rejection Rate' },
+        { name: 'Root Cause Tool', from: null, to: '5-Whys selected' },
+        { name: '5-Why #1 Problem Statement', from: null, to: 'High rejection rate on Tapes/Adhesives' },
+      ],
+    },
+    {
+      type: 'section',
+      section: 'Plan',
+      user: 'thomas.truong',
+      time: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000),
+      fields: [
+        { name: 'Key Measurement 1', from: 'Defect Tier 2: Tapes/Adhesives Rejection Rate', to: 'Defect Tier 2: Tapes/Adhesives Rejection % (Monthly)' },
+        { name: 'Solutions Selected 1', from: null, to: 'Update training class' },
+        { name: 'Solutions Selected 2', from: null, to: 'Train employees' },
+      ],
+    },
+  ];
+
+  function formatTime(date) {
+    return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) +
+      ' ' + date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+  }
+
+  function renderHistory() {
+    if (historyLog.length === 0) {
+      chEmpty.style.display = 'block';
+      chTimeline.innerHTML = '';
+      return;
+    }
+    chEmpty.style.display = 'none';
+    chTimeline.innerHTML = '';
+
+    historyLog.forEach(function (entry, idx) {
+      const div = document.createElement('div');
+
+      if (entry.type === 'action') {
+        div.className = 'ch-entry ch-action';
+        div.innerHTML = `
+          <div class="ch-entry-dot"></div>
+          <div class="ch-action-row">
+            <span class="ch-action-icon">${entry.icon}</span>
+            <span class="ch-action-text">${entry.text}</span>
+            <span class="ch-action-meta">${entry.user} &bull; ${formatTime(entry.time)}</span>
+          </div>
+        `;
+      } else if (entry.type === 'section') {
+        div.className = 'ch-entry ch-section';
+        const fieldsHtml = (entry.fields || []).map(f => {
+          if (!f.from) {
+            return `<div class="ch-field-row"><span class="ch-field-name">${f.name}</span> set to <span class="ch-new">${f.to}</span></div>`;
+          }
+          return `<div class="ch-field-row"><span class="ch-field-name">${f.name}</span> changed from <span class="ch-from">${f.from}</span> to <span class="ch-to">${f.to}</span></div>`;
+        }).join('');
+
+        div.innerHTML = `
+          <div class="ch-entry-dot"></div>
+          <div class="ch-section-header">
+            <span class="ch-section-chevron">▾</span>
+            <span class="ch-section-label"><span class="ch-section-tag">${entry.section}</span> saved by ${entry.user}</span>
+            <span class="ch-section-meta">${formatTime(entry.time)}</span>
+          </div>
+          <div class="ch-field-list">${fieldsHtml}</div>
+        `;
+
+        div.querySelector('.ch-section-header').addEventListener('click', function () {
+          div.classList.toggle('collapsed');
+        });
+      }
+
+      chTimeline.appendChild(div);
+    });
+
+    // Scroll to bottom (most recent)
+    const body = document.getElementById('chModalBody');
+    body.scrollTop = body.scrollHeight;
+  }
+
+  function logAction(icon, text, user) {
+    historyLog.push({ type: 'action', icon, text, user: user || 'thomas.truong', time: new Date() });
+  }
+
+  function logSection(section, fields, user) {
+    if (!fields || fields.length === 0) return;
+    historyLog.push({ type: 'section', section, user: user || 'thomas.truong', time: new Date(), fields });
+  }
+
+  // Open / close modal
+  document.getElementById('changeHistBtn').addEventListener('click', function () {
+    renderHistory();
+    chOverlay.classList.add('open');
+  });
+  document.getElementById('chClose').addEventListener('click', function () {
+    chOverlay.classList.remove('open');
+  });
+  chOverlay.addEventListener('click', function (e) {
+    if (e.target === chOverlay) chOverlay.classList.remove('open');
+  });
+
+  // Hook into existing actions to auto-log
+  // Submit for approval
+  const _origSubmit = submitBtn.onclick;
+  submitBtn.addEventListener('click', function () {
+    setTimeout(function () {
+      if (submitBtn.disabled) { // only log if submit succeeded
+        logAction('📤', '<strong>Submitted for Dept. Manager Review</strong>', 'thomas.truong');
+      }
+    }, 50);
+  });
+
+  // Approve
+  document.getElementById('approveBtn').addEventListener('click', function () {
+    const priority = document.getElementById('prioritySelectApproval').value;
+    logAction('✅', `<strong>Approved</strong> by Manager — Priority set to <strong>${priority}</strong>`, 'manager');
+  });
+
+  // Priority change via toolbar
+  document.getElementById('prioritySelect').addEventListener('change', function () {
+    if (this.value) logAction('🏷️', `<strong>Priority changed</strong> to <strong>${this.value}</strong>`, 'manager');
+  });
+
+  // CQM complete
+  document.getElementById('cqmCompleteBtn').addEventListener('click', function () {
+    const sig = document.getElementById('cqmSignature').value || 'CQM';
+    logAction('🎉', `<strong>Project marked Completed</strong> by ${sig}`, sig);
+  });
+
+  // CQM revision
+  document.getElementById('cqmRejectBtn').addEventListener('click', function () {
+    const reason = document.getElementById('cqmRevisionReason').value;
+    logAction('↩️', `<strong>Revision requested</strong> by CQM${reason ? ' — ' + reason : ''}`, 'CQM');
+  });
+
+  // Finance sent
+  document.getElementById('fvSendBtn').addEventListener('click', function () {
+    logAction('📋', '<strong>Finance Validation sent</strong> for Finance Rep review', 'thomas.truong');
+  });
+
+  // Finance decision
+  document.querySelectorAll('input[name="financeDecision"]').forEach(function (radio) {
+    radio.addEventListener('change', function () {
+      const decision = radio.value === 'approve' ? 'approved ✓' : 'rejected ✗';
+      logAction('💰', `<strong>Finance Validation ${decision}</strong>`, 'Finance Rep');
+    });
+  });
+
+  // ---- Finance Validation ----
+  const fvBlock      = document.getElementById('fvBlock');
+  const fvHeader     = document.getElementById('fvHeader');
+  const fvStatusBadge = document.getElementById('fvStatusBadge');
+  const fvSaveStatus  = document.getElementById('fvSaveStatus');
+  const financeRepBox = document.getElementById('financeRepBox');
+
+  // Collapse/expand
+  fvHeader.addEventListener('click', function () {
+    fvBlock.classList.toggle('collapsed');
+  });
+
+  // Status helper
+  const FV_STATUS = {
+    'not-started': { label: 'Not Started',          cls: 'fvs-not-started' },
+    'in-progress':  { label: 'In Progress',          cls: 'fvs-in-progress' },
+    'pending':      { label: 'Pending Finance Review', cls: 'fvs-pending'   },
+    'approved':     { label: 'Approved',             cls: 'fvs-approved'    },
+    'rejected':     { label: 'Rejected',             cls: 'fvs-rejected'    },
+  };
+
+  function setFvStatus(key) {
+    const s = FV_STATUS[key];
+    fvStatusBadge.textContent = s.label;
+    fvStatusBadge.className = 'fv-status-badge ' + s.cls;
+  }
+
+  // Mark In Progress as soon as any field is touched
+  let fvTouched = false;
+  document.getElementById('fvBody').addEventListener('input', function () {
+    if (!fvTouched) {
+      fvTouched = true;
+      setFvStatus('in-progress');
+    }
+  }, { once: true });
+
+  // File attach zones for Q3, Q5, Q6, Q8
+  document.querySelectorAll('.fq-attach-zone').forEach(function (zone) {
+    const thumbsId = zone.dataset.attach;
+    const thumbsEl = document.getElementById(thumbsId);
+
+    function addFqImage(file) {
+      if (!file || !file.type.startsWith('image/')) return;
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        const thumb = document.createElement('div');
+        thumb.className = 'fq-attach-thumb';
+        thumb.innerHTML = `<img src="${e.target.result}" alt="Attachment"><button class="thumb-remove" title="Remove">&times;</button>`;
+        thumbsEl.appendChild(thumb);
+      };
+      reader.readAsDataURL(file);
+    }
+
+    zone.addEventListener('paste', function (ev) {
+      for (const item of (ev.clipboardData || window.clipboardData).items) {
+        if (item.type.startsWith('image/')) addFqImage(item.getAsFile());
+      }
+    });
+    zone.addEventListener('dragover', function (ev) { ev.preventDefault(); zone.classList.add('drag-over'); });
+    zone.addEventListener('dragleave', function () { zone.classList.remove('drag-over'); });
+    zone.addEventListener('drop', function (ev) {
+      ev.preventDefault(); zone.classList.remove('drag-over');
+      for (const file of ev.dataTransfer.files) addFqImage(file);
+    });
+    thumbsEl.addEventListener('click', function (ev) {
+      if (ev.target.classList.contains('thumb-remove')) ev.target.closest('.fq-attach-thumb').remove();
+    });
+  });
+
+  // Save Draft
+  document.getElementById('fvSaveDraftBtn').addEventListener('click', function () {
+    setFvStatus('in-progress');
+    fvSaveStatus.textContent = '✓ Draft saved ' + new Date().toLocaleTimeString('en-US', {hour:'2-digit', minute:'2-digit'});
+    setTimeout(() => fvSaveStatus.textContent = '', 4000);
+  });
+
+  // Send for Approval — lock Q1-9, reveal Finance Rep box, set status to Pending
+  document.getElementById('fvSendBtn').addEventListener('click', function () {
+    const hasContent = ['fvQ1','fvQ2','fvQ3','fvQ4a','fvQ5','fvQ6','fvQ7','fvQ8','fvQ9']
+      .some(id => document.getElementById(id).value.trim() !== '');
+    if (!hasContent) {
+      alert('Please fill in at least one question before sending for approval.');
+      return;
+    }
+    // Lock only Q1-9 fields, not the Finance Rep box
+    document.querySelectorAll('#fvBody textarea, #fvBody input:not([type="radio"]):not(#financeRepBox input):not(#financeRepBox *)')
+      .forEach(el => {
+        if (!el.closest('#financeRepBox')) el.disabled = true;
+      });
+    this.disabled = true;
+    document.getElementById('fvSaveDraftBtn').disabled = true;
+
+    // Reveal Finance Rep section
+    financeRepBox.style.display = 'block';
+    setFvStatus('pending');
+    fvSaveStatus.textContent = '📤 Sent for Finance Review ' + new Date().toLocaleDateString('en-US', {month:'short', day:'numeric', year:'numeric'});
+  });
+
+  // Finance Rep: approve/reject toggle
+  document.querySelectorAll('input[name="financeDecision"]').forEach(function (radio) {
+    radio.addEventListener('change', function () {
+      document.getElementById('financeRejectionWrap').classList.toggle('visible', radio.value === 'reject' && radio.checked);
+      setFvStatus(radio.value === 'approve' ? 'approved' : 'rejected');
+    });
+  });
+
+  // ---- CQM Final Sign-Off: decision buttons ----
+  const cqmCompleteBtn = document.getElementById('cqmCompleteBtn');
+  const cqmRejectBtn   = document.getElementById('cqmRejectBtn');
+  const cqmStatusStamp = document.getElementById('cqmStatusStamp');
+  const cqmRevisionWrap = document.getElementById('cqmRevisionWrap');
+
+  cqmCompleteBtn.addEventListener('click', function () {
+    cqmCompleteBtn.classList.add('selected');
+    cqmRejectBtn.classList.remove('selected');
+    cqmRevisionWrap.classList.remove('visible');
+    cqmStatusStamp.textContent = '✓ Project Completed';
+    cqmStatusStamp.className = 'cqm-status-stamp completed';
+
+    // Auto-stamp CQM date
+    const dateField = document.getElementById('cqmDate');
+    if (!dateField.value) dateField.value = new Date().toISOString().split('T')[0];
+
+    // Auto-stamp Completion Date in Project Info and Wrap-Up
+    const now = new Date();
+    const formatted = now.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+    document.getElementById('completionDateStamp').textContent = formatted;
+    document.getElementById('completionDateWrapup').textContent = formatted;
+    document.getElementById('completionDateDisplay').style.display = 'block';
+
+    // Update status dropdown
+    const statusSelect = document.getElementById('statusSelect');
+    if (statusSelect) statusSelect.value = 'Completed';
+  });
+
+  cqmRejectBtn.addEventListener('click', function () {
+    cqmRejectBtn.classList.add('selected');
+    cqmCompleteBtn.classList.remove('selected');
+    cqmRevisionWrap.classList.add('visible');
+    cqmStatusStamp.textContent = '↩ Revision Requested';
+    cqmStatusStamp.className = 'cqm-status-stamp rejected';
+    const dateField = document.getElementById('cqmDate');
+    if (!dateField.value) dateField.value = new Date().toISOString().split('T')[0];
+    // Status back to In Progress for revision
+    document.getElementById('statusSelect').value = 'In Progress';
+  });
+
+  // ── Status auto-management ────────────────────────────────────────────────
+  const statusSel = document.getElementById('statusSelect');
+
+  // Submit → Pending Dept. Manager Review
+  submitBtn.addEventListener('click', function () {
+    setTimeout(function () {
+      if (submitBtn.disabled) statusSel.value = 'Pending Dept. Manager Review';
+    }, 50);
+  });
+
+  // Approve → In Progress (already set in approveBtn handler above)
+
+  // Finance Validation sent → Pending Finance
+  document.getElementById('fvSendBtn').addEventListener('click', function () {
+    setTimeout(function () {
+      if (document.getElementById('fvSendBtn').disabled) statusSel.value = 'Pending Finance';
+    }, 50);
+  });
+
+  // Finance approved → Pending CQM
+  document.getElementById('financeApprove').addEventListener('change', function () {
+    if (this.checked) statusSel.value = 'Pending CQM';
+  });
+
+  // Finance rejected → back to In Progress
+  document.getElementById('financeReject').addEventListener('change', function () {
+    if (this.checked) statusSel.value = 'In Progress';
+  });
+
+  // CQM Completed → already set in cqmCompleteBtn handler above
+  // CQM Revision → In Progress (set in cqmRejectBtn handler above)
+
+  // ── Unsaved changes warning ───────────────────────────────────────────────
+  let hasUnsavedChanges = false;
+
+  // Mark dirty on any input/change/textarea within the form
+  document.querySelector('.modal').addEventListener('input',  function () { hasUnsavedChanges = true; });
+  document.querySelector('.modal').addEventListener('change', function () { hasUnsavedChanges = true; });
+
+  // Clear dirty flag when Save Changes or Submit is clicked
+  document.getElementById('saveBtn').addEventListener('click', function () {
+    hasUnsavedChanges = false;
+  });
+  submitBtn.addEventListener('click', function () {
+    setTimeout(function () { hasUnsavedChanges = false; }, 100);
+  });
+
+  // Warn before navigating away
+  window.addEventListener('beforeunload', function (e) {
+    if (hasUnsavedChanges) {
+      e.preventDefault();
+      e.returnValue = '';
+    }
+  });
+
+  // ── Lightbox — click any thumbnail image to view full size ───────────────
+  const lightboxOverlay = document.getElementById('lightboxOverlay');
+  const lightboxImg     = document.getElementById('lightboxImg');
+
+  function openLightbox(src) {
+    lightboxImg.src = src;
+    lightboxOverlay.classList.add('open');
+  }
+  function closeLightbox() {
+    lightboxOverlay.classList.remove('open');
+    lightboxImg.src = '';
+  }
+
+  // Event delegation on document — works for all dynamically created thumbnails
+  document.addEventListener('click', function (e) {
+    // Must be an img element with a data URL (pasted/uploaded images)
+    if (e.target.tagName !== 'IMG') return;
+    // Must not be inside the lightbox itself
+    if (e.target.closest('#lightboxOverlay')) return;
+    // Must have a src (data URL or blob)
+    const src = e.target.src;
+    if (!src || src === window.location.href) return;
+    openLightbox(src);
+  });
+
+  document.getElementById('lightboxClose').addEventListener('click', closeLightbox);
+  lightboxOverlay.addEventListener('click', function (e) {
+    if (e.target === lightboxOverlay) closeLightbox();
+  });
+
+  // Close on Escape key
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') closeLightbox();
+  });
+</script>
+
+
+</body>
+</html>

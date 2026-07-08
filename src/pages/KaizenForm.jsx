@@ -1,0 +1,227 @@
+// KaizenForm.jsx — Kaizen Request Form (fully wired)
+
+import { useParams, useNavigate } from 'react-router-dom'
+import { useEffect, useState } from 'react'
+import { useAuth } from '../context/AuthContext'
+import { KaizenFormProvider, useKaizenForm } from '../context/KaizenFormContext'
+import { fetchProject } from '../lib/api'
+import { computeProgress } from '../lib/utils'
+import { ChangeHistoryModal } from '../components/shared/ChangeHistoryModal'
+import { PriorityBadge, StatusBadge } from '../components/shared/StatusBadge'
+import ProjectInfo   from '../components/form/ProjectInfo'
+import Plan          from '../components/form/Plan/Plan'
+import Do            from '../components/form/Do/SolutionCard'
+import Check         from '../components/form/Check/KpiCard'
+import Act           from '../components/form/Act'
+import WrapUp        from '../components/form/WrapUp/WrapUp'
+
+// ── Inner form (has access to context) ───────────────────────────────────────
+function FormInner({ projectId }) {
+  const navigate = useNavigate()
+  const { user, switchUser, TEST_USERS } = useAuth()
+  const { form, saveToServer, serverProjectId, unsaved, lastSaved, logAction } = useKaizenForm()
+  const [showHistory, setShowHistory] = useState(false)
+  const [saving, setSaving] = useState(false)
+
+  const isApproved = form.approved
+  const code       = form.projectCode || 'New'
+  const progress   = computeProgress(form)
+
+  // Navigate to the project URL once a new project gets its server ID
+  useEffect(() => {
+    if (serverProjectId && !projectId) {
+      navigate(`/kaizen/project/${serverProjectId}`, { replace: true })
+    }
+  }, [serverProjectId, projectId, navigate])
+
+  async function handleSave() {
+    logAction('💾', 'Project saved', user?.username || 'unknown')
+    setSaving(true)
+    try {
+      await saveToServer(form)
+    } catch (e) {
+      console.error('[Kaizen] Server save failed:', e)
+    } finally {
+      setSaving(false)
+    }
+  }
+
+  return (
+    <div className="min-h-screen bg-gray-100">
+
+      {/* ── Sticky header toolbar ──────────────────────────────── */}
+      <div className="bg-white border-b border-gray-200 shadow-sm sticky top-0 z-20">
+        <div className="max-w-4xl mx-auto px-6 py-3 flex items-center gap-3 min-h-[52px]">
+
+          {/* Title — shrinks and truncates on long codes instead of wrapping */}
+          <span className="font-bold text-gray-800 text-sm shrink min-w-0 truncate">
+            Kaizen Project — {code}
+          </span>
+
+          <div className="w-px h-4 bg-gray-200 mx-1 flex-shrink-0" />
+
+          {/* Req # */}
+          <div className="flex items-center gap-1 text-xs text-gray-500 flex-shrink-0">
+            <span>Req #</span>
+            <span className="border border-gray-200 rounded px-2 py-0.5 bg-gray-50">
+              {form.requestNum || '—'}
+            </span>
+          </div>
+
+          {/* Status */}
+          <div className="flex items-center gap-1.5 text-xs flex-shrink-0">
+            <span className="text-gray-500 font-medium">Status:</span>
+            <StatusBadge status={form.status} />
+          </div>
+
+          {/* Priority */}
+          <div className="flex items-center gap-1.5 text-xs flex-shrink-0">
+            <span className="text-gray-500 font-medium">Priority:</span>
+            <PriorityBadge priority={form.priority} />
+          </div>
+
+          {/* Progress */}
+          <div className="flex items-center gap-1.5 text-xs flex-shrink-0">
+            <span className="text-gray-500 font-medium">Progress:</span>
+            <div className="w-20 h-1.5 bg-gray-200 rounded-full overflow-hidden">
+              <div className="h-full bg-blue-500 rounded-full transition-all duration-300"
+                style={{ width: `${progress}%` }} />
+            </div>
+            <span className="font-semibold text-gray-700">{progress}%</span>
+          </div>
+
+          {/* Right-aligned actions */}
+          <div className="ml-auto flex items-center gap-3 shrink-0">
+            {unsaved && (
+              <span className="text-xs text-amber-500">● Unsaved</span>
+            )}
+            {!unsaved && lastSaved && (
+              <span className="text-xs text-gray-400">
+                Saved {lastSaved.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}
+              </span>
+            )}
+
+            <button onClick={handleSave} disabled={saving}
+              className="text-xs bg-blue-600 text-white font-semibold rounded px-3 py-1.5 hover:bg-blue-700 disabled:opacity-60">
+              {saving ? 'Saving…' : 'Save'}
+            </button>
+
+            <button onClick={() => setShowHistory(true)}
+              className="text-xs border border-gray-300 rounded px-3 py-1.5 bg-white hover:bg-gray-50 text-gray-600 font-medium">
+              Change Hist
+            </button>
+
+            <select
+              value={user?.username}
+              onChange={e => switchUser(e.target.value)}
+              className="text-xs text-gray-600 border border-gray-200 rounded px-2 py-1 cursor-pointer focus:outline-none"
+            >
+              {TEST_USERS.map(u => (
+                <option key={u.id} value={u.username}>{u.name}</option>
+              ))}
+            </select>
+
+            <button onClick={() => navigate('/kaizen/dashboard')}
+              className="text-xs text-gray-400 hover:text-gray-700">
+              ← Dashboard
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* ── Form sections ──────────────────────────────────────── */}
+      <div className="max-w-4xl mx-auto px-6 py-6 space-y-3">
+
+        {/* 1. Project Information */}
+        <ProjectInfo />
+
+        {/* PDCA gate */}
+        {!isApproved ? (
+          <div className="bg-gray-50 border-2 border-dashed border-gray-300 rounded-md p-6 text-center text-gray-400 text-sm">
+            🔒 Plan → Wrap-Up sections unlock after manager approval.
+          </div>
+        ) : (
+          <>
+            <Plan />
+            <Do />
+            <Check />
+            <Act />
+            <WrapUp />
+          </>
+        )}
+
+        {/* Bottom nav */}
+        <div className="pt-2">
+          <button onClick={() => navigate('/kaizen/dashboard')}
+            className="text-sm border border-gray-300 rounded px-4 py-2 bg-white hover:bg-gray-50 text-gray-600">
+            ← Back to Dashboard
+          </button>
+        </div>
+
+        <p className="text-xs text-gray-400 text-center pb-6">
+          QA.P02.W04.F03 Rev. B1 — For Reference Only
+        </p>
+      </div>
+
+      {/* Change History Modal */}
+      {showHistory && (
+        <ChangeHistoryModal
+          entries={form.historyEntries || []}
+          onClose={() => setShowHistory(false)} />
+      )}
+    </div>
+  )
+}
+
+// ── Outer shell: loads data and wraps provider ────────────────────────────────
+export default function KaizenForm() {
+  const { id }   = useParams()
+  const isNew    = !id
+  const [initialData, setInitialData] = useState(null)
+  const [loading,     setLoading]     = useState(!isNew)
+  const [error,       setError]       = useState(null)
+
+  useEffect(() => {
+    if (!isNew && id) {
+      fetchProject(Number(id))
+        .then(p => {
+          // Summary fields — always authoritative (override formData)
+          const summary = {
+            projectCode:      p.code           || '',
+            projectTitle:     p.title          || '',
+            status:           p.status         || 'Open',
+            priority:         p.priority       || null,
+            approved:         ['In Progress','Pending Finance','Pending CQM','Completed'].includes(p.status),
+            submitted:        p.status !== 'Open',
+            teamLeader:       p.leader         || '',
+            targetCompletion: p.targetDate     || '',
+            startDate:        p.startDate      || null,
+            completionDate:   p.completionDate || null,
+            historyEntries: [
+              { type: 'action', icon: '🆕', text: 'Project created', user: p.leader || 'unknown', time: p.startDate ? new Date(p.startDate).toISOString() : new Date().toISOString() },
+            ],
+          }
+          // If server has full PDCA formData, spread it first so PDCA sections are restored
+          const fromServer = p.formData
+            ? { ...p.formData, ...summary }
+            : {
+                ...summary,
+                sites: p.site === 'Global' ? ['Global'] : p.site ? [p.site] : [],
+                depts: p.depts || [],
+              }
+          setInitialData(fromServer)
+        })
+        .catch(e => setError(e.message))
+        .finally(() => setLoading(false))
+    }
+  }, [id, isNew])
+
+  if (loading) return <div className="p-10 text-gray-500 text-sm">Loading project...</div>
+  if (error)   return <div className="p-10 text-red-600 text-sm">Error: {error}</div>
+
+  return (
+    <KaizenFormProvider projectId={id} initialData={initialData}>
+      <FormInner projectId={id} />
+    </KaizenFormProvider>
+  )
+}

@@ -1,0 +1,105 @@
+{
+  "admin": {
+    "label": "Admin",
+    "users": [
+      {
+        "username": "thomastr",
+        "site": "Global"
+      }
+    ]
+  },
+  "corpQM": {
+    "label": "Corp Quality Manager",
+    "users": [
+      {
+        "username": "samuelc",
+        "name": "Samuel Castro",
+        "site": "Global"
+      }
+    ]
+  },
+  "qaManager": {
+    "label": "QA Managers / Site Designee",
+    "users": [
+      {
+        "username": "samuelc",
+        "name": "Samuel Castro",
+        "site": "US"
+      },
+      {
+        "username": "juan_li",
+        "name": "Juan Limon",
+        "site": "MX"
+      },
+      {
+        "username": "judy_shi",
+        "name": "Judy Shi",
+        "site": "SZ"
+      },
+      {
+        "username": "thambiraja_kaveri",
+        "name": "Thambiraja Kaveri",
+        "site": "MY"
+      }
+    ]
+  },
+  "deptManager": {
+    "label": "Dept Managers",
+    "users": [
+      {
+        "username": "alejandro_g",
+        "site": "US"
+      },
+      {
+        "username": "javierf",
+        "site": "MX"
+      },
+      {
+        "username": "wei_z",
+        "site": "SZ"
+      },
+      {
+        "username": "amir_r",
+        "site": "MY"
+      }
+    ]
+  },
+  "financeRep": {
+    "label": "Finance Rep",
+    "users": [
+      {
+        "username": "dan_l",
+        "site": "US"
+      },
+      {
+        "username": "FI_SZ",
+        "site": "SZ"
+      },
+      {
+        "username": "FI_MX",
+        "site": "MX"
+      },
+      {
+        "username": "FI_MY",
+        "site": "MY"
+      }
+    ]
+  },
+  "submitter": {
+    "label": "Owners / Submitters",
+    "users": [
+      {
+        "username": "thomas.truong",
+        "site": "US"
+      },
+      {
+        "username": "michaela",
+        "site": "US"
+      },
+      {
+        "username": "gonzalog",
+        "site": "MX"
+      }
+    ]
+  }
+}
