@@ -34,6 +34,10 @@ function defaultForm() {
     baselineEntries:  [],
     projectType:      '',
     projectTypeOther: '',
+    kaizenType:       '',        // 'PDCA' | 'A3' | '8D' | 'BusinessStrategy' | 'Other'
+    kaizenTypeMode:   'builtin', // 'builtin' | 'pdf' (PDCA and A3 only)
+    kaizenTypePDFs:   [],
+    kaizenTypeOtherDesc: '',
     problemDesc:      '',
     objective:        '',
     businessBenefit:  '',

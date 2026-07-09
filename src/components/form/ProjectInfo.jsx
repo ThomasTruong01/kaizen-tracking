@@ -47,6 +47,7 @@ export default function ProjectInfo() {
   const { user, allRoles } = useAuth()
   const [errors, setErrors] = useState({})
   const [priorityOpen, setPriorityOpen] = useState(false)
+  const [methodologyOpen, setMethodologyOpen] = useState(!form.kaizenType)
 
   // Sync cqManager whenever allRoles finishes loading or sites change
   useEffect(() => {
@@ -138,6 +139,7 @@ export default function ProjectInfo() {
     if (!form.projectType)         e.projectType    = 'Type is required'
     if (form.projectType === 'Other' && !form.projectTypeOther?.trim())
                                    e.projectTypeOther = 'Please describe the project type'
+    if (!form.kaizenType)           e.kaizenType     = 'Kaizen Methodology is required'
     if (!form.problemDesc.trim())  e.problemDesc    = 'Project Description is required'
     if (!form.objective.trim())    e.objective      = 'Objective is required'
     if (!form.targetCompletion)    e.targetCompletion = 'Target Completion Date is required'
@@ -404,6 +406,105 @@ export default function ProjectInfo() {
           <span className="text-sm text-gray-600">{form.startDate}</span>
         </Field>
       )}
+
+      {/* Kaizen Methodology — collapses to a summary badge after selection */}
+      {(() => {
+        const METHODS = [
+          { id: 'PDCA',             label: 'PDCA (Plan-Do-Check-Act)', desc: 'Structured improvement cycle with built-in form sections.',    modes: true  },
+          { id: 'A3',               label: 'A3 Report',                desc: 'Toyota-style one-page problem-solving report.',                modes: true  },
+          { id: '8D',               label: '8D (Eight Disciplines)',    desc: 'Eight-step problem-solving method. Upload your 8D document.', modes: false },
+          { id: 'BusinessStrategy', label: 'Business Strategy',         desc: 'Strategy-driven initiative. Upload your strategy document.',  modes: false },
+          { id: 'Other',            label: 'Other',                     desc: 'Describe the methodology and upload supporting documentation.', modes: false },
+        ]
+        const locked = form.submitted && !form.editing
+        const selected = METHODS.find(m => m.id === form.kaizenType)
+        return (
+          <Field label="Kaizen Methodology" required>
+            {/* Collapsed summary — shown when a selection exists and panel is closed */}
+            {selected && !methodologyOpen && (
+              <div className="flex items-center gap-2">
+                <span className="inline-flex items-center gap-1.5 bg-red-50 border border-red-200 text-red-700 text-sm font-semibold rounded-full px-3 py-1">
+                  {selected.label}
+                  {selected.modes && (
+                    <span className="font-normal text-red-400">
+                      · {form.kaizenTypeMode === 'builtin' ? 'Built-in form' : 'PDF upload'}
+                    </span>
+                  )}
+                  {selected.id === 'Other' && form.kaizenTypeOtherDesc && (
+                    <span className="font-normal text-red-400">· {form.kaizenTypeOtherDesc}</span>
+                  )}
+                </span>
+                {!locked && (
+                  <button type="button" onClick={() => setMethodologyOpen(true)}
+                    className="text-xs text-blue-600 hover:underline">
+                    Change
+                  </button>
+                )}
+              </div>
+            )}
+
+            {/* Expanded selector */}
+            {(methodologyOpen || !selected) && (
+              <div className="space-y-2">
+                {METHODS.map(({ id, label, desc, modes }) => {
+                  const isSelected = form.kaizenType === id
+                  return (
+                    <label key={id}
+                      className={`flex items-start gap-3 p-3 border rounded-md cursor-pointer transition-colors ${
+                        isSelected ? 'border-red-500 bg-red-50' : 'border-gray-200 hover:border-gray-300 bg-white'
+                      } ${locked ? 'opacity-60 cursor-not-allowed' : ''}`}>
+                      <input type="radio" name="kaizenType" value={id}
+                        checked={isSelected} disabled={locked}
+                        onChange={() => {
+                          setForm({ kaizenType: id, kaizenTypeMode: modes ? 'builtin' : 'pdf' })
+                          if (!modes) setMethodologyOpen(false)
+                        }}
+                        className="mt-0.5 flex-shrink-0" />
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-semibold text-gray-800">{label}</p>
+                        <p className="text-xs text-gray-500 mt-0.5">{desc}</p>
+
+                        {/* Mode sub-choice for PDCA and A3 */}
+                        {isSelected && modes && (
+                          <div className="mt-2 flex gap-5">
+                            {[['builtin', 'Use built-in form sections'], ['pdf', 'Upload PDF instead']].map(([val, lbl]) => (
+                              <label key={val} className={`flex items-center gap-1.5 text-xs cursor-pointer ${locked ? 'cursor-not-allowed' : ''}`}>
+                                <input type="radio" name="kaizenTypeMode" value={val}
+                                  checked={form.kaizenTypeMode === val} disabled={locked}
+                                  onChange={() => {
+                                    setForm({ kaizenTypeMode: val })
+                                    setMethodologyOpen(false)
+                                  }} />
+                                {lbl}
+                              </label>
+                            ))}
+                          </div>
+                        )}
+
+                        {/* Description for Other */}
+                        {isSelected && id === 'Other' && (
+                          <div className="mt-2 flex gap-2">
+                            <input type="text" value={form.kaizenTypeOtherDesc || ''}
+                              onChange={e => setForm({ kaizenTypeOtherDesc: e.target.value })}
+                              disabled={locked}
+                              placeholder="Describe the Kaizen methodology..."
+                              className="flex-1 text-sm border border-gray-300 rounded px-2.5 py-1.5 focus:outline-none focus:ring-2 focus:ring-blue-400 disabled:bg-gray-50" />
+                            <button type="button" onClick={() => setMethodologyOpen(false)}
+                              className="text-xs text-blue-600 hover:underline whitespace-nowrap">
+                              Done
+                            </button>
+                          </div>
+                        )}
+                      </div>
+                    </label>
+                  )
+                })}
+              </div>
+            )}
+            {errors.kaizenType && <p className="text-red-500 text-xs mt-1">{errors.kaizenType}</p>}
+          </Field>
+        )
+      })()}
 
       {/* Completion Date (auto) */}
       {form.completionDate && (

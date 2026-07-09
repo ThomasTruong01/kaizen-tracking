@@ -3,12 +3,14 @@
 import { useState } from 'react'
 
 const COLORS = {
-  info:   'bg-red-700',
-  plan:   'bg-blue-600',
-  do:     'bg-orange-500',
-  check:  'bg-purple-600',
-  act:    'bg-green-600',
-  wrapup: 'bg-gray-700',
+  info:        'bg-red-700',
+  plan:        'bg-blue-600',
+  do:          'bg-orange-500',
+  check:       'bg-purple-600',
+  act:         'bg-green-600',
+  wrapup:      'bg-gray-700',
+  a3:          'bg-teal-600',
+  methodology: 'bg-slate-600',
 }
 
 export function AccordionSection({ title, stage = 'info', defaultOpen = true, locked = false, children }) {

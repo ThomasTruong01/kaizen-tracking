@@ -14,12 +14,15 @@ import Do            from '../components/form/Do/SolutionCard'
 import Check         from '../components/form/Check/KpiCard'
 import Act           from '../components/form/Act'
 import WrapUp        from '../components/form/WrapUp/WrapUp'
+import A3Form        from '../components/form/A3/A3Form'
+import { PdfUploadZone } from '../components/shared/PdfUploadZone'
+import { AccordionSection } from '../components/shared/AccordionSection'
 
 // ── Inner form (has access to context) ───────────────────────────────────────
 function FormInner({ projectId }) {
   const navigate = useNavigate()
   const { user, switchUser, TEST_USERS } = useAuth()
-  const { form, saveToServer, serverProjectId, unsaved, lastSaved, logAction } = useKaizenForm()
+  const { form, setForm, saveToServer, serverProjectId, unsaved, lastSaved, logAction } = useKaizenForm()
   const [showHistory, setShowHistory] = useState(false)
   const [saving, setSaving] = useState(false)
 
@@ -135,17 +138,58 @@ function FormInner({ projectId }) {
         {/* 1. Project Information */}
         <ProjectInfo />
 
-        {/* PDCA gate */}
+        {/* Methodology gate */}
         {!isApproved ? (
           <div className="bg-gray-50 border-2 border-dashed border-gray-300 rounded-md p-6 text-center text-gray-400 text-sm">
-            🔒 Plan → Wrap-Up sections unlock after manager approval.
+            🔒 Sections unlock after manager approval.
+          </div>
+        ) : !form.kaizenType ? (
+          <div className="bg-amber-50 border-2 border-dashed border-amber-300 rounded-md p-6 text-center text-amber-600 text-sm">
+            ⚠️ Select a <strong>Kaizen Methodology</strong> in Project Information above to continue.
           </div>
         ) : (
           <>
-            <Plan />
-            <Do />
-            <Check />
-            <Act />
+            {/* PDCA built-in */}
+            {form.kaizenType === 'PDCA' && form.kaizenTypeMode !== 'pdf' && (
+              <>
+                <Plan />
+                <Do />
+                <Check />
+                <Act />
+              </>
+            )}
+
+            {/* A3 built-in */}
+            {form.kaizenType === 'A3' && form.kaizenTypeMode !== 'pdf' && (
+              <A3Form />
+            )}
+
+            {/* PDF upload section for all PDF modes and non-built-in types */}
+            {(form.kaizenTypeMode === 'pdf' ||
+              !['PDCA', 'A3'].includes(form.kaizenType)) && (
+              <AccordionSection
+                title={`2. ${
+                  form.kaizenType === 'PDCA'             ? 'PDCA Template' :
+                  form.kaizenType === 'A3'               ? 'A3 Report' :
+                  form.kaizenType === '8D'               ? '8D Report' :
+                  form.kaizenType === 'BusinessStrategy' ? 'Business Strategy Document' :
+                  `Other — ${form.kaizenTypeOtherDesc || 'Supporting Document'}`
+                }`}
+                stage="methodology"
+                defaultOpen={true}>
+                <div className="space-y-3">
+                  {form.kaizenType === 'Other' && form.kaizenTypeOtherDesc && (
+                    <p className="text-sm text-gray-600 italic">{form.kaizenTypeOtherDesc}</p>
+                  )}
+                  <PdfUploadZone
+                    files={form.kaizenTypePDFs || []}
+                    onChange={v => setForm({ kaizenTypePDFs: v })}
+                    disabled={form.status === 'Completed' || form.status === 'Cancelled'} />
+                </div>
+              </AccordionSection>
+            )}
+
+            {/* Wrap-Up always shown */}
             <WrapUp />
           </>
         )}
