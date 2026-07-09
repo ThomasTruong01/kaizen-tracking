@@ -259,8 +259,10 @@ export default function A3Form() {
     setForm(p => ({ ...p, a3: { ...p.a3, [field]: val } }))
   }
 
-  const targetLines     = a3.setTargetLines || [{ text: '', images: [] }]
-  const countermeasures = a3.countermeasures || [EMPTY_CM(1)]
+  const targetLines        = a3.setTargetLines     || [{ text: '', images: [] }]
+  const monitorResultLines = a3.monitorResultLines  || [{ text: '', images: [] }]
+  const standardizeLines   = a3.standardizeLines    || [{ text: '', images: [] }]
+  const countermeasures    = a3.countermeasures     || [EMPTY_CM(1)]
 
   function updCM(i, val) {
     const next = [...countermeasures]; next[i] = val
@@ -360,16 +362,24 @@ export default function A3Form() {
         </A3Field>
 
         {/* 7. Monitor Results & Process */}
-        <TextareaSection {...SECTIONS.monitorResults}
-          value={a3.monitorResults || ''} onChange={v => upd('monitorResults', v)}
-          images={a3.monitorResultsImages || []} onImagesChange={v => upd('monitorResultsImages', v)}
-          disabled={locked} />
+        <A3Field label={SECTIONS.monitorResults.label}>
+          <SectionHint questions={SECTIONS.monitorResults.questions} tools={SECTIONS.monitorResults.tools} />
+          <EvidenceLineList
+            items={monitorResultLines}
+            onChange={v => upd('monitorResultLines', v)}
+            disabled={locked}
+            placeholder={SECTIONS.monitorResults.placeholder} />
+        </A3Field>
 
         {/* 8. Standardize & Share Success */}
-        <TextareaSection {...SECTIONS.standardize}
-          value={a3.standardize || ''} onChange={v => upd('standardize', v)}
-          images={a3.standardizeImages || []} onImagesChange={v => upd('standardizeImages', v)}
-          disabled={locked} />
+        <A3Field label={SECTIONS.standardize.label}>
+          <SectionHint questions={SECTIONS.standardize.questions} tools={SECTIONS.standardize.tools} />
+          <EvidenceLineList
+            items={standardizeLines}
+            onChange={v => upd('standardizeLines', v)}
+            disabled={locked}
+            placeholder={SECTIONS.standardize.placeholder} />
+        </A3Field>
 
       </div>
     </AccordionSection>
