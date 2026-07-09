@@ -4,6 +4,7 @@ import { useKaizenForm } from '../../../context/KaizenFormContext'
 import { AccordionSection } from '../../shared/AccordionSection'
 import { ImagePasteZone } from '../../shared/ImagePasteZone'
 import { AddLineList } from '../../shared/AddLineList'
+import RootCauseBlock from '../Plan/RootCauseBlock'
 
 // Line list where each item has a text input + evidence image paste zone
 function EvidenceLineList({ items, onChange, disabled, placeholder }) {
@@ -113,19 +114,39 @@ function CountermeasureList({ rows, onChange, disabled }) {
 }
 
 const TEXTAREA_KEYS = [
-  { key: 'clarifyProblem',  label: '1. Clarify the Problem',      placeholder: 'Describe the problem clearly and concisely. What is happening? Where? When? How often? Focus on the gap between the current condition and the expected standard — avoid jumping to causes or solutions.' },
-  { key: 'breakdownProblem',label: '2. Breakdown the Problem',     placeholder: 'Narrow down the problem to its most specific and actionable point. Use data, charts, or observations to identify which part of the problem has the biggest impact. Break broad problems into smaller, manageable sub-problems.' },
-  { key: 'rootCause',       label: '4. Analyze the Root Cause',    placeholder: 'Dig into why the problem is occurring. Use tools like 5-Why, fishbone diagram, or process observation. Keep asking "why?" until you reach the true systemic cause — not just symptoms.' },
-  { key: 'monitorResults',  label: '7. Monitor Results & Process', placeholder: 'Track whether countermeasures are working. Compare results against the target (Section 3). Use the same metric. If results are not improving, revisit the root cause analysis.' },
-  { key: 'standardize',     label: '8. Standardize & Share Success', placeholder: 'If the target was achieved, update the standard (SOP, work instruction, training). Identify where else this improvement can be applied. Share learnings with other teams or sites.' },
+  {
+    key: 'clarifyProblem',
+    label: '1. Clarify the Problem',
+    desc: 'Describe what is happening, where, when, and how often. Focus on the gap between the current condition and the expected standard — do not jump to causes or solutions yet.',
+    placeholder: 'e.g. High adhesive defect rejection rate on Line 3 — ~4.2% over the last 30 days, mostly during shift 2. Expected standard is below 1%.',
+  },
+  {
+    key: 'breakdownProblem',
+    label: '2. Breakdown the Problem',
+    desc: 'Narrow down to the most specific and actionable point. Use data, observation, or charts to find where the biggest impact is. Break a broad problem into smaller, focused sub-problems.',
+    placeholder: 'e.g. Of all defect types, Tapes/Adhesives accounts for 68% of rejections. Within that, 80% occur at Station 4 during changeover. Focus: Station 4 changeover process.',
+  },
+  {
+    key: 'monitorResults',
+    label: '7. Monitor Results & Process',
+    desc: 'Track whether the countermeasures are working. Use the same metric defined in Section 3. Compare against your target. If results are not improving, revisit the root cause analysis.',
+    placeholder: 'e.g. After 4 weeks, defect rate on Line 3 dropped from 4.2% to 1.8%. Target not yet met — monitoring weekly. Identified secondary issue with operator training on Station 4.',
+  },
+  {
+    key: 'standardize',
+    label: '8. Standardize & Share Success',
+    desc: 'If the target was achieved, update the standard (SOP, work instruction, or training). Identify where else this improvement can be applied and share the learnings with other teams or sites.',
+    placeholder: 'e.g. Updated SOP QA-L3-004 to include changeover checklist. Training completed for all operators. Shared findings with MX site — similar improvement opportunity identified.',
+  },
 ]
 
-function TextareaSection({ label, value, onChange, images, onImagesChange, disabled, placeholder }) {
+function TextareaSection({ label, desc, value, onChange, images, onImagesChange, disabled, placeholder }) {
   return (
     <A3Field label={label}>
+      <p className="text-xs text-gray-500 italic">{desc}</p>
       <textarea value={value} onChange={e => onChange(e.target.value)}
         disabled={disabled} rows={4} placeholder={placeholder}
-        className="w-full text-sm border border-gray-200 rounded px-2.5 py-2 resize-vertical focus:outline-none focus:ring-2 focus:ring-blue-400 disabled:bg-gray-50 font-sans placeholder:text-gray-400 placeholder:italic" />
+        className="w-full text-sm border border-gray-200 rounded px-2.5 py-2 resize-vertical focus:outline-none focus:ring-2 focus:ring-blue-400 disabled:bg-gray-50 font-sans placeholder:text-gray-400" />
       <ImagePasteZone images={images} onChange={onImagesChange} disabled={disabled} />
     </A3Field>
   )
@@ -149,28 +170,33 @@ export default function A3Form() {
       <div className="space-y-3">
 
         {/* 1. Clarify the Problem */}
-        <TextareaSection label={TEXTAREA_KEYS[0].label} value={a3.clarifyProblem || ''}
+        <TextareaSection {...TEXTAREA_KEYS[0]} value={a3.clarifyProblem || ''}
           onChange={v => upd('clarifyProblem', v)} images={a3.clarifyProblemImages || []}
-          onImagesChange={v => upd('clarifyProblemImages', v)} disabled={locked} placeholder={TEXTAREA_KEYS[0].placeholder} />
+          onImagesChange={v => upd('clarifyProblemImages', v)} disabled={locked} />
 
         {/* 2. Breakdown the Problem */}
-        <TextareaSection label={TEXTAREA_KEYS[1].label} value={a3.breakdownProblem || ''}
+        <TextareaSection {...TEXTAREA_KEYS[1]} value={a3.breakdownProblem || ''}
           onChange={v => upd('breakdownProblem', v)} images={a3.breakdownProblemImages || []}
-          onImagesChange={v => upd('breakdownProblemImages', v)} disabled={locked} placeholder={TEXTAREA_KEYS[1].placeholder} />
+          onImagesChange={v => upd('breakdownProblemImages', v)} disabled={locked} />
 
         {/* 3. Set the Target — line + evidence per row */}
         <A3Field label="3. Set the Target">
+          <p className="text-xs text-gray-400 italic px-3 pt-1 pb-2">
+            Based on the broken-down problem in Section 2, define a specific and measurable target.
+            This may overlap with your project Objective but should be focused on the exact gap you identified —
+            include the metric, current value, goal value, and deadline.
+          </p>
           <EvidenceLineList
             items={targetLines}
             onChange={v => upd('setTargetLines', v)}
             disabled={locked}
-            placeholder='e.g. Reduce defect rate from 4.2% to below 1.0% by Dec 2026' />
+            placeholder='e.g. Reduce Line 3 adhesive defect rate from 4.2% to below 1.0% by Dec 2026' />
         </A3Field>
 
-        {/* 4. Analyze the Root Cause */}
-        <TextareaSection label={TEXTAREA_KEYS[2].label} value={a3.rootCause || ''}
-          onChange={v => upd('rootCause', v)} images={a3.rootCauseImages || []}
-          onImagesChange={v => upd('rootCauseImages', v)} disabled={locked} placeholder={TEXTAREA_KEYS[2].placeholder} />
+        {/* 4. Analyze the Root Cause — reuses the same tools as PDCA Plan */}
+        <A3Field label="4. Analyze the Root Cause">
+          <RootCauseBlock />
+        </A3Field>
 
         {/* 5. Develop Countermeasures / Priorities — 2-column AddLineList */}
         <A3Field label="5. Develop Countermeasures / Priorities">
@@ -190,14 +216,14 @@ export default function A3Form() {
         </A3Field>
 
         {/* 7. Monitor Results & Process */}
-        <TextareaSection label={TEXTAREA_KEYS[3].label} value={a3.monitorResults || ''}
+        <TextareaSection {...TEXTAREA_KEYS[2]} value={a3.monitorResults || ''}
           onChange={v => upd('monitorResults', v)} images={a3.monitorResultsImages || []}
-          onImagesChange={v => upd('monitorResultsImages', v)} disabled={locked} placeholder={TEXTAREA_KEYS[3].placeholder} />
+          onImagesChange={v => upd('monitorResultsImages', v)} disabled={locked} />
 
         {/* 8. Standardize & Share Success */}
-        <TextareaSection label={TEXTAREA_KEYS[4].label} value={a3.standardize || ''}
+        <TextareaSection {...TEXTAREA_KEYS[3]} value={a3.standardize || ''}
           onChange={v => upd('standardize', v)} images={a3.standardizeImages || []}
-          onImagesChange={v => upd('standardizeImages', v)} disabled={locked} placeholder={TEXTAREA_KEYS[4].placeholder} />
+          onImagesChange={v => upd('standardizeImages', v)} disabled={locked} />
 
       </div>
     </AccordionSection>
