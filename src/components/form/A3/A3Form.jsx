@@ -14,7 +14,11 @@ function SectionHint({ questions, tools }) {
       <p className="text-xs text-gray-500 italic">{questions}</p>
       {tools?.length > 0 && (
         <ul className="text-xs text-gray-400 list-disc list-inside space-y-0.5">
-          {tools.map((t, i) => <li key={i}>{t}</li>)}
+          {tools.map((t, i) =>
+            t?.heading
+              ? <li key={i} className="list-none font-semibold text-gray-500 mt-1">{t.heading}</li>
+              : <li key={i}>{t}</li>
+          )}
         </ul>
       )}
     </div>
@@ -340,9 +344,18 @@ export default function A3Form() {
           <SectionHint
             questions="Clarify the root cause. Consider as many potential cause factors as possible. Identify areas for improvement."
             tools={[
-              'Interviews', 'Pareto charts', 'Data stratification', '5 Whys',
-              'Cause and effect analysis (fishbone)', 'Process capability analysis',
-              'Scatter diagrams', 'Box plots', 'Regression & correlation', 'FMEA',
+              '5 Whys',
+              'Cause and effect analysis (fishbone)',
+              'FMEA',
+              'Pareto charts',
+              'Control Chart',
+              { heading: 'Other:' },
+              'Interviews',
+              'Data stratification',
+              'Process capability analysis',
+              'Scatter diagrams',
+              'Box plots',
+              'Regression & correlation',
             ]} />
           <RootCauseBlock />
         </A3Field>
