@@ -1,5 +1,6 @@
 // A3Form.jsx — A3 problem-solving report (single-column, 8 sections)
 
+import { useState } from 'react'
 import { useKaizenForm } from '../../../context/KaizenFormContext'
 import { AccordionSection } from '../../shared/AccordionSection'
 import { ImagePasteZone } from '../../shared/ImagePasteZone'
@@ -21,13 +22,16 @@ function SectionHint({ questions, tools }) {
 }
 
 function A3Field({ label, complete, onToggle, children }) {
+  const [open, setOpen] = useState(true)
   return (
     <div className={`border rounded-md overflow-hidden ${complete ? 'border-green-300' : 'border-gray-200'}`}>
-      <div className={`flex items-center justify-between px-3 py-2 border-b ${complete ? 'bg-green-50 border-green-200' : 'bg-gray-50 border-gray-200'}`}>
-        <span className="text-sm font-bold text-gray-700">{label}</span>
+      <div className={`flex items-center gap-2 px-3 py-2 border-b cursor-pointer select-none ${complete ? 'bg-green-50 border-green-200' : 'bg-gray-50 border-gray-200'}`}
+        onClick={() => setOpen(o => !o)}>
+        <span className="text-sm text-gray-400">{open ? '▾' : '▸'}</span>
+        <span className="text-sm font-bold text-gray-700 flex-1">{label}</span>
         {onToggle && (
           <button
-            onClick={onToggle}
+            onClick={e => { e.stopPropagation(); onToggle() }}
             className={`flex items-center gap-1.5 text-xs font-semibold rounded px-2 py-1 transition-colors ${
               complete
                 ? 'bg-green-600 text-white hover:bg-green-700'
@@ -37,7 +41,7 @@ function A3Field({ label, complete, onToggle, children }) {
           </button>
         )}
       </div>
-      <div className="p-3 space-y-3">{children}</div>
+      {open && <div className="p-3 space-y-3">{children}</div>}
     </div>
   )
 }
