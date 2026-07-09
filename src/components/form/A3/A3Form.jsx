@@ -29,7 +29,7 @@ function A3Field({ label, complete, onToggle, children }) {
         onClick={() => setOpen(o => !o)}>
         <span className="text-sm text-gray-400">{open ? '▾' : '▸'}</span>
         <span className="text-sm font-bold text-gray-700 flex-1">{label}</span>
-        {onToggle && (
+        {onToggle ? (
           <button
             onClick={e => { e.stopPropagation(); onToggle() }}
             className={`flex items-center gap-1.5 text-xs font-semibold rounded px-2 py-1 transition-colors ${
@@ -39,7 +39,9 @@ function A3Field({ label, complete, onToggle, children }) {
             }`}>
             {complete ? '✓ Complete' : 'Mark Complete'}
           </button>
-        )}
+        ) : complete ? (
+          <span className="text-xs font-semibold bg-green-600 text-white rounded px-2 py-1">✓ Complete</span>
+        ) : null}
       </div>
       {open && <div className="p-3 space-y-3">{children}</div>}
     </div>
