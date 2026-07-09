@@ -253,17 +253,14 @@ const SECTIONS = {
     placeholder: 'e.g. After 4 weeks, defect rate on Line 3 dropped from 4.2% to 1.8%. Target not yet met — monitoring weekly. Identified secondary issue with operator training at Station 4.',
   },
   standardize: {
-    label: '8. Standardize & Share Success',
-    questions: 'Document the new process and set as the new standard. Share through horizontal deployment. Reflect and celebrate success.',
+    label: '8. Standardize',
+    questions: 'Document the new process and set as the new standard.',
     tools: [
       'Train personnel in the new way of doing things',
       'Standardize new processes, update procedures, implement visual management',
       'Use control charting to prove results and maintain discipline in the area',
-      'Confirm the financial gains (if required)',
-      'Present to senior management — recognize and reward the team',
-      'Reflect on lessons learned. Start the next improvement!',
     ],
-    placeholder: 'e.g. Updated SOP QA-L3-004 to include changeover checklist. Training completed for all operators. Shared findings with MX site — similar improvement opportunity identified.',
+    placeholder: 'e.g. Updated SOP QA-L3-004 to include changeover checklist. Training completed for all operators.',
   },
 }
 
