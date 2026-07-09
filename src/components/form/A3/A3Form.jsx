@@ -276,6 +276,11 @@ export default function A3Form() {
   const countermeasures    = a3.countermeasures     || [EMPTY_CM(1)]
   const sc                 = a3.sectionComplete     || {}
 
+  const allCMActivities  = countermeasures.flatMap(cm => cm.activities || [])
+  const realCMActivities = allCMActivities.filter(a => a.what?.trim())
+  const doneCMActivities = realCMActivities.filter(a => a.status === 'Completed')
+  const allCMDone        = realCMActivities.length > 0 && doneCMActivities.length === realCMActivities.length
+
   function toggleSection(key) {
     upd('sectionComplete', { ...sc, [key]: !sc[key] })
   }
@@ -377,6 +382,28 @@ export default function A3Form() {
               onChange={val => updCM(i, val)}
               disabled={locked} />
           ))}
+
+          {/* Activity completion tracker */}
+          <div className={`flex items-center justify-between pt-3 border-t ${allCMDone ? 'border-green-200' : 'border-gray-100'}`}>
+            <div className="flex items-center gap-3">
+              {realCMActivities.length > 0 ? (
+                <>
+                  <span className="text-xs text-gray-500">
+                    Activities: <span className="font-semibold text-gray-700">{doneCMActivities.length}/{realCMActivities.length} completed</span>
+                  </span>
+                  <div className="w-24 h-1.5 bg-gray-200 rounded-full overflow-hidden">
+                    <div className="h-full bg-green-500 rounded-full transition-all duration-300"
+                      style={{ width: `${Math.round((doneCMActivities.length / realCMActivities.length) * 100)}%` }} />
+                  </div>
+                </>
+              ) : (
+                <span className="text-xs text-gray-400 italic">Add activities above to track implementation progress</span>
+              )}
+            </div>
+            {allCMDone && (
+              <span className="text-sm font-semibold text-green-700">✓ All activities complete</span>
+            )}
+          </div>
         </A3Field>
 
         {/* 7. Monitor Results & Process */}
