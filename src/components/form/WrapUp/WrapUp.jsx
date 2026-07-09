@@ -10,7 +10,7 @@ export default function WrapUp() {
   const { form, setForm } = useKaizenForm()
 
   return (
-    <AccordionSection title="6. Wrap-Up / Closure" stage="wrapup" defaultOpen={true}>
+    <AccordionSection title="3. Wrap-Up / Closure" stage="wrapup" defaultOpen={true}>
 
       <div>
         <h3 className="text-sm font-bold text-gray-800 mb-1">Suggestions for Solutions Extension</h3>

@@ -8,7 +8,7 @@ import { ImagePasteZone } from '../shared/ImagePasteZone'
 export default function Act() {
   const { form, setForm } = useKaizenForm()
   return (
-    <AccordionSection title="5. Act" stage="act" defaultOpen={true}>
+    <AccordionSection title="Act" stage="plan" defaultOpen={true}>
 
       <div>
         <h3 className="text-sm font-bold text-gray-800 mb-1">Standardize – Actions Implemented</h3>

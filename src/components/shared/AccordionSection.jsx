@@ -4,6 +4,7 @@ import { useState } from 'react'
 
 const COLORS = {
   info:        'bg-red-700',
+  pdca:        'bg-indigo-700',
   plan:        'bg-blue-600',
   do:          'bg-orange-500',
   check:       'bg-purple-600',

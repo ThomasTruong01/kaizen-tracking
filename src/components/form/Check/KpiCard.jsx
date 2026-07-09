@@ -107,7 +107,7 @@ export default function Check() {
   }
 
   return (
-    <AccordionSection title="4. Check" stage="check" defaultOpen={true}>
+    <AccordionSection title="Check" stage="plan" defaultOpen={true}>
 
       {/* KPI cards */}
       <div>

@@ -9,7 +9,7 @@ export default function Plan() {
   const { form, setForm } = useKaizenForm()
 
   return (
-    <AccordionSection title="2. Plan" stage="plan" defaultOpen={true}>
+    <AccordionSection title="Plan" stage="plan" defaultOpen={true}>
 
       {/* Key Measurements */}
       <div>

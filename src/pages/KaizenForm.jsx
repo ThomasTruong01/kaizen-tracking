@@ -8,14 +8,11 @@ import { fetchProject } from '../lib/api'
 import { computeProgress } from '../lib/utils'
 import { ChangeHistoryModal } from '../components/shared/ChangeHistoryModal'
 import { PriorityBadge, StatusBadge } from '../components/shared/StatusBadge'
-import ProjectInfo   from '../components/form/ProjectInfo'
-import Plan          from '../components/form/Plan/Plan'
-import Do            from '../components/form/Do/SolutionCard'
-import Check         from '../components/form/Check/KpiCard'
-import Act           from '../components/form/Act'
-import WrapUp        from '../components/form/WrapUp/WrapUp'
-import A3Form        from '../components/form/A3/A3Form'
-import { PdfUploadZone } from '../components/shared/PdfUploadZone'
+import ProjectInfo    from '../components/form/ProjectInfo'
+import PDCASection    from '../components/form/PDCA/PDCASection'
+import WrapUp         from '../components/form/WrapUp/WrapUp'
+import A3Form         from '../components/form/A3/A3Form'
+import { PdfUploadZone }    from '../components/shared/PdfUploadZone'
 import { AccordionSection } from '../components/shared/AccordionSection'
 
 // ── Inner form (has access to context) ───────────────────────────────────────
@@ -151,12 +148,7 @@ function FormInner({ projectId }) {
           <>
             {/* PDCA built-in */}
             {form.kaizenType === 'PDCA' && form.kaizenTypeMode !== 'pdf' && (
-              <>
-                <Plan />
-                <Do />
-                <Check />
-                <Act />
-              </>
+              <PDCASection />
             )}
 
             {/* A3 built-in */}
