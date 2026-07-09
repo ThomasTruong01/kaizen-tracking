@@ -364,8 +364,8 @@ export default function A3Form() {
           </div>
         </A3Field>
 
-        {/* 6. Implement Countermeasure — one card per CM from section 5 */}
-        <A3Field label="6. Implement Countermeasure" complete={sc.s6} onToggle={() => toggleSection('s6')}>
+        {/* 6. Implement Countermeasure — progress auto-computed from activity completion */}
+        <A3Field label="6. Implement Countermeasure" complete={allCMDone && realCMActivities.length > 0}>
           <SectionHint
             questions="Select the most practical and effective countermeasure(s). Create a clear and detailed action plan. Implement quickly."
             tools={[

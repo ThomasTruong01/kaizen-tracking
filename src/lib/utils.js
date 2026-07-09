@@ -14,9 +14,16 @@ export function computeProgress(form) {
 
   if (form.kaizenType === 'A3') {
     // A3 — 8 sections × 10% = 80%
+    // Sections 1–5, 7–8: manual "Mark Complete" toggles (7 × 10% = 70%)
     const sc = form.a3?.sectionComplete || {}
-    const done = ['s1','s2','s3','s4','s5','s6','s7','s8'].filter(k => sc[k]).length
-    p += done * 10
+    const manualDone = ['s1','s2','s3','s4','s5','s7','s8'].filter(k => sc[k]).length
+    p += manualDone * 10
+
+    // Section 6: activity-weighted (10% split equally across all CM activities)
+    const allCMActs  = (form.a3?.countermeasures || []).flatMap(cm => cm.activities || [])
+    const realCMActs = allCMActs.filter(a => a.what?.trim())
+    const doneCMActs = realCMActs.filter(a => a.status === 'Completed')
+    if (realCMActs.length > 0) p += Math.round((doneCMActs.length / realCMActs.length) * 10)
   } else {
     // PDCA (default) — Plan 20% + Do 20% + Check 20% + Act 20% = 80%
     if (form.planComplete) p += 20
