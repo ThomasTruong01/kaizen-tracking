@@ -20,11 +20,22 @@ function SectionHint({ questions, tools }) {
   )
 }
 
-function A3Field({ label, children }) {
+function A3Field({ label, complete, onToggle, children }) {
   return (
-    <div className="border border-gray-200 rounded-md overflow-hidden">
-      <div className="bg-gray-50 border-b border-gray-200 px-3 py-2">
+    <div className={`border rounded-md overflow-hidden ${complete ? 'border-green-300' : 'border-gray-200'}`}>
+      <div className={`flex items-center justify-between px-3 py-2 border-b ${complete ? 'bg-green-50 border-green-200' : 'bg-gray-50 border-gray-200'}`}>
         <span className="text-sm font-bold text-gray-700">{label}</span>
+        {onToggle && (
+          <button
+            onClick={onToggle}
+            className={`flex items-center gap-1.5 text-xs font-semibold rounded px-2 py-1 transition-colors ${
+              complete
+                ? 'bg-green-600 text-white hover:bg-green-700'
+                : 'border border-gray-300 text-gray-500 hover:border-green-500 hover:text-green-600'
+            }`}>
+            {complete ? '✓ Complete' : 'Mark Complete'}
+          </button>
+        )}
       </div>
       <div className="p-3 space-y-3">{children}</div>
     </div>
@@ -189,9 +200,9 @@ function ImplementCard({ cm, index, onChange, disabled }) {
   )
 }
 
-function TextareaSection({ label, questions, tools, placeholder, value, onChange, images, onImagesChange, disabled }) {
+function TextareaSection({ label, questions, tools, placeholder, value, onChange, images, onImagesChange, disabled, complete, onToggle }) {
   return (
-    <A3Field label={label}>
+    <A3Field label={label} complete={complete} onToggle={onToggle}>
       <SectionHint questions={questions} tools={tools} />
       <textarea value={value} onChange={e => onChange(e.target.value)}
         disabled={disabled} rows={4} placeholder={placeholder}
@@ -263,6 +274,11 @@ export default function A3Form() {
   const monitorResultLines = a3.monitorResultLines  || [{ text: '', images: [] }]
   const standardizeLines   = a3.standardizeLines    || [{ text: '', images: [] }]
   const countermeasures    = a3.countermeasures     || [EMPTY_CM(1)]
+  const sc                 = a3.sectionComplete     || {}
+
+  function toggleSection(key) {
+    upd('sectionComplete', { ...sc, [key]: !sc[key] })
+  }
 
   function updCM(i, val) {
     const next = [...countermeasures]; next[i] = val
@@ -283,18 +299,20 @@ export default function A3Form() {
 
         {/* 1. Clarify the Problem */}
         <TextareaSection {...SECTIONS.clarifyProblem}
+          complete={sc.s1} onToggle={() => toggleSection('s1')}
           value={a3.clarifyProblem || ''} onChange={v => upd('clarifyProblem', v)}
           images={a3.clarifyProblemImages || []} onImagesChange={v => upd('clarifyProblemImages', v)}
           disabled={locked} />
 
         {/* 2. Breakdown the Problem */}
         <TextareaSection {...SECTIONS.breakdownProblem}
+          complete={sc.s2} onToggle={() => toggleSection('s2')}
           value={a3.breakdownProblem || ''} onChange={v => upd('breakdownProblem', v)}
           images={a3.breakdownProblemImages || []} onImagesChange={v => upd('breakdownProblemImages', v)}
           disabled={locked} />
 
         {/* 3. Set the Target */}
-        <A3Field label="3. Set the Target">
+        <A3Field label="3. Set the Target" complete={sc.s3} onToggle={() => toggleSection('s3')}>
           <SectionHint
             questions="What outcome do I want? Visualize the desired results. Using the data, set a measurable and realistic goal."
             tools={[
@@ -310,7 +328,7 @@ export default function A3Form() {
         </A3Field>
 
         {/* 4. Analyze the Root Cause */}
-        <A3Field label="4. Analyze the Root Cause">
+        <A3Field label="4. Analyze the Root Cause" complete={sc.s4} onToggle={() => toggleSection('s4')}>
           <SectionHint
             questions="Clarify the root cause. Consider as many potential cause factors as possible. Identify areas for improvement."
             tools={[
@@ -322,7 +340,7 @@ export default function A3Form() {
         </A3Field>
 
         {/* 5. Develop Countermeasures / Priorities */}
-        <A3Field label="5. Develop Countermeasures / Priorities">
+        <A3Field label="5. Develop Countermeasures / Priorities" complete={sc.s5} onToggle={() => toggleSection('s5')}>
           <SectionHint
             questions="List as many potential countermeasures as possible. Identify an effective countermeasure that directly addresses the root cause. Prioritize issues. Identify and make ready all tools and equipment for change in advance."
             tools={['Brainstorming', 'Priority list', 'Gantt chart', 'Pilot timetable']} />
@@ -342,7 +360,7 @@ export default function A3Form() {
         </A3Field>
 
         {/* 6. Implement Countermeasure — one card per CM from section 5 */}
-        <A3Field label="6. Implement Countermeasure">
+        <A3Field label="6. Implement Countermeasure" complete={sc.s6} onToggle={() => toggleSection('s6')}>
           <SectionHint
             questions="Select the most practical and effective countermeasure(s). Create a clear and detailed action plan. Implement quickly."
             tools={[
@@ -362,7 +380,7 @@ export default function A3Form() {
         </A3Field>
 
         {/* 7. Monitor Results & Process */}
-        <A3Field label={SECTIONS.monitorResults.label}>
+        <A3Field label={SECTIONS.monitorResults.label} complete={sc.s7} onToggle={() => toggleSection('s7')}>
           <SectionHint questions={SECTIONS.monitorResults.questions} tools={SECTIONS.monitorResults.tools} />
           <EvidenceLineList
             items={monitorResultLines}
@@ -372,7 +390,7 @@ export default function A3Form() {
         </A3Field>
 
         {/* 8. Standardize & Share Success */}
-        <A3Field label={SECTIONS.standardize.label}>
+        <A3Field label={SECTIONS.standardize.label} complete={sc.s8} onToggle={() => toggleSection('s8')}>
           <SectionHint questions={SECTIONS.standardize.questions} tools={SECTIONS.standardize.tools} />
           <EvidenceLineList
             items={standardizeLines}

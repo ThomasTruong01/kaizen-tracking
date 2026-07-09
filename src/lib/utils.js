@@ -12,20 +12,23 @@ export function computeProgress(form) {
   // 1. Project Info — 5%
   if (form.submitted) p += 5
 
-  // 2. Plan — 20%
-  if (form.planComplete) p += 20
+  if (form.kaizenType === 'A3') {
+    // A3 — 8 sections × 10% = 80%
+    const sc = form.a3?.sectionComplete || {}
+    const done = ['s1','s2','s3','s4','s5','s6','s7','s8'].filter(k => sc[k]).length
+    p += done * 10
+  } else {
+    // PDCA (default) — Plan 20% + Do 20% + Check 20% + Act 20% = 80%
+    if (form.planComplete) p += 20
 
-  // 3. Do — 20%, weighted by completed activities that have a description
-  const allActs  = (form.solutions || []).flatMap(s => s.activities || [])
-  const realActs = allActs.filter(a => a.what?.trim())
-  const doneActs = realActs.filter(a => a.status === 'Completed')
-  if (realActs.length > 0) p += Math.round((doneActs.length / realActs.length) * 20)
+    const allActs  = (form.solutions || []).flatMap(s => s.activities || [])
+    const realActs = allActs.filter(a => a.what?.trim())
+    const doneActs = realActs.filter(a => a.status === 'Completed')
+    if (realActs.length > 0) p += Math.round((doneActs.length / realActs.length) * 20)
 
-  // 4. Check — 20%
-  if (form.checkComplete) p += 20
-
-  // 5. Act — 20%
-  if (form.actComplete) p += 20
+    if (form.checkComplete) p += 20
+    if (form.actComplete)   p += 20
+  }
 
   // 6a. Wrap-Up basics (first 3 questions) — 5%
   if (form.wrapupBasicComplete) p += 5
