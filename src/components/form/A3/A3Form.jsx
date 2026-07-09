@@ -9,15 +9,30 @@ import { ACTIVITY_STATUSES } from '../../../lib/constants'
 
 // Guiding questions + suggested tools shown above each section's input
 function SectionHint({ questions, tools }) {
+  // Group flat tools array: items after a { heading } become sub-bullets of that heading
+  const groups = []
+  let current = { heading: null, items: [] }
+  for (const t of tools || []) {
+    if (t?.heading) { groups.push(current); current = { heading: t.heading, items: [] } }
+    else current.items.push(t)
+  }
+  groups.push(current)
+
   return (
     <div className="space-y-2">
       <p className="text-xs text-gray-500 italic">{questions}</p>
       {tools?.length > 0 && (
         <ul className="text-xs text-gray-400 list-disc list-inside space-y-0.5">
-          {tools.map((t, i) =>
-            t?.heading
-              ? <li key={i} className="list-none font-semibold text-gray-500 mt-1">{t.heading}</li>
-              : <li key={i}>{t}</li>
+          {groups.map((g, gi) =>
+            g.heading === null
+              ? g.items.map((item, ii) => <li key={`${gi}-${ii}`}>{item}</li>)
+              : (
+                <li key={`h-${gi}`}>{g.heading}
+                  <ul className="list-disc list-inside ml-4 mt-0.5 space-y-0.5">
+                    {g.items.map((item, ii) => <li key={ii}>{item}</li>)}
+                  </ul>
+                </li>
+              )
           )}
         </ul>
       )}
