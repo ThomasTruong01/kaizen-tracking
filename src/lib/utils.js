@@ -12,7 +12,12 @@ export function computeProgress(form) {
   // 1. Project Info — 5%
   if (form.submitted) p += 5
 
-  if (form.kaizenType === 'A3') {
+  const isPdfMode = form.kaizenTypeMode === 'pdf' || !['PDCA', 'A3'].includes(form.kaizenType)
+
+  if (isPdfMode) {
+    // PDF upload mode — 80% when at least one file is uploaded
+    if ((form.kaizenTypePDFs || []).length > 0) p += 80
+  } else if (form.kaizenType === 'A3') {
     // A3 — 8 sections × 10% = 80%
     // Sections 1–5, 7–8: manual "Mark Complete" toggles (7 × 10% = 70%)
     const sc = form.a3?.sectionComplete || {}
@@ -25,7 +30,7 @@ export function computeProgress(form) {
     const doneCMActs = realCMActs.filter(a => a.status === 'Completed')
     if (realCMActs.length > 0) p += Math.round((doneCMActs.length / realCMActs.length) * 10)
   } else {
-    // PDCA (default) — Plan 20% + Do 20% + Check 20% + Act 20% = 80%
+    // PDCA — Plan 20% + Do 20% + Check 20% + Act 20% = 80%
     if (form.planComplete) p += 20
 
     const allActs  = (form.solutions || []).flatMap(s => s.activities || [])
