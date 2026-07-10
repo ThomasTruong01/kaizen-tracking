@@ -9,8 +9,8 @@ function normalize(images) {
 }
 
 export function ImagePasteZone({ images = [], onChange, disabled = false, label = '📎 Paste or drag-drop image / screenshot' }) {
-  const [dragOver,    setDragOver]    = useState(false)
-  const [lightboxSrc, setLightboxSrc] = useState(null)
+  const [dragOver,      setDragOver]      = useState(false)
+  const [lightboxIndex, setLightboxIndex] = useState(null)
 
   const imgs = normalize(images)
 
@@ -54,7 +54,7 @@ export function ImagePasteZone({ images = [], onChange, disabled = false, label 
                   src={img.src}
                   alt={img.caption || `Image ${i + 1}`}
                   className="w-full h-36 object-cover cursor-zoom-in"
-                  onClick={() => setLightboxSrc(img.src)} />
+                  onClick={() => setLightboxIndex(i)} />
                 {!disabled && (
                   <button
                     onClick={() => removeImage(i)}
@@ -89,7 +89,12 @@ export function ImagePasteZone({ images = [], onChange, disabled = false, label 
         </div>
       )}
 
-      {lightboxSrc && <Lightbox src={lightboxSrc} onClose={() => setLightboxSrc(null)} />}
+      {lightboxIndex !== null && (
+        <Lightbox
+          images={imgs.map(img => ({ src: img.src, text: img.caption || undefined }))}
+          initialIndex={lightboxIndex}
+          onClose={() => setLightboxIndex(null)} />
+      )}
     </div>
   )
 }

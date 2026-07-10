@@ -9,12 +9,17 @@ import { Lightbox } from '../../shared/Lightbox'
 
 function WeekEntry({ entry, onRemove }) {
   const [open, setOpen] = useState(true)
-  const [lightboxSrc, setLightboxSrc] = useState(null)
+  const [lightboxIndex, setLightboxIndex] = useState(null)
 
   // Normalize: support old plain-string arrays and new { src, caption } objects
   const imgs = (entry.images || []).map(img =>
     typeof img === 'string' ? { src: img, caption: '' } : img
   )
+
+  const lightboxImages = imgs.map(img => ({
+    src: img.src,
+    text: [img.caption, entry.notes].filter(Boolean).join('\n\n') || undefined,
+  }))
 
   return (
     <div className="border border-gray-200 rounded-md overflow-hidden mb-2">
@@ -26,23 +31,29 @@ function WeekEntry({ entry, onRemove }) {
           className="text-xs text-red-400 hover:text-red-600 font-semibold ml-2">Remove</button>
       </div>
       {open && (
-        <div className="p-3 space-y-3 bg-white">
-          {imgs.map((img, i) => (
-            <div key={i} className="space-y-1">
-              <img src={img.src} alt={img.caption || `Chart ${i + 1}`}
-                className="w-full rounded border border-gray-200 cursor-zoom-in"
-                onClick={() => setLightboxSrc(img.src)} />
-              {img.caption && (
-                <p className="text-xs text-gray-500 font-medium">{img.caption}</p>
-              )}
+        <div className="p-3 bg-white">
+          {imgs.length > 0 && (
+            <div className="flex flex-wrap gap-3">
+              {imgs.map((img, i) => (
+                <div key={i} className="flex flex-col gap-1" style={{ width: '160px' }}>
+                  <img src={img.src} alt={img.caption || `Chart ${i + 1}`}
+                    className="w-full h-28 object-cover rounded border border-gray-200 cursor-zoom-in"
+                    onClick={() => setLightboxIndex(i)} />
+                  {img.caption && (
+                    <p className="text-xs text-gray-500 font-medium truncate">{img.caption}</p>
+                  )}
+                </div>
+              ))}
             </div>
-          ))}
+          )}
           {entry.notes && (
-            <pre className="text-xs text-gray-600 whitespace-pre-wrap font-sans">{entry.notes}</pre>
+            <pre className="text-xs text-gray-600 whitespace-pre-wrap font-sans mt-2">{entry.notes}</pre>
           )}
         </div>
       )}
-      {lightboxSrc && <Lightbox src={lightboxSrc} onClose={() => setLightboxSrc(null)} />}
+      {lightboxIndex !== null && (
+        <Lightbox images={lightboxImages} initialIndex={lightboxIndex} onClose={() => setLightboxIndex(null)} />
+      )}
     </div>
   )
 }
