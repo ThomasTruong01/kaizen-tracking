@@ -168,7 +168,8 @@ function FormInner({ projectId }) {
                   `Other — ${form.kaizenTypeOtherDesc || 'Supporting Document'}`
                 }`}
                 stage="methodology"
-                defaultOpen={true}>
+                defaultOpen={true}
+                complete={(form.kaizenTypePDFs || []).length > 0}>
                 <div className="space-y-3">
                   {form.kaizenType === 'Other' && form.kaizenTypeOtherDesc && (
                     <p className="text-sm text-gray-600 italic">{form.kaizenTypeOtherDesc}</p>

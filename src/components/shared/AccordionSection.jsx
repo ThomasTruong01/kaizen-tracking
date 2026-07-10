@@ -14,7 +14,7 @@ const COLORS = {
   methodology: 'bg-slate-600',
 }
 
-export function AccordionSection({ title, stage = 'info', defaultOpen = true, locked = false, children }) {
+export function AccordionSection({ title, stage = 'info', defaultOpen = true, locked = false, complete = false, children }) {
   const [open, setOpen] = useState(defaultOpen)
   const color = COLORS[stage] || 'bg-gray-600'
 
@@ -24,7 +24,12 @@ export function AccordionSection({ title, stage = 'info', defaultOpen = true, lo
         className={`w-full flex items-center justify-between px-4 py-3 text-white font-bold text-sm
           ${color} ${locked ? 'opacity-70 cursor-not-allowed' : 'hover:opacity-90 cursor-pointer'}`}>
         <span>{title}</span>
-        <span className="text-base">{open ? '▾' : '▸'}</span>
+        <div className="flex items-center gap-2">
+          {complete && (
+            <span className="text-xs font-semibold bg-white/20 text-white rounded px-2 py-0.5">✓ Complete</span>
+          )}
+          <span className="text-base">{open ? '▾' : '▸'}</span>
+        </div>
       </button>
       {locked && (
         <div className="bg-gray-50 border-t border-gray-100 px-4 py-5 text-center text-sm text-gray-400">
