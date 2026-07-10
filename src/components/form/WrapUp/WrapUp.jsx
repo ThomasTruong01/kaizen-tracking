@@ -9,8 +9,11 @@ import CqmSignOff from './CqmSignOff'
 export default function WrapUp() {
   const { form, setForm } = useKaizenForm()
 
+  const financeResolved = form.financeApplicable === false || form.financeStatus === 'Approved'
+  const wrapupComplete  = !!(form.wrapupBasicComplete && financeResolved && form.cqmDecision === 'completed')
+
   return (
-    <AccordionSection title="3. Wrap-Up / Closure" stage="wrapup" defaultOpen={true}>
+    <AccordionSection title="3. Wrap-Up / Closure" stage="wrapup" defaultOpen={true} complete={wrapupComplete}>
 
       <div>
         <h3 className="text-sm font-bold text-gray-800 mb-1">Suggestions for Solutions Extension</h3>

@@ -320,8 +320,10 @@ export default function A3Form() {
     upd('countermeasures', countermeasures.filter((_, idx) => idx !== i))
   }
 
+  const a3Complete = !!(sc.s1 && sc.s2 && sc.s3 && sc.s4 && sc.s5 && allCMDone && sc.s7 && sc.s8)
+
   return (
-    <AccordionSection title="2. A3 Report" stage="a3" defaultOpen={true}>
+    <AccordionSection title="2. A3 Report" stage="a3" defaultOpen={true} complete={a3Complete}>
       <div className="space-y-3">
 
         {/* 1. Clarify the Problem */}
