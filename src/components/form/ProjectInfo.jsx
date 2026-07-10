@@ -227,15 +227,6 @@ export default function ProjectInfo() {
         })()}
       </Field>
 
-      {/* Project Title */}
-      <Field label="Project Title" required>
-        <input type="text" value={form.projectTitle}
-          onChange={e => setForm({ projectTitle: e.target.value })}
-          disabled={form.submitted && !form.editing} placeholder="Enter project title"
-          className={`w-full text-sm border rounded px-2.5 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 disabled:bg-gray-50 ${errors.projectTitle ? 'border-red-400' : 'border-gray-300'}`} />
-        {errors.projectTitle && <p className="text-red-500 text-xs mt-1">{errors.projectTitle}</p>}
-      </Field>
-
       {/* Team Leader */}
       <Field label="Team Leader" required>
         <EmployeeSearch
@@ -360,6 +351,15 @@ export default function ProjectInfo() {
             </div>
           )}
         </div>
+      </Field>
+
+      {/* Project Title */}
+      <Field label="Project Title" required>
+        <input type="text" value={form.projectTitle}
+          onChange={e => setForm({ projectTitle: e.target.value })}
+          disabled={form.submitted && !form.editing} placeholder="Enter project title"
+          className={`w-full text-sm border rounded px-2.5 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 disabled:bg-gray-50 ${errors.projectTitle ? 'border-red-400' : 'border-gray-300'}`} />
+        {errors.projectTitle && <p className="text-red-500 text-xs mt-1">{errors.projectTitle}</p>}
       </Field>
 
       {/* Problem Description */}
