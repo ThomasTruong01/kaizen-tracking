@@ -9,35 +9,51 @@ import { Lightbox } from '../../shared/Lightbox'
 
 function WeekEntry({ entry, onRemove }) {
   const [open, setOpen] = useState(true)
-  const [lightboxSrc, setLightboxSrc] = useState(null)
+  const [lightboxIndex, setLightboxIndex] = useState(null)
+
+  // Normalize: support old plain-string arrays and new { src, caption } objects
+  const imgs = (entry.images || []).map(img =>
+    typeof img === 'string' ? { src: img, caption: '' } : img
+  )
+
+  const lightboxImages = imgs.map(img => ({
+    src: img.src,
+    text: [img.caption, entry.notes].filter(Boolean).join('\n\n') || undefined,
+  }))
 
   return (
     <div className="border border-gray-200 rounded-md overflow-hidden mb-2">
       <div className="flex items-center bg-gray-50 border-b border-gray-100 px-3 py-2 cursor-pointer"
         onClick={() => setOpen(o => !o)}>
-        <span className={`text-xs text-gray-400 mr-2 transition-transform ${open ? '' : '-rotate-90'}`}>▾</span>
+        <span className="text-xs text-gray-400 mr-2">{open ? '▾' : '▸'}</span>
         <span className="flex-1 text-sm font-semibold text-gray-700">{entry.label}</span>
         <button onClick={e => { e.stopPropagation(); onRemove() }}
           className="text-xs text-red-400 hover:text-red-600 font-semibold ml-2">Remove</button>
       </div>
       {open && (
-        <div className="p-3 space-y-2 bg-white">
-          {entry.images.length > 0 && (
-            <div className="flex flex-wrap gap-2">
-              {entry.images.map((src, i) => (
-                <div key={i} className="w-20 h-14 border border-gray-200 rounded overflow-hidden cursor-zoom-in"
-                  onClick={() => setLightboxSrc(src)}>
-                  <img src={src} alt="Chart" className="w-full h-full object-cover" />
+        <div className="p-3 bg-white">
+          {imgs.length > 0 && (
+            <div className="flex flex-wrap gap-3">
+              {imgs.map((img, i) => (
+                <div key={i} className="flex flex-col gap-1" style={{ width: '160px' }}>
+                  <img src={img.src} alt={img.caption || `Chart ${i + 1}`}
+                    className="w-full h-28 object-cover rounded border border-gray-200 cursor-zoom-in"
+                    onClick={() => setLightboxIndex(i)} />
+                  {img.caption && (
+                    <p className="text-xs text-gray-500 font-medium truncate">{img.caption}</p>
+                  )}
                 </div>
               ))}
             </div>
           )}
           {entry.notes && (
-            <pre className="text-xs text-gray-600 bg-gray-50 rounded p-2 whitespace-pre-wrap font-sans border border-gray-100">{entry.notes}</pre>
+            <pre className="text-xs text-gray-600 whitespace-pre-wrap font-sans mt-2">{entry.notes}</pre>
           )}
         </div>
       )}
-      {lightboxSrc && <Lightbox src={lightboxSrc} onClose={() => setLightboxSrc(null)} />}
+      {lightboxIndex !== null && (
+        <Lightbox images={lightboxImages} initialIndex={lightboxIndex} onClose={() => setLightboxIndex(null)} />
+      )}
     </div>
   )
 }
@@ -107,7 +123,7 @@ export default function Check() {
   }
 
   return (
-    <AccordionSection title="4. Check" stage="check" defaultOpen={true}>
+    <AccordionSection title="Check" stage="plan" defaultOpen={true}>
 
       {/* KPI cards */}
       <div>

@@ -12,26 +12,41 @@ export function computeProgress(form) {
   // 1. Project Info — 5%
   if (form.submitted) p += 5
 
-  // 2. Plan — 20%
-  if (form.planComplete) p += 20
+  const isPdfMode = form.kaizenTypeMode === 'pdf' || !['PDCA', 'A3'].includes(form.kaizenType)
 
-  // 3. Do — 20%, weighted by completed activities that have a description
-  const allActs  = (form.solutions || []).flatMap(s => s.activities || [])
-  const realActs = allActs.filter(a => a.what?.trim())
-  const doneActs = realActs.filter(a => a.status === 'Completed')
-  if (realActs.length > 0) p += Math.round((doneActs.length / realActs.length) * 20)
+  if (isPdfMode) {
+    // PDF upload mode — 80% when at least one file is uploaded
+    if ((form.kaizenTypePDFs || []).length > 0) p += 80
+  } else if (form.kaizenType === 'A3') {
+    // A3 — 8 sections × 10% = 80%
+    // Sections 1–5, 7–8: manual "Mark Complete" toggles (7 × 10% = 70%)
+    const sc = form.a3?.sectionComplete || {}
+    const manualDone = ['s1','s2','s3','s4','s5','s7','s8'].filter(k => sc[k]).length
+    p += manualDone * 10
 
-  // 4. Check — 20%
-  if (form.checkComplete) p += 20
+    // Section 6: activity-weighted (10% split equally across all CM activities)
+    const allCMActs  = (form.a3?.countermeasures || []).flatMap(cm => cm.activities || [])
+    const realCMActs = allCMActs.filter(a => a.what?.trim())
+    const doneCMActs = realCMActs.filter(a => a.status === 'Completed')
+    if (realCMActs.length > 0) p += Math.round((doneCMActs.length / realCMActs.length) * 10)
+  } else {
+    // PDCA — Plan 20% + Do 20% + Check 20% + Act 20% = 80%
+    if (form.planComplete) p += 20
 
-  // 5. Act — 20%
-  if (form.actComplete) p += 20
+    const allActs  = (form.solutions || []).flatMap(s => s.activities || [])
+    const realActs = allActs.filter(a => a.what?.trim())
+    const doneActs = realActs.filter(a => a.status === 'Completed')
+    if (realActs.length > 0) p += Math.round((doneActs.length / realActs.length) * 20)
+
+    if (form.checkComplete) p += 20
+    if (form.actComplete)   p += 20
+  }
 
   // 6a. Wrap-Up basics (first 3 questions) — 5%
   if (form.wrapupBasicComplete) p += 5
 
-  // 6b. Finance Validation approved — 5%
-  if (form.financeStatus === 'Approved') p += 5
+  // 6b. Finance Validation — 5% (skipped counts the same as approved)
+  if (form.financeApplicable === false || form.financeStatus === 'Approved') p += 5
 
   // 6c. CQM signed off — 5%
   if (form.cqmDecision === 'completed') p += 5

@@ -5,13 +5,12 @@
 import { useState } from 'react'
 import { useKaizenForm } from '../../context/KaizenFormContext'
 import { ImagePasteZone } from '../shared/ImagePasteZone'
+import { Lightbox } from '../shared/Lightbox'
 
 function SavedEntry({ entry, index, onRemove, disabled }) {
-  const [activeImg, setActiveImg] = useState(null)
+  const [lightboxIndex, setLightboxIndex] = useState(null)
 
-  function toggle(i) {
-    setActiveImg(prev => (prev === i ? null : i))
-  }
+  const lightboxImages = entry.images.map(src => ({ src, text: entry.text || undefined }))
 
   return (
     <div className="border border-gray-200 rounded-md overflow-hidden">
@@ -29,40 +28,27 @@ function SavedEntry({ entry, index, onRemove, disabled }) {
       </div>
 
       <div className="p-3 space-y-3">
-        {/* Thumbnails — click to expand */}
+        {/* Thumbnails — click to open gallery popup */}
         {entry.images.length > 0 && (
           <div className="flex flex-wrap gap-2">
             {entry.images.map((src, i) => (
-              <div key={i} onClick={() => toggle(i)}
-                title={activeImg === i ? 'Click to collapse' : 'Click to expand'}
-                className={`w-20 h-14 border-2 rounded overflow-hidden cursor-pointer transition-all
-                  ${activeImg === i
-                    ? 'border-blue-500 shadow-md ring-2 ring-blue-200'
-                    : 'border-gray-200 hover:border-blue-300'}`}>
+              <div key={i} onClick={() => setLightboxIndex(i)}
+                className="w-20 h-14 border-2 border-gray-200 rounded overflow-hidden cursor-zoom-in hover:border-blue-300 transition-colors">
                 <img src={src} alt="" className="w-full h-full object-cover" />
               </div>
             ))}
           </div>
         )}
 
-        {/* Expanded image + caption */}
-        {activeImg !== null && entry.images[activeImg] && (
-          <div className="space-y-2">
-            <img src={entry.images[activeImg]} alt=""
-              className="max-h-72 max-w-full rounded border border-gray-200 object-contain" />
-            {entry.text && (
-              <p className="text-sm text-gray-700 bg-blue-50 border border-blue-100 rounded px-3 py-2 leading-relaxed whitespace-pre-wrap">
-                {entry.text}
-              </p>
-            )}
-          </div>
-        )}
-
-        {/* If no images, always show text */}
-        {entry.images.length === 0 && entry.text && (
+        {/* Text always shown below thumbnails */}
+        {entry.text && (
           <p className="text-sm text-gray-600 leading-relaxed whitespace-pre-wrap">{entry.text}</p>
         )}
       </div>
+
+      {lightboxIndex !== null && (
+        <Lightbox images={lightboxImages} initialIndex={lightboxIndex} onClose={() => setLightboxIndex(null)} />
+      )}
     </div>
   )
 }

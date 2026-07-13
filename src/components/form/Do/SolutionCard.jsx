@@ -156,7 +156,7 @@ export default function Do() {
   }
 
   return (
-    <AccordionSection title="3. Do" stage="do" defaultOpen={true}>
+    <AccordionSection title="Do" stage="plan" defaultOpen={true}>
       <div>
         <p className="text-xs text-gray-400 mb-4">
           For each solution identified from root-cause analysis, create a Solution Card with its implementation activities.
