@@ -22,11 +22,20 @@ const CARDS = [
 ]
 
 const COLS = [
-  ['code','Project Code'],['title','Title / Type'],['site','Site'],
-  ['dept','Dept(s)'],['leader','Team Leader'],['priority','Priority'],
-  ['status','Status'],['targetDate','Target Date'],
-  ['completionDate','Completed'],['progress','Progress'],
+  ['code','Project Code'],['projectCategory','Type'],['title','Title'],['site','Site'],
+  ['leader','Team Leader'],['priority','Priority'],
+  ['status','Status'],['targetDate','Target Date'],['progress','Progress'],
 ]
+
+const CATEGORY_STYLES = {
+  'Kaizen':    'bg-gray-100 text-gray-600',
+  'Quick Win': 'bg-amber-100 text-amber-700',
+}
+
+const CATEGORY_ABBR = {
+  'Kaizen':    'KZ',
+  'Quick Win': 'QW',
+}
 
 export default function Dashboard() {
   const { user, switchUser, TEST_USERS } = useAuth()
@@ -74,17 +83,23 @@ export default function Dashboard() {
 
         {/* Summary cards */}
         <div className="grid grid-cols-6 gap-3">
-          {CARDS.map(c => (
-            <button key={c.key} onClick={() => f.setFilterStatus(f.filterStatus === c.sf ? 'All' : c.sf)}
-              className={`bg-white rounded shadow-sm border-t-4 p-4 text-left transition-all hover:-translate-y-0.5 hover:shadow-md ${c.color} ${f.filterStatus === c.sf ? 'ring-2 ring-current ring-offset-1' : ''}`}>
-              <div className="text-3xl font-bold leading-none mb-1.5">{f.cardCounts[c.key]}</div>
-              <div className="text-xs font-semibold text-gray-500 uppercase tracking-wide">{c.label}</div>
-            </button>
-          ))}
+          {CARDS.map(c => {
+            const isActive = c.sf === 'All'
+              ? f.selectedStatuses.size === 0
+              : f.selectedStatuses.has(c.sf)
+            return (
+              <button key={c.key}
+                onClick={() => f.toggleStatus(c.sf)}
+                className={`bg-white rounded shadow-sm border-t-4 p-4 text-left transition-all hover:-translate-y-0.5 hover:shadow-md ${c.color} ${isActive ? 'ring-2 ring-current ring-offset-1' : ''}`}>
+                <div className="text-3xl font-bold leading-none mb-1.5">{f.cardCounts[c.key]}</div>
+                <div className="text-xs font-semibold text-gray-500 uppercase tracking-wide">{c.label}</div>
+              </button>
+            )
+          })}
         </div>
 
-        {/* Site pills */}
-        <div className="flex gap-2 flex-wrap">
+        {/* Site + Category pills */}
+        <div className="flex gap-2 flex-wrap items-center">
           {SITES.map(site => (
             <button key={site} onClick={() => f.setFilterSite(site)}
               className={`rounded-full px-3 py-1 text-sm font-semibold border transition-colors ${f.filterSite === site ? 'bg-red-700 text-white border-red-700' : 'bg-white border-gray-300 text-gray-600 hover:border-red-300'}`}>
@@ -92,6 +107,13 @@ export default function Dashboard() {
               <span className={`ml-1.5 text-xs rounded-full px-1.5 py-0.5 ${f.filterSite === site ? 'bg-white/25' : 'bg-gray-100 text-gray-400'}`}>
                 {site === 'All' ? f.siteCounts.All || 0 : f.siteCounts[site] || 0}
               </span>
+            </button>
+          ))}
+          <div className="w-px h-5 bg-gray-300 mx-1" />
+          {['All', 'Kaizen', 'Quick Win'].map(cat => (
+            <button key={cat} onClick={() => f.setFilterCategory(cat)}
+              className={`rounded-full px-3 py-1 text-sm font-semibold border transition-colors ${f.filterCategory === cat ? 'bg-red-700 text-white border-red-700' : 'bg-white border-gray-300 text-gray-600 hover:border-red-300'}`}>
+              {cat === 'All' ? 'All Types' : cat}
             </button>
           ))}
         </div>
@@ -135,23 +157,25 @@ export default function Dashboard() {
             </thead>
             <tbody>
               {f.filtered.length === 0
-                ? <tr><td colSpan={10} className="text-center py-14 text-gray-400 text-sm">No projects match your filters.</td></tr>
+                ? <tr><td colSpan={9} className="text-center py-14 text-gray-400 text-sm">No projects match your filters.</td></tr>
                 : f.filtered.map(p => {
-                    const od = isOverdue(p.targetDate, p.status)
+                    const od  = isOverdue(p.targetDate, p.status)
+                    const cat = p.projectCategory || 'Kaizen'
                     return (
                       <tr key={p.id} onClick={() => navigate(`/kaizen/project/${p.id}`)} className="border-b border-gray-100 hover:bg-gray-50 cursor-pointer transition-colors">
                         <td className="px-3 py-3 font-mono text-xs font-bold text-green-800 whitespace-nowrap">{p.code}</td>
+                        <td className="px-3 py-3 whitespace-nowrap">
+                          <span className={`text-xs font-semibold rounded px-2 py-0.5 ${CATEGORY_STYLES[cat] || CATEGORY_STYLES['Kaizen']}`}>{CATEGORY_ABBR[cat] || 'KZ'}</span>
+                        </td>
                         <td className="px-3 py-3 max-w-[220px]">
                           <div className="font-semibold text-gray-800 leading-snug truncate">{p.title}</div>
                           <div className="text-xs text-gray-400">{p.type}</div>
                         </td>
                         <td className="px-3 py-3"><span className="bg-gray-100 rounded px-2 py-0.5 text-xs font-bold text-gray-700">{p.site}</span></td>
-                        <td className="px-3 py-3"><div className="flex flex-wrap gap-1">{(p.depts||[]).map(d => <span key={d} className="bg-green-100 text-green-800 rounded px-1.5 py-0.5 text-xs font-semibold">{d}</span>)}</div></td>
                         <td className="px-3 py-3 text-gray-700 whitespace-nowrap text-xs">{p.leader}</td>
                         <td className="px-3 py-3"><PriorityBadge priority={p.priority} /></td>
                         <td className="px-3 py-3 max-w-[150px]"><StatusBadge status={p.status} /></td>
                         <td className={`px-3 py-3 text-xs whitespace-nowrap ${od ? 'text-red-600 font-semibold' : 'text-gray-500'}`}>{formatDate(p.targetDate)}{od ? ' ⚠' : ''}</td>
-                        <td className={`px-3 py-3 text-xs whitespace-nowrap ${p.completionDate ? 'text-green-700 font-semibold' : 'text-gray-300'}`}>{p.completionDate ? formatDate(p.completionDate) : '—'}</td>
                         <td className="px-3 py-3">
                           <div className="w-20">
                             <div className="h-1.5 bg-gray-200 rounded-full"><div className="h-full bg-green-600 rounded-full" style={{width:`${p.progress}%`}} /></div>

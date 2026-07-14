@@ -9,11 +9,14 @@ const CURRENT_YEAR = String(new Date().getFullYear())
 const PENDING_STATUSES = ['Pending Dept. Manager Review', 'Pending Finance', 'Pending CQM']
 
 export function useProjectFilters(projects = []) {
-  const [filterStatus, setFilterStatus] = useState('All')
-  const [filterSite,   setFilterSite]   = useState('All')
-  const [filterType,   setFilterType]   = useState('All')
-  const [filterDept,   setFilterDept]   = useState('All')
-  const [filterYear,   setFilterYear]   = useState(CURRENT_YEAR)
+  const [selectedStatuses, setSelectedStatuses] = useState(
+    () => new Set(['Open', 'In Progress', '__pending'])
+  )
+  const [filterSite,     setFilterSite]     = useState('All')
+  const [filterType,     setFilterType]     = useState('All')
+  const [filterDept,     setFilterDept]     = useState('All')
+  const [filterYear,     setFilterYear]     = useState(CURRENT_YEAR)
+  const [filterCategory, setFilterCategory] = useState('All')
   const [searchQuery,  setSearchQuery]  = useState('')
   const [sortCol,      setSortCol]      = useState('code')
   const [sortDir,      setSortDir]      = useState('asc')
@@ -23,10 +26,28 @@ export function useProjectFilters(projects = []) {
     return data.filter(p => projectYear(p) === filterYear)
   }
 
-  function applyStatusFilter(data, status) {
-    if (status === 'All') return data
-    if (status === '__pending') return data.filter(p => PENDING_STATUSES.includes(p.status))
-    return data.filter(p => p.status === status)
+  function applyStatusFilter(data) {
+    if (selectedStatuses.size === 0) return data
+    return data.filter(p => {
+      for (const sf of selectedStatuses) {
+        if (sf === '__pending' && PENDING_STATUSES.includes(p.status)) return true
+        if (p.status === sf) return true
+      }
+      return false
+    })
+  }
+
+  function toggleStatus(sf) {
+    if (sf === 'All') {
+      setSelectedStatuses(new Set())
+      return
+    }
+    setSelectedStatuses(prev => {
+      const next = new Set(prev)
+      if (next.has(sf)) next.delete(sf)
+      else next.add(sf)
+      return next
+    })
   }
 
   const availableYears = useMemo(() => {
@@ -37,7 +58,7 @@ export function useProjectFilters(projects = []) {
   // Site pill counts — year + status + type + dept + search filtered (excludes site)
   const siteCounts = useMemo(() => {
     let base = applyYearFilter(projects)
-    base = applyStatusFilter(base, filterStatus)
+    base = applyStatusFilter(base)
     if (filterType !== 'All') base = base.filter(p => p.type === filterType)
     if (filterDept !== 'All') base = base.filter(p => (p.depts || []).includes(filterDept))
     if (searchQuery) {
@@ -51,9 +72,9 @@ export function useProjectFilters(projects = []) {
     const counts = { All: base.length }
     base.forEach(p => { counts[p.site] = (counts[p.site] || 0) + 1 })
     return counts
-  }, [projects, filterStatus, filterType, filterDept, filterYear, searchQuery])
+  }, [projects, selectedStatuses, filterType, filterDept, filterYear, searchQuery])
 
-  // Summary card counts
+  // Summary card counts — always based on full year + site filtered data
   const cardCounts = useMemo(() => {
     let y = applyYearFilter(projects)
     if (filterSite !== 'All') y = y.filter(p => p.site === filterSite)
@@ -70,10 +91,11 @@ export function useProjectFilters(projects = []) {
   // Fully filtered + sorted rows for the table
   const filtered = useMemo(() => {
     let data = applyYearFilter(projects)
-    data = applyStatusFilter(data, filterStatus)
+    data = applyStatusFilter(data)
     if (filterSite !== 'All') data = data.filter(p => p.site === filterSite)
     if (filterType !== 'All') data = data.filter(p => p.type === filterType)
     if (filterDept !== 'All') data = data.filter(p => (p.depts || []).includes(filterDept))
+    if (filterCategory !== 'All') data = data.filter(p => (p.projectCategory || 'Kaizen') === filterCategory)
     if (searchQuery) {
       const q = searchQuery.toLowerCase()
       data = data.filter(p =>
@@ -83,14 +105,14 @@ export function useProjectFilters(projects = []) {
       )
     }
     return [...data].sort((a, b) => {
-      const av = sortCol === 'dept' ? (a.depts || []).join(',') : (a[sortCol] ?? '')
-      const bv = sortCol === 'dept' ? (b.depts || []).join(',') : (b[sortCol] ?? '')
+      const av = a[sortCol] ?? ''
+      const bv = b[sortCol] ?? ''
       if (typeof av === 'number') return sortDir === 'asc' ? av - bv : bv - av
       return sortDir === 'asc'
         ? String(av).localeCompare(String(bv))
         : String(bv).localeCompare(String(av))
     })
-  }, [projects, filterStatus, filterSite, filterType, filterDept, filterYear, searchQuery, sortCol, sortDir])
+  }, [projects, selectedStatuses, filterSite, filterType, filterDept, filterYear, filterCategory, searchQuery, sortCol, sortDir])
 
   function handleSort(col) {
     if (sortCol === col) setSortDir(d => d === 'asc' ? 'desc' : 'asc')
@@ -98,12 +120,13 @@ export function useProjectFilters(projects = []) {
   }
 
   return {
-    filterStatus, setFilterStatus,
-    filterSite,   setFilterSite,
-    filterType,   setFilterType,
-    filterDept,   setFilterDept,
-    filterYear,   setFilterYear,
-    searchQuery,  setSearchQuery,
+    selectedStatuses, toggleStatus,
+    filterSite,     setFilterSite,
+    filterType,     setFilterType,
+    filterDept,     setFilterDept,
+    filterYear,     setFilterYear,
+    filterCategory, setFilterCategory,
+    searchQuery,    setSearchQuery,
     sortCol, sortDir, handleSort,
     filtered, cardCounts, siteCounts, availableYears,
   }

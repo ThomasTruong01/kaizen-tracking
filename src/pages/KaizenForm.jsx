@@ -12,6 +12,7 @@ import ProjectInfo    from '../components/form/ProjectInfo'
 import PDCASection    from '../components/form/PDCA/PDCASection'
 import WrapUp         from '../components/form/WrapUp/WrapUp'
 import A3Form         from '../components/form/A3/A3Form'
+import QuickWinForm  from '../components/form/QuickWin/QuickWinForm'
 import { PdfUploadZone }    from '../components/shared/PdfUploadZone'
 import { AccordionSection } from '../components/shared/AccordionSection'
 
@@ -135,11 +136,16 @@ function FormInner({ projectId }) {
         {/* 1. Project Information */}
         <ProjectInfo />
 
-        {/* Methodology gate */}
+        {/* Section gate — unlocks after manager approval */}
         {!isApproved ? (
           <div className="bg-gray-50 border-2 border-dashed border-gray-300 rounded-md p-6 text-center text-gray-400 text-sm">
             🔒 Sections unlock after manager approval.
           </div>
+        ) : form.projectCategory === 'Quick Win' ? (
+          <>
+            <QuickWinForm />
+            <WrapUp />
+          </>
         ) : !form.kaizenType ? (
           <div className="bg-amber-50 border-2 border-dashed border-amber-300 rounded-md p-6 text-center text-amber-600 text-sm">
             ⚠️ Select a <strong>Kaizen Methodology</strong> in Project Information above to continue.
