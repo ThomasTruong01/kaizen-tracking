@@ -10,7 +10,6 @@ import { cancelProject, fetchNextSeq } from '../../lib/api'
 import BaselineEntries from './BaselineEntries'
 import { EmployeeSearch } from '../shared/EmployeeSearch'
 
-const REQUIRED = ['sites', 'depts', 'projectTitle', 'teamLeader', 'projectType', 'problemDesc', 'objective', 'targetCompletion']
 
 function Field({ label, required, children, hint }) {
   return (

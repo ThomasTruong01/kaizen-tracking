@@ -1,5 +1,5 @@
 // ─────────────────────────────────────────────────────────────────────────────
-// constants.js — Central source of truth for all Kaizen module constants
+// constants.js — Central source of truth for all Continual Improvement module constants
 // ─────────────────────────────────────────────────────────────────────────────
 
 export const SITES = ['US', 'MX', 'SZ', 'MY', 'Global']

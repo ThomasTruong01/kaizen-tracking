@@ -1,4 +1,4 @@
-// AccordionSection.jsx — Collapsible PDCA section banner
+// AccordionSection.jsx — Collapsible section banner (used by Project Info, PDCA, A3, Quick Win, Wrap-Up)
 
 import { useState } from 'react'
 
