@@ -58,7 +58,7 @@ export default function Dashboard() {
         <div className="flex items-center gap-3 text-sm">
           <span className="font-bold">Rapid Manufacturing</span>
           <span className="opacity-40 mx-1 text-lg font-light">|</span>
-          <span className="opacity-90">Kaizen Log</span>
+          <span className="opacity-90">Continual Improvement Projects Log</span>
         </div>
         <div className="flex items-center gap-2">
           <select
@@ -71,13 +71,13 @@ export default function Dashboard() {
             ))}
           </select>
           <button onClick={() => navigate('/kaizen/control')} className="text-xs border border-white/40 bg-white/10 rounded px-3 py-1.5 hover:bg-white/20">⚙ Admin</button>
-          <button onClick={() => navigate('/kaizen/new')} className="text-xs bg-white text-red-700 font-bold rounded px-3 py-1.5 hover:bg-red-50">+ New Kaizen Project</button>
+          <button onClick={() => navigate('/kaizen/new')} className="text-xs bg-white text-red-700 font-bold rounded px-3 py-1.5 hover:bg-red-50">+ New Project</button>
         </div>
       </nav>
 
       <div className="max-w-screen-xl mx-auto px-6 py-7 space-y-5">
         <div>
-          <h1 className="text-xl font-bold text-gray-800">Improvement Projects</h1>
+          <h1 className="text-xl font-bold text-gray-800">Continual Improvement Projects</h1>
           <p className="text-sm text-gray-400 mt-0.5">QA.P02.W04 — All sites &amp; departments</p>
         </div>
 
