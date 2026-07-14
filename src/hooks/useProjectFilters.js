@@ -62,6 +62,10 @@ export function useProjectFilters(projects = [], userLocation = 'All') {
     return years.sort((a, b) => b - a)
   }, [projects])
 
+  const availableTypes = useMemo(() => {
+    return [...new Set(projects.map(p => p.type))].filter(Boolean).sort()
+  }, [projects])
+
   // Site pill counts — year + status + type + dept + search filtered (excludes site)
   const siteCounts = useMemo(() => {
     let base = applyYearFilter(projects)
@@ -135,6 +139,6 @@ export function useProjectFilters(projects = [], userLocation = 'All') {
     filterCategory, setFilterCategory,
     searchQuery,    setSearchQuery,
     sortCol, sortDir, handleSort,
-    filtered, cardCounts, siteCounts, availableYears,
+    filtered, cardCounts, siteCounts, availableYears, availableTypes,
   }
 }

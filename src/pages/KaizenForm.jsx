@@ -56,7 +56,7 @@ function FormInner({ projectId }) {
 
           {/* Title — shrinks and truncates on long codes instead of wrapping */}
           <span className="font-bold text-gray-800 text-sm shrink min-w-0 truncate">
-            Kaizen Project — {code}
+            {form.projectCategory === 'Quick Win' ? 'Quick Win' : 'Kaizen'} Project — {code}
           </span>
 
           <div className="w-px h-4 bg-gray-200 mx-1 flex-shrink-0" />
