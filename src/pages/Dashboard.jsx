@@ -43,7 +43,7 @@ export default function Dashboard() {
   const [projects, setProjects] = useState([])
   const [loading,  setLoading]  = useState(true)
   const [error,    setError]    = useState(null)
-  const f = useProjectFilters(projects)
+  const f = useProjectFilters(projects, user?.location)
 
   useEffect(() => {
     fetchProjects().then(setProjects).catch(e => setError(e.message)).finally(() => setLoading(false))
