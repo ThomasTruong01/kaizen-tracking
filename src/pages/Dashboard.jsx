@@ -22,15 +22,19 @@ const CARDS = [
 ]
 
 const COLS = [
-  ['code','Project Code'],['projectCategory','Project Type'],['title','Title / Type'],['site','Site'],
-  ['dept','Dept(s)'],['leader','Team Leader'],['priority','Priority'],
-  ['status','Status'],['targetDate','Target Date'],
-  ['completionDate','Completed'],['progress','Progress'],
+  ['code','Project Code'],['projectCategory','Type'],['title','Title'],['site','Site'],
+  ['leader','Team Leader'],['priority','Priority'],
+  ['status','Status'],['targetDate','Target Date'],['progress','Progress'],
 ]
 
 const CATEGORY_STYLES = {
   'Kaizen':    'bg-gray-100 text-gray-600',
   'Quick Win': 'bg-amber-100 text-amber-700',
+}
+
+const CATEGORY_ABBR = {
+  'Kaizen':    'KZ',
+  'Quick Win': 'QW',
 }
 
 export default function Dashboard() {
@@ -147,7 +151,7 @@ export default function Dashboard() {
             </thead>
             <tbody>
               {f.filtered.length === 0
-                ? <tr><td colSpan={11} className="text-center py-14 text-gray-400 text-sm">No projects match your filters.</td></tr>
+                ? <tr><td colSpan={9} className="text-center py-14 text-gray-400 text-sm">No projects match your filters.</td></tr>
                 : f.filtered.map(p => {
                     const od  = isOverdue(p.targetDate, p.status)
                     const cat = p.projectCategory || 'Kaizen'
@@ -155,19 +159,17 @@ export default function Dashboard() {
                       <tr key={p.id} onClick={() => navigate(`/kaizen/project/${p.id}`)} className="border-b border-gray-100 hover:bg-gray-50 cursor-pointer transition-colors">
                         <td className="px-3 py-3 font-mono text-xs font-bold text-green-800 whitespace-nowrap">{p.code}</td>
                         <td className="px-3 py-3 whitespace-nowrap">
-                          <span className={`text-xs font-semibold rounded px-2 py-0.5 ${CATEGORY_STYLES[cat] || CATEGORY_STYLES['Kaizen']}`}>{cat}</span>
+                          <span className={`text-xs font-semibold rounded px-2 py-0.5 ${CATEGORY_STYLES[cat] || CATEGORY_STYLES['Kaizen']}`}>{CATEGORY_ABBR[cat] || 'KZ'}</span>
                         </td>
                         <td className="px-3 py-3 max-w-[220px]">
                           <div className="font-semibold text-gray-800 leading-snug truncate">{p.title}</div>
                           <div className="text-xs text-gray-400">{p.type}</div>
                         </td>
                         <td className="px-3 py-3"><span className="bg-gray-100 rounded px-2 py-0.5 text-xs font-bold text-gray-700">{p.site}</span></td>
-                        <td className="px-3 py-3"><div className="flex flex-wrap gap-1">{(p.depts||[]).map(d => <span key={d} className="bg-green-100 text-green-800 rounded px-1.5 py-0.5 text-xs font-semibold">{d}</span>)}</div></td>
                         <td className="px-3 py-3 text-gray-700 whitespace-nowrap text-xs">{p.leader}</td>
                         <td className="px-3 py-3"><PriorityBadge priority={p.priority} /></td>
                         <td className="px-3 py-3 max-w-[150px]"><StatusBadge status={p.status} /></td>
                         <td className={`px-3 py-3 text-xs whitespace-nowrap ${od ? 'text-red-600 font-semibold' : 'text-gray-500'}`}>{formatDate(p.targetDate)}{od ? ' ⚠' : ''}</td>
-                        <td className={`px-3 py-3 text-xs whitespace-nowrap ${p.completionDate ? 'text-green-700 font-semibold' : 'text-gray-300'}`}>{p.completionDate ? formatDate(p.completionDate) : '—'}</td>
                         <td className="px-3 py-3">
                           <div className="w-20">
                             <div className="h-1.5 bg-gray-200 rounded-full"><div className="h-full bg-green-600 rounded-full" style={{width:`${p.progress}%`}} /></div>
