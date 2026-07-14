@@ -83,13 +83,19 @@ export default function Dashboard() {
 
         {/* Summary cards */}
         <div className="grid grid-cols-6 gap-3">
-          {CARDS.map(c => (
-            <button key={c.key} onClick={() => f.setFilterStatus(f.filterStatus === c.sf ? 'All' : c.sf)}
-              className={`bg-white rounded shadow-sm border-t-4 p-4 text-left transition-all hover:-translate-y-0.5 hover:shadow-md ${c.color} ${f.filterStatus === c.sf ? 'ring-2 ring-current ring-offset-1' : ''}`}>
-              <div className="text-3xl font-bold leading-none mb-1.5">{f.cardCounts[c.key]}</div>
-              <div className="text-xs font-semibold text-gray-500 uppercase tracking-wide">{c.label}</div>
-            </button>
-          ))}
+          {CARDS.map(c => {
+            const isActive = c.sf === 'All'
+              ? f.filterStatus === 'All'
+              : f.filterStatus === c.sf
+            return (
+              <button key={c.key}
+                onClick={() => f.setFilterStatus(isActive ? '__active' : c.sf)}
+                className={`bg-white rounded shadow-sm border-t-4 p-4 text-left transition-all hover:-translate-y-0.5 hover:shadow-md ${c.color} ${isActive ? 'ring-2 ring-current ring-offset-1' : ''}`}>
+                <div className="text-3xl font-bold leading-none mb-1.5">{f.cardCounts[c.key]}</div>
+                <div className="text-xs font-semibold text-gray-500 uppercase tracking-wide">{c.label}</div>
+              </button>
+            )
+          })}
         </div>
 
         {/* Site + Category pills */}

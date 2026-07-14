@@ -7,9 +7,10 @@ import { projectYear } from '../lib/utils'
 
 const CURRENT_YEAR = String(new Date().getFullYear())
 const PENDING_STATUSES = ['Pending Dept. Manager Review', 'Pending Finance', 'Pending CQM']
+const ACTIVE_STATUSES  = ['Open', 'In Progress', ...PENDING_STATUSES]
 
 export function useProjectFilters(projects = []) {
-  const [filterStatus,   setFilterStatus]   = useState('All')
+  const [filterStatus,   setFilterStatus]   = useState('__active')
   const [filterSite,     setFilterSite]     = useState('All')
   const [filterType,     setFilterType]     = useState('All')
   const [filterDept,     setFilterDept]     = useState('All')
@@ -26,6 +27,7 @@ export function useProjectFilters(projects = []) {
 
   function applyStatusFilter(data, status) {
     if (status === 'All') return data
+    if (status === '__active')  return data.filter(p => ACTIVE_STATUSES.includes(p.status))
     if (status === '__pending') return data.filter(p => PENDING_STATUSES.includes(p.status))
     return data.filter(p => p.status === status)
   }
@@ -92,7 +94,7 @@ export function useProjectFilters(projects = []) {
         ? String(av).localeCompare(String(bv))
         : String(bv).localeCompare(String(av))
     })
-  }, [projects, filterStatus, filterSite, filterType, filterDept, filterYear, searchQuery, sortCol, sortDir])
+  }, [projects, filterStatus, filterSite, filterType, filterDept, filterYear, filterCategory, searchQuery, sortCol, sortDir])
 
   function handleSort(col) {
     if (sortCol === col) setSortDir(d => d === 'asc' ? 'desc' : 'asc')
