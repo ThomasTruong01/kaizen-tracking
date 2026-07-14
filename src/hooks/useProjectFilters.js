@@ -9,11 +9,12 @@ const CURRENT_YEAR = String(new Date().getFullYear())
 const PENDING_STATUSES = ['Pending Dept. Manager Review', 'Pending Finance', 'Pending CQM']
 
 export function useProjectFilters(projects = []) {
-  const [filterStatus, setFilterStatus] = useState('All')
-  const [filterSite,   setFilterSite]   = useState('All')
-  const [filterType,   setFilterType]   = useState('All')
-  const [filterDept,   setFilterDept]   = useState('All')
-  const [filterYear,   setFilterYear]   = useState(CURRENT_YEAR)
+  const [filterStatus,   setFilterStatus]   = useState('All')
+  const [filterSite,     setFilterSite]     = useState('All')
+  const [filterType,     setFilterType]     = useState('All')
+  const [filterDept,     setFilterDept]     = useState('All')
+  const [filterYear,     setFilterYear]     = useState(CURRENT_YEAR)
+  const [filterCategory, setFilterCategory] = useState('All')
   const [searchQuery,  setSearchQuery]  = useState('')
   const [sortCol,      setSortCol]      = useState('code')
   const [sortDir,      setSortDir]      = useState('asc')
@@ -74,6 +75,7 @@ export function useProjectFilters(projects = []) {
     if (filterSite !== 'All') data = data.filter(p => p.site === filterSite)
     if (filterType !== 'All') data = data.filter(p => p.type === filterType)
     if (filterDept !== 'All') data = data.filter(p => (p.depts || []).includes(filterDept))
+    if (filterCategory !== 'All') data = data.filter(p => (p.projectCategory || 'Kaizen') === filterCategory)
     if (searchQuery) {
       const q = searchQuery.toLowerCase()
       data = data.filter(p =>
@@ -98,12 +100,13 @@ export function useProjectFilters(projects = []) {
   }
 
   return {
-    filterStatus, setFilterStatus,
-    filterSite,   setFilterSite,
-    filterType,   setFilterType,
-    filterDept,   setFilterDept,
-    filterYear,   setFilterYear,
-    searchQuery,  setSearchQuery,
+    filterStatus,   setFilterStatus,
+    filterSite,     setFilterSite,
+    filterType,     setFilterType,
+    filterDept,     setFilterDept,
+    filterYear,     setFilterYear,
+    filterCategory, setFilterCategory,
+    searchQuery,    setSearchQuery,
     sortCol, sortDir, handleSort,
     filtered, cardCounts, siteCounts, availableYears,
   }

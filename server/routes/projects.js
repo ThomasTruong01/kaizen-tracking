@@ -6,11 +6,12 @@ const router = express.Router()
 // GET /api/projects
 router.get('/', (_req, res) => {
   const list = db.getProjects().map(p => ({
-    id:             p.id,
-    code:           p.code,
-    title:          p.title,
-    type:           p.type,
-    site:           p.site,
+    id:              p.id,
+    code:            p.code,
+    title:           p.title,
+    type:            p.type,
+    projectCategory: p.projectCategory || 'Kaizen',
+    site:            p.site,
     depts:          p.depts,
     leader:         p.leader,
     status:         p.status,
