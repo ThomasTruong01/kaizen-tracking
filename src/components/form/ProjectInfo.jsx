@@ -139,7 +139,8 @@ export default function ProjectInfo() {
     if (!form.projectType)         e.projectType    = 'Type is required'
     if (form.projectType === 'Other' && !form.projectTypeOther?.trim())
                                    e.projectTypeOther = 'Please describe the project type'
-    if (!form.kaizenType)           e.kaizenType     = 'Kaizen Methodology is required'
+    if (form.projectCategory !== 'Quick Win' && !form.kaizenType)
+                                   e.kaizenType     = 'Kaizen Methodology is required'
     if (!form.problemDesc.trim())  e.problemDesc    = 'Project Description is required'
     if (!form.objective.trim())    e.objective      = 'Objective is required'
     if (!form.targetCompletion)    e.targetCompletion = 'Target Completion Date is required'
@@ -195,6 +196,33 @@ export default function ProjectInfo() {
 
   return (
     <AccordionSection title="1. Project Information" stage="info" defaultOpen={true}>
+
+      {/* Project Type */}
+      <Field label="Project Type" required>
+        <div className="flex gap-3 flex-wrap">
+          {[
+            { id: 'Kaizen',    desc: 'A structured improvement process focused on eliminating waste (muda) and overly hard work (muri) using scientific experimentation. Typically takes a few months or more.' },
+            { id: 'Quick Win', desc: 'A small-scale, achievable milestone with immediate benefits. Typically accomplished in a few weeks to a few months.' },
+          ].map(({ id, desc }) => {
+            const selected = form.projectCategory === id
+            return (
+              <label key={id}
+                className={`flex items-start gap-3 p-3 border rounded-md cursor-pointer transition-colors flex-1 min-w-[200px] ${
+                  selected ? 'border-red-500 bg-red-50' : 'border-gray-200 hover:border-gray-300 bg-white'
+                } ${form.submitted && !form.editing ? 'opacity-60 cursor-not-allowed' : ''}`}>
+                <input type="radio" name="projectCategory" value={id}
+                  checked={selected} disabled={form.submitted && !form.editing}
+                  onChange={() => setForm({ projectCategory: id })}
+                  className="mt-0.5 flex-shrink-0" />
+                <div>
+                  <p className="text-sm font-semibold text-gray-800">{id}</p>
+                  <p className="text-xs text-gray-500 mt-0.5">{desc}</p>
+                </div>
+              </label>
+            )
+          })}
+        </div>
+      </Field>
 
       {/* Location */}
       <Field label="Location" required>
@@ -379,17 +407,21 @@ export default function ProjectInfo() {
         {errors.objective && <p className="text-red-500 text-xs mt-1">{errors.objective}</p>}
       </Field>
 
-      {/* Business Benefit */}
-      <Field label="Business Benefit">
-        <textarea value={form.businessBenefit} onChange={e => setForm({ businessBenefit: e.target.value })}
-          disabled={form.submitted && !form.editing} rows={2} placeholder="Reference the department KPI to be improved..."
-          className="w-full text-sm border border-gray-300 rounded px-2.5 py-2 resize-vertical focus:outline-none focus:ring-2 focus:ring-blue-400 disabled:bg-gray-50 font-sans" />
-      </Field>
+      {/* Business Benefit — hidden for Quick Win */}
+      {form.projectCategory !== 'Quick Win' && (
+        <Field label="Business Benefit">
+          <textarea value={form.businessBenefit} onChange={e => setForm({ businessBenefit: e.target.value })}
+            disabled={form.submitted && !form.editing} rows={2} placeholder="Reference the department KPI to be improved..."
+            className="w-full text-sm border border-gray-300 rounded px-2.5 py-2 resize-vertical focus:outline-none focus:ring-2 focus:ring-blue-400 disabled:bg-gray-50 font-sans" />
+        </Field>
+      )}
 
-      {/* Baseline */}
-      <Field label="Baseline / Background">
-        <BaselineEntries disabled={form.submitted && !form.editing} />
-      </Field>
+      {/* Baseline — hidden for Quick Win */}
+      {form.projectCategory !== 'Quick Win' && (
+        <Field label="Baseline / Background">
+          <BaselineEntries disabled={form.submitted && !form.editing} />
+        </Field>
+      )}
 
       {/* Target Completion */}
       <Field label="Target Completion Date" required>
@@ -407,8 +439,8 @@ export default function ProjectInfo() {
         </Field>
       )}
 
-      {/* Kaizen Methodology — collapses to a summary badge after selection */}
-      {(() => {
+      {/* Kaizen Methodology — hidden for Quick Win */}
+      {form.projectCategory !== 'Quick Win' && (() => {
         const METHODS = [
           { id: 'PDCA',             label: 'PDCA (Plan-Do-Check-Act)', desc: 'Structured improvement cycle with built-in form sections.',    modes: true  },
           { id: 'A3',               label: 'A3 Report',                desc: 'Toyota-style one-page problem-solving report.',                modes: true  },

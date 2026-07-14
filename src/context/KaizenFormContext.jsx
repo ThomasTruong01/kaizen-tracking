@@ -18,6 +18,7 @@ function getStorageKey(id) {
 function defaultForm() {
   return {
     // Project Information
+    projectCategory:  'Kaizen',  // 'Kaizen' | 'Quick Win'
     requestNum:       '',
     status:           STATUSES.OPEN,
     priority:         null,
@@ -110,6 +111,9 @@ function defaultForm() {
     cqmRevision:  '',
     cqmSignature: '',
     cqmDate:      '',
+
+    // Quick Win
+    qw: {},
 
     // Change history (local)
     historyEntries: [],
