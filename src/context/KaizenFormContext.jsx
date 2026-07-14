@@ -190,6 +190,30 @@ export function KaizenFormProvider({ children, projectId, initialData }) {
     return () => clearInterval(autoSaveRef.current)
   }, [form, unsaved, storageKey, projectId])
 
+  // Refs so the debounced server save always sees the latest values without stale closures
+  const formRef    = useRef(form)
+  const unsavedRef = useRef(unsaved)
+  useEffect(() => { formRef.current    = form    }, [form])
+  useEffect(() => { unsavedRef.current = unsaved }, [unsaved])
+
+  // Server auto-save: 8 seconds after the last form change (existing projects only)
+  useEffect(() => {
+    if (!serverProjectId) return
+    const t = setTimeout(async () => {
+      if (!unsavedRef.current) return
+      const data = formRef.current
+      try {
+        saveNow(data)
+        await updateProject(serverProjectId, { ...data, progress: computeProgress(data) })
+        setLastSaved(new Date())
+        setUnsaved(false)
+      } catch (e) {
+        console.warn('[Kaizen] Server auto-save failed:', e)
+      }
+    }, 8000)
+    return () => clearTimeout(t)
+  }, [form, serverProjectId])
+
   // Warn on navigate away
   useEffect(() => {
     const handler = e => { if (unsaved) { e.preventDefault(); e.returnValue = '' } }
@@ -236,7 +260,7 @@ export function KaizenFormProvider({ children, projectId, initialData }) {
     }
   }
 
-  function logAction(icon, text, user = 'thomas.truong') {
+  function logAction(icon, text, user = 'unknown') {
     setForm(prev => ({
       ...prev,
       historyEntries: [
@@ -246,7 +270,7 @@ export function KaizenFormProvider({ children, projectId, initialData }) {
     }))
   }
 
-  function logSection(section, fields, user = 'thomas.truong') {
+  function logSection(section, fields, user = 'unknown') {
     if (!fields?.length) return
     setForm(prev => ({
       ...prev,

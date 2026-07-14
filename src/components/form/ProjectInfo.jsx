@@ -145,20 +145,19 @@ export default function ProjectInfo() {
     if (!form.objective.trim())    e.objective      = 'Objective is required'
     if (!form.targetCompletion)    e.targetCompletion = 'Target Completion Date is required'
     setErrors(e)
-    return Object.keys(e).length === 0
+    return e
   }
 
   async function handleSubmit() {
-    if (!validate()) {
-      const msgs = Object.values(errors)
-      alert('Please fill in all required fields:\n\n• ' + msgs.join('\n• '))
+    const errs = validate()
+    if (Object.keys(errs).length > 0) {
+      alert('Please fill in all required fields:\n\n• ' + Object.values(errs).join('\n• '))
       return
     }
     const now = new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })
     const updatedFields = { submitted: true, editing: false, startDate: now, status: 'Pending Dept. Manager Review' }
     setForm(updatedFields)
-    logAction('📤', 'Submitted for Dept. Manager Review', 'thomas.truong')
-    // Save to server immediately — pass merged data since setForm hasn't flushed yet
+    logAction('📤', 'Submitted for Dept. Manager Review', user?.username || 'unknown')
     try {
       await saveToServer({ ...form, ...updatedFields })
     } catch (e) {
@@ -166,13 +165,19 @@ export default function ProjectInfo() {
     }
   }
 
-  function handleApprove() {
+  async function handleApprove() {
     if (!form.priority) {
       alert('Please select a Priority before approving.')
       return
     }
-    setForm({ approved: true, status: 'In Progress' })
-    logAction('✅', `Approved — Priority set to ${form.priority}`, 'manager')
+    const updatedFields = { approved: true, status: 'In Progress' }
+    setForm(updatedFields)
+    logAction('✅', `Approved — Priority set to ${form.priority}`, user?.username || 'unknown')
+    try {
+      await saveToServer({ ...form, ...updatedFields })
+    } catch (e) {
+      console.error('[Kaizen] Save on approve failed:', e)
+    }
   }
 
   async function handleCancel() {
