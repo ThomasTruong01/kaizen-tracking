@@ -59,8 +59,8 @@ export function computeProgress(form) {
   // 6a. Wrap-Up basics (first 3 questions) — 5%
   if (form.wrapupBasicComplete) p += 5
 
-  // 6b. Finance Validation — 5% (skipped counts the same as approved)
-  if (form.financeApplicable === false || form.financeStatus === 'Approved') p += 5
+  // 6b. Finance Validation — 5% (skipped or approved counts; Quick Win bypasses entirely)
+  if (form.projectCategory === 'Quick Win' || form.financeApplicable === false || form.financeStatus === 'Approved') p += 5
 
   // 6c. CQM signed off — 5%
   if (form.cqmDecision === 'completed') p += 5

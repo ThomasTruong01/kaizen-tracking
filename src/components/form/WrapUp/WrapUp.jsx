@@ -9,7 +9,7 @@ import CqmSignOff from './CqmSignOff'
 export default function WrapUp() {
   const { form, setForm } = useKaizenForm()
 
-  const financeResolved = form.financeApplicable === false || form.financeStatus === 'Approved'
+  const financeResolved = form.projectCategory === 'Quick Win' || form.financeApplicable === false || form.financeStatus === 'Approved'
   const wrapupComplete  = !!(form.wrapupBasicComplete && financeResolved && form.cqmDecision === 'completed')
 
   return (
@@ -43,7 +43,7 @@ export default function WrapUp() {
       <div className={`flex items-center justify-between pt-3 border-t ${form.wrapupBasicComplete ? 'border-green-200' : 'border-gray-100'}`}>
         {form.wrapupBasicComplete ? (
           <>
-            <span className="text-sm font-semibold text-green-700">✓ Wrap-Up marked complete — 5%</span>
+            <span className="text-sm font-semibold text-green-700">✓ Wrap-Up marked complete</span>
             <button onClick={() => setForm({ wrapupBasicComplete: false, financeApplicable: null })}
               className="text-xs text-gray-400 hover:text-gray-600 underline">
               Reopen
@@ -57,8 +57,8 @@ export default function WrapUp() {
         )}
       </div>
 
-      {/* Finance Validation decision point */}
-      {form.wrapupBasicComplete && form.financeApplicable === null && (
+      {/* Finance Validation — skipped entirely for Quick Win */}
+      {form.wrapupBasicComplete && form.projectCategory !== 'Quick Win' && form.financeApplicable === null && (
         <div className="border border-blue-200 bg-blue-50 rounded-md p-4 space-y-3">
           <p className="text-sm font-semibold text-blue-800">Is Finance Validation applicable for this project?</p>
           <div className="flex items-center gap-3">
@@ -74,11 +74,12 @@ export default function WrapUp() {
         </div>
       )}
 
-      {/* Finance Validation — only when applicable */}
-      {form.wrapupBasicComplete && form.financeApplicable === true && <FinanceValidation />}
+      {/* Finance Validation — only when applicable (Kaizen only) */}
+      {form.wrapupBasicComplete && form.projectCategory !== 'Quick Win' && form.financeApplicable === true && <FinanceValidation />}
 
-      {/* CQM Sign-Off — shown after Finance approved, or when Finance is not applicable */}
+      {/* CQM Sign-Off — shown after Finance approved/skipped (Kaizen), or immediately after Wrap-Up (Quick Win) */}
       {form.wrapupBasicComplete && (
+        form.projectCategory === 'Quick Win' ||
         (form.financeApplicable === true && form.financeStatus === 'Approved') ||
         form.financeApplicable === false
       ) && <CqmSignOff />}
