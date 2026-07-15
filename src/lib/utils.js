@@ -2,6 +2,7 @@
 // utils.js — Shared utility functions
 // ─────────────────────────────────────────────────────────────────────────────
 
+import * as XLSX from 'xlsx'
 import { STATUSES } from './constants'
 
 // Compute section-based progress (0–100) from form data.
@@ -84,7 +85,8 @@ export function projectYear(project) {
 export function isOverdue(targetDate, status) {
   if (!targetDate) return false
   if (status === STATUSES.COMPLETED || status === STATUSES.CANCELLED) return false
-  return new Date(targetDate) < new Date()
+  const [y, m, d] = targetDate.split('-').map(Number)
+  return new Date(y, m - 1, d) < new Date(new Date().setHours(0, 0, 0, 0))
 }
 
 export function generateProjectCode(sites, depts, sequence = 1) {
@@ -97,24 +99,22 @@ export function generateProjectCode(sites, depts, sequence = 1) {
 }
 
 export function exportToXLSX(projects) {
-  import('xlsx').then(XLSX => {
-    const rows = projects.map(p => ({
-      'Project Code':    p.code,
-      'Type':            p.projectCategory || 'Kaizen',
-      'Title':           p.title,
-      'Site':            p.site,
-      'Dept(s)':         (p.depts || []).join(', '),
-      'Team Leader':     p.leader,
-      'Priority':        p.priority || '',
-      'Status':          p.status,
-      'Start Date':      p.startDate      ? formatDate(p.startDate)      : '',
-      'Target Date':     p.targetDate     ? formatDate(p.targetDate)      : '',
-      'Completion Date': p.completionDate ? formatDate(p.completionDate)  : '',
-      'Progress %':      (p.progress ?? 0) + '%',
-    }))
-    const ws = XLSX.utils.json_to_sheet(rows)
-    const wb = XLSX.utils.book_new()
-    XLSX.utils.book_append_sheet(wb, ws, 'CI Projects')
-    XLSX.writeFile(wb, `CI_Projects_${new Date().toISOString().split('T')[0]}.xlsx`)
-  })
+  const rows = projects.map(p => ({
+    'Project Code':    p.code,
+    'Type':            p.projectCategory || 'Kaizen',
+    'Title':           p.title,
+    'Site':            p.site,
+    'Dept(s)':         (p.depts || []).join(', '),
+    'Team Leader':     p.leader,
+    'Priority':        p.priority || '',
+    'Status':          p.status,
+    'Start Date':      p.startDate      ? formatDate(p.startDate)      : '',
+    'Target Date':     p.targetDate     ? formatDate(p.targetDate)      : '',
+    'Completion Date': p.completionDate ? formatDate(p.completionDate)  : '',
+    'Progress %':      (p.progress ?? 0) + '%',
+  }))
+  const ws = XLSX.utils.json_to_sheet(rows)
+  const wb = XLSX.utils.book_new()
+  XLSX.utils.book_append_sheet(wb, ws, 'CI Projects')
+  XLSX.writeFile(wb, `CI_Projects_${new Date().toISOString().split('T')[0]}.xlsx`)
 }
