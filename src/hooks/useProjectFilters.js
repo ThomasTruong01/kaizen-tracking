@@ -2,17 +2,24 @@
 // useProjectFilters.js — All dashboard filter, sort, and count logic
 // ─────────────────────────────────────────────────────────────────────────────
 
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import { projectYear } from '../lib/utils'
 
 const CURRENT_YEAR = String(new Date().getFullYear())
 const PENDING_STATUSES = ['Pending Dept. Manager Review', 'Pending Finance', 'Pending CQM']
 
-export function useProjectFilters(projects = []) {
+function siteDefault(userLocation) {
+  return userLocation && userLocation !== 'Global' ? userLocation : 'All'
+}
+
+export function useProjectFilters(projects = [], userLocation = 'All') {
   const [selectedStatuses, setSelectedStatuses] = useState(
     () => new Set(['Open', 'In Progress', '__pending'])
   )
-  const [filterSite,     setFilterSite]     = useState('All')
+  const [filterSite,     setFilterSite]     = useState(() => siteDefault(userLocation))
+
+  // Keep site in sync when the active user changes (dev switcher)
+  useEffect(() => { setFilterSite(siteDefault(userLocation)) }, [userLocation])
   const [filterType,     setFilterType]     = useState('All')
   const [filterDept,     setFilterDept]     = useState('All')
   const [filterYear,     setFilterYear]     = useState(CURRENT_YEAR)
@@ -53,6 +60,10 @@ export function useProjectFilters(projects = []) {
   const availableYears = useMemo(() => {
     const years = [...new Set(projects.map(projectYear))].filter(Boolean)
     return years.sort((a, b) => b - a)
+  }, [projects])
+
+  const availableTypes = useMemo(() => {
+    return [...new Set(projects.map(p => p.type))].filter(Boolean).sort()
   }, [projects])
 
   // Site pill counts — year + status + type + dept + search filtered (excludes site)
@@ -128,6 +139,6 @@ export function useProjectFilters(projects = []) {
     filterCategory, setFilterCategory,
     searchQuery,    setSearchQuery,
     sortCol, sortDir, handleSort,
-    filtered, cardCounts, siteCounts, availableYears,
+    filtered, cardCounts, siteCounts, availableYears, availableTypes,
   }
 }

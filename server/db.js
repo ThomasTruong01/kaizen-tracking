@@ -93,7 +93,7 @@ const STATUS_PROGRESS = {
 function deriveSite(sites = []) {
   if (!sites.length) return ''
   if (sites.includes('Global')) return 'Global'
-  return sites.length === 1 ? sites[0] : 'Global'
+  return sites.join('-')
 }
 
 module.exports = {

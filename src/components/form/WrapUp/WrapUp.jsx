@@ -36,7 +36,7 @@ export default function WrapUp() {
         <p className="text-xs text-gray-400 mb-3">Document issues not fully resolved that can become opportunities for future Kaizen projects.</p>
         <AddLineList value={form.problemsRemaining}
           onChange={v => setForm({ problemsRemaining: v })}
-          placeholder="e.g. Crimp defects in Cable Assy — investigate for next Kaizen cycle..." />
+          placeholder="e.g. Crimp defects in Cable Assy — investigate for next improvement cycle..." />
       </div>
 
       {/* Wrap-Up basics completion */}
@@ -50,7 +50,10 @@ export default function WrapUp() {
             </button>
           </>
         ) : (
-          <button onClick={() => setForm({ wrapupBasicComplete: true })}
+          <button onClick={() => setForm({
+            wrapupBasicComplete: true,
+            ...(form.projectCategory === 'Quick Win' ? { status: 'Pending CQM' } : {}),
+          })}
             className="text-sm bg-green-600 text-white font-semibold rounded px-4 py-2 hover:bg-green-700">
             ✓ Mark Wrap-Up Complete
           </button>

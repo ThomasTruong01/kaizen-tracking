@@ -9,7 +9,6 @@ import { exportToCSV, downloadFile, formatDate, isOverdue } from '../lib/utils'
 import { StatusBadge, PriorityBadge } from '../components/shared/StatusBadge'
 
 const SITES = ['All', 'US', 'MX', 'SZ', 'MY', 'Global']
-const TYPES = ['All', 'Quality', 'Productivity', 'Efficiency', 'System', 'Safety', 'Other']
 const DEPTS = ['All', 'CQ', 'FI', 'HR', 'IT', 'MA', 'ME', 'PC', 'PR', 'QA', 'QC', 'SC', 'SL', 'WH']
 
 const CARDS = [
@@ -43,7 +42,7 @@ export default function Dashboard() {
   const [projects, setProjects] = useState([])
   const [loading,  setLoading]  = useState(true)
   const [error,    setError]    = useState(null)
-  const f = useProjectFilters(projects)
+  const f = useProjectFilters(projects, user?.location)
 
   useEffect(() => {
     fetchProjects().then(setProjects).catch(e => setError(e.message)).finally(() => setLoading(false))
@@ -58,7 +57,7 @@ export default function Dashboard() {
         <div className="flex items-center gap-3 text-sm">
           <span className="font-bold">Rapid Manufacturing</span>
           <span className="opacity-40 mx-1 text-lg font-light">|</span>
-          <span className="opacity-90">Kaizen Log</span>
+          <span className="opacity-90">Continual Improvement Projects Log</span>
         </div>
         <div className="flex items-center gap-2">
           <select
@@ -71,13 +70,13 @@ export default function Dashboard() {
             ))}
           </select>
           <button onClick={() => navigate('/kaizen/control')} className="text-xs border border-white/40 bg-white/10 rounded px-3 py-1.5 hover:bg-white/20">⚙ Admin</button>
-          <button onClick={() => navigate('/kaizen/new')} className="text-xs bg-white text-red-700 font-bold rounded px-3 py-1.5 hover:bg-red-50">+ New Kaizen Project</button>
+          <button onClick={() => navigate('/kaizen/new')} className="text-xs bg-white text-red-700 font-bold rounded px-3 py-1.5 hover:bg-red-50">+ New Project</button>
         </div>
       </nav>
 
       <div className="max-w-screen-xl mx-auto px-6 py-7 space-y-5">
         <div>
-          <h1 className="text-xl font-bold text-gray-800">Improvement Projects</h1>
+          <h1 className="text-xl font-bold text-gray-800">Continual Improvement Projects</h1>
           <p className="text-sm text-gray-400 mt-0.5">QA.P02.W04 — All sites &amp; departments</p>
         </div>
 
@@ -130,15 +129,16 @@ export default function Dashboard() {
             {f.availableYears.map(y => <option key={y}>{y}</option>)}
           </select>
           <select value={f.filterType} onChange={e => f.setFilterType(e.target.value)} className="text-sm border border-gray-300 rounded px-2 py-2 bg-white">
-            {TYPES.map(t => <option key={t} value={t}>{t === 'All' ? 'All Types' : t}</option>)}
+            <option value="All">All Types</option>
+            {f.availableTypes.map(t => <option key={t} value={t}>{t}</option>)}
           </select>
           <select value={f.filterDept} onChange={e => f.setFilterDept(e.target.value)} className="text-sm border border-gray-300 rounded px-2 py-2 bg-white">
             {DEPTS.map(d => <option key={d} value={d}>{d === 'All' ? 'All Departments' : d}</option>)}
           </select>
           <span className="text-xs text-gray-400 ml-auto whitespace-nowrap">Showing {f.filtered.length} of {projects.length}</span>
-          <button onClick={() => downloadFile(exportToCSV(f.filtered), `Kaizen_Log_${new Date().toISOString().split('T')[0]}.csv`)}
+          <button onClick={() => downloadFile(exportToCSV(f.filtered), `CI_Projects_${new Date().toISOString().split('T')[0]}.csv`)}
             className="text-sm border border-gray-300 rounded px-3 py-2 bg-white hover:bg-gray-50 font-medium text-gray-700 whitespace-nowrap">
-            ⬇ Export to Excel
+            ⬇ Export
           </button>
         </div>
 

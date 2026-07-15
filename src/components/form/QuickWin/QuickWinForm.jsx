@@ -1,4 +1,4 @@
-// QuickWinForm.jsx — Section 2 for Quick Win projects (6-step form)
+// QuickWinForm.jsx — Section 2 for Quick Win projects (5-step form)
 
 import { useState } from 'react'
 import { useKaizenForm } from '../../../context/KaizenFormContext'
@@ -229,7 +229,7 @@ export default function QuickWinForm() {
   const qwComplete = !!(sc.s1 && sc.s2 && actionsDone && sc.s4 && sc.s5)
 
   return (
-    <AccordionSection title="2. Quick Win" stage="a3" defaultOpen={true} complete={qwComplete}>
+    <AccordionSection title="2. Quick Win" stage="quickwin" defaultOpen={true} complete={qwComplete}>
       <div className="space-y-3">
 
         {/* 1. Problem Statement */}

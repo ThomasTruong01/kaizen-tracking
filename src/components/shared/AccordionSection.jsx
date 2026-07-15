@@ -1,4 +1,4 @@
-// AccordionSection.jsx — Collapsible PDCA section banner
+// AccordionSection.jsx — Collapsible section banner (used by Project Info, PDCA, A3, Quick Win, Wrap-Up)
 
 import { useState } from 'react'
 
@@ -6,6 +6,7 @@ const COLORS = {
   info:        'bg-red-700',
   pdca:        'bg-red-700',
   a3:          'bg-red-700',
+  quickwin:    'bg-red-700',
   methodology: 'bg-red-700',
   wrapup:      'bg-red-700',
   plan:        'bg-blue-600',

@@ -107,9 +107,9 @@ router.post('/:id/cancel', (req, res) => {
 router.put('/:id/finance', (req, res) => {
   const p = db.getProject(req.params.id)
   if (!p) return res.status(404).json({ error: 'Not found' })
-  const formData = p.formData || {}
-  formData.fv = { ...(formData.fv || {}), ...req.body }
-  db.updateProject(req.params.id, formData)
+  const existing = p.formData || {}
+  const merged = { ...existing, fv: { ...(existing.fv || {}), ...req.body } }
+  db.updateProject(req.params.id, merged)
   res.json({ projectId: Number(req.params.id), ...req.body })
 })
 
