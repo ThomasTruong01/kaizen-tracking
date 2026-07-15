@@ -157,7 +157,7 @@ export function KaizenFormProvider({ children, projectId, initialData }) {
       const measurements = prev.keyMeasurements.filter(m => m.trim())
       const existingCards = prev.kpiCards || []
       const newCards = measurements.map((m, i) => {
-        const existing = existingCards[i] || {}
+        const existing = existingCards.find(c => c.name === m) || {}
         return {
           id:       i,
           name:     m,
@@ -203,10 +203,8 @@ export function KaizenFormProvider({ children, projectId, initialData }) {
       if (!unsavedRef.current) return
       const data = formRef.current
       try {
-        saveNow(data)
         await updateProject(serverProjectId, { ...data, progress: computeProgress(data) })
-        setLastSaved(new Date())
-        setUnsaved(false)
+        saveNow(data)
       } catch (e) {
         console.warn('[Kaizen] Server auto-save failed:', e)
       }

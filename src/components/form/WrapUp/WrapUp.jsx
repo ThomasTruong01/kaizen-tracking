@@ -44,10 +44,12 @@ export default function WrapUp() {
         {form.wrapupBasicComplete ? (
           <>
             <span className="text-sm font-semibold text-green-700">✓ Wrap-Up marked complete</span>
-            <button onClick={() => setForm({ wrapupBasicComplete: false, financeApplicable: null })}
-              className="text-xs text-gray-400 hover:text-gray-600 underline">
-              Reopen
-            </button>
+            {form.status !== 'Completed' && form.status !== 'Cancelled' && (
+              <button onClick={() => setForm({ wrapupBasicComplete: false, financeApplicable: null })}
+                className="text-xs text-gray-400 hover:text-gray-600 underline">
+                Reopen
+              </button>
+            )}
           </>
         ) : (
           <button onClick={() => setForm({

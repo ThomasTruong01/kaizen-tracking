@@ -5,25 +5,29 @@ import { useAuth } from '../../../context/AuthContext'
 import { STATUSES, userCan } from '../../../lib/constants'
 
 export default function CqmSignOff() {
-  const { form, setForm, logAction } = useKaizenForm()
+  const { form, setForm, logAction, saveToServer } = useKaizenForm()
   const { user } = useAuth()
 
-  function handleComplete() {
+  async function handleComplete() {
     const isoDate     = new Date().toISOString().split('T')[0]
     const displayDate = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
-    setForm({
+    const updates = {
       cqmDecision:    'completed',
       status:         STATUSES.COMPLETED,
-      completionDate: isoDate,        // ISO for dashboard/server
+      completionDate: isoDate,
       cqmSignature:   user?.name || user?.username,
-      cqmDate:        displayDate,    // human-readable for sign-off display
-    })
+      cqmDate:        displayDate,
+    }
+    setForm(updates)
     logAction('🏁', `Project marked Completed — ${displayDate}`, user?.username)
+    try { await saveToServer({ ...form, ...updates }) } catch (e) { console.error('[CQM] Save failed:', e) }
   }
 
-  function handleRevision() {
-    setForm({ cqmDecision: 'revision', status: STATUSES.IN_PROGRESS })
+  async function handleRevision() {
+    const updates = { cqmDecision: 'revision', status: STATUSES.IN_PROGRESS }
+    setForm(updates)
     logAction('↩', 'Revision requested', user?.username)
+    try { await saveToServer({ ...form, ...updates }) } catch (e) { console.error('[CQM] Save failed:', e) }
   }
 
   const isCompleted = form.cqmDecision === 'completed'

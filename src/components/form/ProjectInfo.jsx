@@ -153,10 +153,10 @@ export default function ProjectInfo() {
       alert('Please fill in all required fields:\n\n• ' + Object.values(errs).join('\n• '))
       return
     }
-    const now = new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })
-    const updatedFields = { submitted: true, editing: false, startDate: now, status: 'Pending Dept. Manager Review' }
+    const now   = new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })
+    const entry = { type: 'action', icon: '📤', text: 'Submitted for Dept. Manager Review', user: user?.username || 'unknown', time: new Date().toISOString() }
+    const updatedFields = { submitted: true, editing: false, startDate: now, status: 'Pending Dept. Manager Review', historyEntries: [...(form.historyEntries || []), entry] }
     setForm(updatedFields)
-    logAction('📤', 'Submitted for Dept. Manager Review', user?.username || 'unknown')
     try {
       await saveToServer({ ...form, ...updatedFields })
     } catch (e) {
@@ -169,9 +169,9 @@ export default function ProjectInfo() {
       alert('Please select a Priority before approving.')
       return
     }
-    const updatedFields = { approved: true, status: 'In Progress' }
+    const entry = { type: 'action', icon: '✅', text: `Approved — Priority set to ${form.priority}`, user: user?.username || 'unknown', time: new Date().toISOString() }
+    const updatedFields = { approved: true, status: 'In Progress', historyEntries: [...(form.historyEntries || []), entry] }
     setForm(updatedFields)
-    logAction('✅', `Approved — Priority set to ${form.priority}`, user?.username || 'unknown')
     try {
       await saveToServer({ ...form, ...updatedFields })
     } catch (e) {
@@ -185,7 +185,7 @@ export default function ProjectInfo() {
     try {
       await cancelProject(serverProjectId, cancelReason)
       setForm({ status: 'Cancelled' })
-      logAction('🚫', `Project cancelled${cancelReason ? ': ' + cancelReason : ''}`, user.username)
+      logAction('🚫', `Project cancelled${cancelReason ? ': ' + cancelReason : ''}`, user?.username)
       setShowCancelConfirm(false)
       setCancelReason('')
     } catch (e) {
@@ -196,7 +196,6 @@ export default function ProjectInfo() {
     }
   }
 
-  const isLocked = form.submitted && !form.approved
 
   return (
     <AccordionSection title="1. Project Information" stage="info" defaultOpen={true}>

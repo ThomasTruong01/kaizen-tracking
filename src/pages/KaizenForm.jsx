@@ -234,7 +234,8 @@ export default function KaizenForm() {
             projectTitle:     p.title          || '',
             status:           p.status         || 'Open',
             priority:         p.priority       || null,
-            approved:         ['In Progress','Pending Finance','Pending CQM','Completed'].includes(p.status),
+            approved:         ['In Progress','Pending Finance','Pending CQM','Completed'].includes(p.status) ||
+                              (p.status === 'Cancelled' && (p.formData?.approved ?? false)),
             submitted:        p.status !== 'Open',
             teamLeader:       p.leader         || '',
             targetCompletion: p.targetDate     || '',
