@@ -152,7 +152,7 @@ module.exports = {
       title:           formData.projectTitle     || projects[idx].title,
       type:            formData.projectType      || projects[idx].type,
       projectCategory: formData.projectCategory  || projects[idx].projectCategory || 'Kaizen',
-      site:            deriveSite(formData.sites || [projects[idx].site]),
+      site:            deriveSite(formData.sites?.length ? formData.sites : [projects[idx].site]),
       depts:          formData.depts            || projects[idx].depts,
       leader:         formData.teamLeader       || projects[idx].leader,
       status:         formData.status           || projects[idx].status,

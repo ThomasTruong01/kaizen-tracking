@@ -11,22 +11,23 @@ export default function CqmSignOff() {
   async function handleComplete() {
     const isoDate     = new Date().toISOString().split('T')[0]
     const displayDate = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+    const entry   = { type: 'action', icon: '🏁', text: `Project marked Completed — ${displayDate}`, user: user?.username, time: new Date().toISOString() }
     const updates = {
       cqmDecision:    'completed',
       status:         STATUSES.COMPLETED,
       completionDate: isoDate,
       cqmSignature:   user?.name || user?.username,
       cqmDate:        displayDate,
+      historyEntries: [...(form.historyEntries || []), entry],
     }
     setForm(updates)
-    logAction('🏁', `Project marked Completed — ${displayDate}`, user?.username)
     try { await saveToServer({ ...form, ...updates }) } catch (e) { console.error('[CQM] Save failed:', e) }
   }
 
   async function handleRevision() {
-    const updates = { cqmDecision: 'revision', status: STATUSES.IN_PROGRESS }
+    const entry   = { type: 'action', icon: '↩', text: 'Revision requested', user: user?.username, time: new Date().toISOString() }
+    const updates = { cqmDecision: 'revision', status: STATUSES.IN_PROGRESS, historyEntries: [...(form.historyEntries || []), entry] }
     setForm(updates)
-    logAction('↩', 'Revision requested', user?.username)
     try { await saveToServer({ ...form, ...updates }) } catch (e) { console.error('[CQM] Save failed:', e) }
   }
 

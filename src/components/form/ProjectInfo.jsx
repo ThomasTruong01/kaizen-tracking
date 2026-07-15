@@ -153,7 +153,7 @@ export default function ProjectInfo() {
       alert('Please fill in all required fields:\n\n• ' + Object.values(errs).join('\n• '))
       return
     }
-    const now   = new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })
+    const now   = new Date().toISOString().split('T')[0]
     const entry = { type: 'action', icon: '📤', text: 'Submitted for Dept. Manager Review', user: user?.username || 'unknown', time: new Date().toISOString() }
     const updatedFields = { submitted: true, editing: false, startDate: now, status: 'Pending Dept. Manager Review', historyEntries: [...(form.historyEntries || []), entry] }
     setForm(updatedFields)
@@ -568,7 +568,7 @@ export default function ProjectInfo() {
         )}
 
         {/* Submitted, not editing, not completed — show Edit button */}
-        {form.submitted && !form.editing && form.status !== 'Completed' && (
+        {form.submitted && !form.editing && form.status !== 'Completed' && form.status !== 'Cancelled' && (
           <button onClick={() => setForm({ editing: true })}
             className="text-sm border border-blue-400 text-blue-600 font-semibold rounded px-4 py-2 hover:bg-blue-50">
             ✎ Edit Project Info

@@ -241,9 +241,9 @@ export default function KaizenForm() {
             targetCompletion: p.targetDate     || '',
             startDate:        p.startDate      || null,
             completionDate:   p.completionDate || null,
-            historyEntries: [
-              { type: 'action', icon: '🆕', text: 'Project created', user: p.leader || 'unknown', time: p.startDate ? new Date(p.startDate).toISOString() : new Date().toISOString() },
-            ],
+            historyEntries: p.formData?.historyEntries?.length
+              ? p.formData.historyEntries
+              : [{ type: 'action', icon: '🆕', text: 'Project created', user: p.leader || 'unknown', time: p.startDate ? new Date(p.startDate).toISOString() : new Date().toISOString() }],
           }
           // If server has full PDCA formData, spread it first so PDCA sections are restored
           const fromServer = p.formData
