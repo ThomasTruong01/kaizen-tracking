@@ -41,6 +41,59 @@ function ChipPicker({ options, selected, onToggle, disabled }) {
   )
 }
 
+// ── Type-switch clear payloads ────────────────────────────────────────────────
+
+const EMPTY_FV = { leader: '', manager: '', codeTitle: '', cqm: '', q1: '', q2: '', q3: '', q3Images: [], q4a: '', q4b: '', q5: '', q5Images: [], q6: '', q6Images: [], q7: '', q8: '', q8Images: [], q9: '', financeDecision: null, rejectionReason: '', deptManagerSig: '', deptManagerDate: '', financeRepSig: '', financeRepDate: '' }
+const EMPTY_SOLUTION = { id: 1, title: '', activities: [{ what: '', who: '', when: '', status: '', benefit: '', comments: '' }] }
+const EMPTY_WHY = { problem: '', whys: ['', '', '', '', ''], rootCause: '' }
+
+const KZ_CLEAR = {
+  kaizenType: '', kaizenTypeMode: 'builtin', kaizenTypePDFs: [], kaizenTypeOtherDesc: '',
+  keyMeasurements: [''], rootCauseTools: ['5whys'], whyChains: [EMPTY_WHY],
+  fishboneImages: [], fishboneNotes: '', fmeaImages: [], fmeaNotes: '',
+  paretoImages: [], paretoNotes: '', controlImages: [], controlNotes: '',
+  otherToolName: '', otherImages: [], otherNotes: '',
+  solutions: [EMPTY_SOLUTION], kpiCards: [], achievedResults: [''], analysisOfGaps: '',
+  planComplete: false, checkComplete: false, actComplete: false,
+  standardizeActions: [''], assureMaintenanceActions: [''], standardizeEvidence: [], assureEvidence: [],
+  a3: {}, financeApplicable: null, financeStatus: 'Not Started', fv: EMPTY_FV,
+}
+const QW_CLEAR   = { qw: {} }
+const PDCA_CLEAR = {
+  keyMeasurements: [''], rootCauseTools: ['5whys'], whyChains: [EMPTY_WHY],
+  fishboneImages: [], fishboneNotes: '', fmeaImages: [], fmeaNotes: '',
+  paretoImages: [], paretoNotes: '', controlImages: [], controlNotes: '',
+  otherToolName: '', otherImages: [], otherNotes: '',
+  solutions: [EMPTY_SOLUTION], kpiCards: [], achievedResults: [''], analysisOfGaps: '',
+  planComplete: false, checkComplete: false, actComplete: false,
+  standardizeActions: [''], assureMaintenanceActions: [''], standardizeEvidence: [], assureEvidence: [],
+}
+const A3_CLEAR = { a3: {} }
+
+function hasKZContent(form) {
+  if (form.kaizenType) return true
+  if ((form.solutions || []).some(s => s.activities?.some(a => a.what?.trim()))) return true
+  if (Object.values(form.a3?.sectionComplete || {}).some(Boolean)) return true
+  if ((form.keyMeasurements || []).some(m => m.trim())) return true
+  return false
+}
+function hasQWContent(form) {
+  const qw = form.qw || {}
+  return !!(qw.problemStatement?.trim() || qw.before?.trim() ||
+    (qw.actions || []).some(a => a.activities?.some(act => act.what?.trim())))
+}
+function hasPDCAContent(form) {
+  if (form.planComplete || form.checkComplete || form.actComplete) return true
+  if ((form.solutions || []).some(s => s.activities?.some(a => a.what?.trim()))) return true
+  if ((form.keyMeasurements || []).some(m => m.trim())) return true
+  return false
+}
+function hasA3Content(form) {
+  if (Object.values(form.a3?.sectionComplete || {}).some(Boolean)) return true
+  if ((form.a3?.countermeasures || []).some(cm => cm.activities?.some(a => a.what?.trim()))) return true
+  return false
+}
+
 export default function ProjectInfo() {
   const { form, setForm, logAction, logSection, saveToServer, serverProjectId } = useKaizenForm()
   const { user, allRoles } = useAuth()
@@ -54,6 +107,8 @@ export default function ProjectInfo() {
     const derived = deriveCqManager(form.sites)
     if (derived && derived !== form.cqManager) setForm({ cqManager: derived })
   }, [allRoles, form.sites])
+  const [pendingCategory, setPendingCategory] = useState(null)
+  const [pendingMethod,   setPendingMethod]   = useState(null)
   const [showCancelConfirm, setShowCancelConfirm] = useState(false)
   const [cancelReason, setCancelReason] = useState('')
   const [cancelling, setCancelling] = useState(false)
@@ -126,6 +181,37 @@ export default function ProjectInfo() {
 
   function removeMember(i) {
     setForm(p => ({ ...p, teamMembers: p.teamMembers.filter((_, idx) => idx !== i) }))
+  }
+
+  function handleCategoryChange(newCat) {
+    if (newCat === form.projectCategory) return
+    const hasData = newCat === 'Quick Win' ? hasKZContent(form) : hasQWContent(form)
+    if (hasData) { setPendingCategory(newCat); return }
+    setForm(newCat === 'Quick Win'
+      ? { projectCategory: 'Quick Win', ...KZ_CLEAR }
+      : { projectCategory: 'Kaizen', ...QW_CLEAR }
+    )
+  }
+  function applyCategory(pending) {
+    setForm(pending === 'Quick Win'
+      ? { projectCategory: 'Quick Win', ...KZ_CLEAR }
+      : { projectCategory: 'Kaizen', ...QW_CLEAR }
+    )
+    setPendingCategory(null)
+  }
+  function handleMethodChange(id, modes) {
+    const from = form.kaizenType
+    const hasData = from === 'PDCA' ? hasPDCAContent(form) : from === 'A3' ? hasA3Content(form) : false
+    if (hasData) { setPendingMethod({ id, modes, from }); return }
+    const clears = from === 'PDCA' ? PDCA_CLEAR : from === 'A3' ? A3_CLEAR : {}
+    setForm({ kaizenType: id, kaizenTypeMode: modes ? 'builtin' : 'pdf', ...clears })
+    if (!modes) setMethodologyOpen(false)
+  }
+  function applyMethod(pending) {
+    const clears = pending.from === 'PDCA' ? PDCA_CLEAR : pending.from === 'A3' ? A3_CLEAR : {}
+    setForm({ kaizenType: pending.id, kaizenTypeMode: pending.modes ? 'builtin' : 'pdf', ...clears })
+    if (!pending.modes) setMethodologyOpen(false)
+    setPendingMethod(null)
   }
 
   function validate() {
@@ -215,7 +301,7 @@ export default function ProjectInfo() {
                 } ${form.submitted && !form.editing ? 'opacity-60 cursor-not-allowed' : ''}`}>
                 <input type="radio" name="projectCategory" value={id}
                   checked={selected} disabled={form.submitted && !form.editing}
-                  onChange={() => setForm({ projectCategory: id })}
+                  onChange={() => handleCategoryChange(id)}
                   className="mt-0.5 flex-shrink-0" />
                 <div>
                   <p className="text-sm font-semibold text-gray-800">{id}</p>
@@ -225,6 +311,25 @@ export default function ProjectInfo() {
             )
           })}
         </div>
+
+        {/* Type-switch confirmation */}
+        {pendingCategory && (
+          <div className="mt-3 border border-amber-300 bg-amber-50 rounded-md p-4 space-y-2">
+            <p className="text-sm font-semibold text-amber-800">
+              Switch to {pendingCategory}? This will erase all {pendingCategory === 'Quick Win' ? 'Kaizen' : 'Quick Win'} form data entered so far.
+            </p>
+            <div className="flex gap-2">
+              <button type="button" onClick={() => applyCategory(pendingCategory)}
+                className="text-sm bg-amber-600 text-white font-semibold rounded px-4 py-1.5 hover:bg-amber-700">
+                Yes, switch and clear data
+              </button>
+              <button type="button" onClick={() => setPendingCategory(null)}
+                className="text-sm border border-gray-300 bg-white text-gray-700 font-semibold rounded px-4 py-1.5 hover:bg-gray-50">
+                Cancel
+              </button>
+            </div>
+          </div>
+        )}
       </Field>
 
       {/* Location */}
@@ -490,10 +595,7 @@ export default function ProjectInfo() {
                       } ${locked ? 'opacity-60 cursor-not-allowed' : ''}`}>
                       <input type="radio" name="kaizenType" value={id}
                         checked={isSelected} disabled={locked}
-                        onChange={() => {
-                          setForm({ kaizenType: id, kaizenTypeMode: modes ? 'builtin' : 'pdf' })
-                          if (!modes) setMethodologyOpen(false)
-                        }}
+                        onChange={() => handleMethodChange(id, modes)}
                         className="mt-0.5 flex-shrink-0" />
                       <div className="flex-1 min-w-0">
                         <p className="text-sm font-semibold text-gray-800">{label}</p>
@@ -534,6 +636,24 @@ export default function ProjectInfo() {
                     </label>
                   )
                 })}
+              </div>
+            )}
+            {/* Method-switch confirmation */}
+            {pendingMethod && (
+              <div className="mt-3 border border-amber-300 bg-amber-50 rounded-md p-4 space-y-2">
+                <p className="text-sm font-semibold text-amber-800">
+                  Switch from {pendingMethod.from} to {pendingMethod.id}? This will erase all {pendingMethod.from} data entered so far.
+                </p>
+                <div className="flex gap-2">
+                  <button type="button" onClick={() => applyMethod(pendingMethod)}
+                    className="text-sm bg-amber-600 text-white font-semibold rounded px-4 py-1.5 hover:bg-amber-700">
+                    Yes, switch and clear data
+                  </button>
+                  <button type="button" onClick={() => setPendingMethod(null)}
+                    className="text-sm border border-gray-300 bg-white text-gray-700 font-semibold rounded px-4 py-1.5 hover:bg-gray-50">
+                    Cancel
+                  </button>
+                </div>
               </div>
             )}
             {errors.kaizenType && <p className="text-red-500 text-xs mt-1">{errors.kaizenType}</p>}
