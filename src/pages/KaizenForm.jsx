@@ -234,15 +234,16 @@ export default function KaizenForm() {
             projectTitle:     p.title          || '',
             status:           p.status         || 'Open',
             priority:         p.priority       || null,
-            approved:         ['In Progress','Pending Finance','Pending CQM','Completed'].includes(p.status),
+            approved:         ['In Progress','Pending Finance','Pending CQM','Completed'].includes(p.status) ||
+                              (p.status === 'Cancelled' && (p.formData?.approved ?? false)),
             submitted:        p.status !== 'Open',
             teamLeader:       p.leader         || '',
             targetCompletion: p.targetDate     || '',
             startDate:        p.startDate      || null,
             completionDate:   p.completionDate || null,
-            historyEntries: [
-              { type: 'action', icon: '🆕', text: 'Project created', user: p.leader || 'unknown', time: p.startDate ? new Date(p.startDate).toISOString() : new Date().toISOString() },
-            ],
+            historyEntries: p.formData?.historyEntries?.length
+              ? p.formData.historyEntries
+              : [{ type: 'action', icon: '🆕', text: 'Project created', user: p.leader || 'unknown', time: p.startDate ? new Date(p.startDate).toISOString() : new Date().toISOString() }],
           }
           // If server has full PDCA formData, spread it first so PDCA sections are restored
           const fromServer = p.formData

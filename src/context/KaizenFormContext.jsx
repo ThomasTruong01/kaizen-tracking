@@ -157,7 +157,7 @@ export function KaizenFormProvider({ children, projectId, initialData }) {
       const measurements = prev.keyMeasurements.filter(m => m.trim())
       const existingCards = prev.kpiCards || []
       const newCards = measurements.map((m, i) => {
-        const existing = existingCards[i] || {}
+        const existing = existingCards.find(c => c.name === m) || {}
         return {
           id:       i,
           name:     m,
@@ -173,22 +173,20 @@ export function KaizenFormProvider({ children, projectId, initialData }) {
     })
   }, [form.keyMeasurements])
 
-  // Auto-save to localStorage every 30 seconds
+  // Auto-save to localStorage every 30 seconds (reads latest values via refs, not deps)
   useEffect(() => {
-    autoSaveRef.current = setInterval(() => {
-      if (unsaved) {
-        try {
-          localStorage.setItem(storageKey, JSON.stringify({ ...form, _projectId: projectId || 'new' }))
-          setLastSaved(new Date())
-          setUnsaved(false)
-          console.log('[Kaizen] Auto-saved to localStorage')
-        } catch (e) {
-          console.warn('[Kaizen] Auto-save failed:', e)
-        }
+    const t = setInterval(() => {
+      if (!unsavedRef.current) return
+      try {
+        localStorage.setItem(storageKey, JSON.stringify({ ...formRef.current, _projectId: projectId || 'new' }))
+        setLastSaved(new Date())
+        setUnsaved(false)
+      } catch (e) {
+        console.warn('[Kaizen] Auto-save failed:', e)
       }
     }, 30000)
-    return () => clearInterval(autoSaveRef.current)
-  }, [form, unsaved, storageKey, projectId])
+    return () => clearInterval(t)
+  }, [storageKey, projectId])
 
   // Refs so the debounced server save always sees the latest values without stale closures
   const formRef    = useRef(form)
@@ -203,10 +201,8 @@ export function KaizenFormProvider({ children, projectId, initialData }) {
       if (!unsavedRef.current) return
       const data = formRef.current
       try {
-        saveNow(data)
         await updateProject(serverProjectId, { ...data, progress: computeProgress(data) })
-        setLastSaved(new Date())
-        setUnsaved(false)
+        saveNow(data)
       } catch (e) {
         console.warn('[Kaizen] Server auto-save failed:', e)
       }

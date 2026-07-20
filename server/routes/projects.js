@@ -126,8 +126,10 @@ router.post('/:id/finance/decision', (req, res) => {
   const status = decision === 'approve' ? 'Pending CQM' : 'In Progress'
   const p = db.patchProjectStatus(req.params.id, status)
   if (!p) return res.status(404).json({ error: 'Not found' })
-  if (rejectionReason && p.formData) {
-    p.formData.fv = { ...(p.formData.fv || {}), financeDecision: decision, rejectionReason }
+  if (p.formData) {
+    p.formData.fv       = { ...(p.formData.fv || {}), financeDecision: decision, ...(rejectionReason ? { rejectionReason } : {}) }
+    p.formData.status   = p.status
+    p.formData.progress = p.progress
     db.updateProject(req.params.id, p.formData)
   }
   res.json({ projectId: p.id, status })

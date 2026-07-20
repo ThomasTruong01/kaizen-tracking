@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { fetchProjects } from '../lib/api'
 import { useProjectFilters } from '../hooks/useProjectFilters'
-import { exportToCSV, downloadFile, formatDate, isOverdue } from '../lib/utils'
+import { exportToXLSX, formatDate, isOverdue } from '../lib/utils'
 import { StatusBadge, PriorityBadge } from '../components/shared/StatusBadge'
 
 const SITES = ['All', 'US', 'MX', 'SZ', 'MY', 'Global']
@@ -136,7 +136,7 @@ export default function Dashboard() {
             {DEPTS.map(d => <option key={d} value={d}>{d === 'All' ? 'All Departments' : d}</option>)}
           </select>
           <span className="text-xs text-gray-400 ml-auto whitespace-nowrap">Showing {f.filtered.length} of {projects.length}</span>
-          <button onClick={() => downloadFile(exportToCSV(f.filtered), `CI_Projects_${new Date().toISOString().split('T')[0]}.csv`)}
+          <button onClick={() => exportToXLSX(f.filtered)}
             className="text-sm border border-gray-300 rounded px-3 py-2 bg-white hover:bg-gray-50 font-medium text-gray-700 whitespace-nowrap">
             ⬇ Export
           </button>

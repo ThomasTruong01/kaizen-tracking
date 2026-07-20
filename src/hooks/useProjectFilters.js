@@ -66,12 +66,13 @@ export function useProjectFilters(projects = [], userLocation = 'All') {
     return [...new Set(projects.map(p => p.type))].filter(Boolean).sort()
   }, [projects])
 
-  // Site pill counts — year + status + type + dept + search filtered (excludes site)
+  // Site pill counts — year + status + type + dept + category + search filtered (excludes site)
   const siteCounts = useMemo(() => {
     let base = applyYearFilter(projects)
     base = applyStatusFilter(base)
-    if (filterType !== 'All') base = base.filter(p => p.type === filterType)
-    if (filterDept !== 'All') base = base.filter(p => (p.depts || []).includes(filterDept))
+    if (filterType     !== 'All') base = base.filter(p => p.type === filterType)
+    if (filterDept     !== 'All') base = base.filter(p => (p.depts || []).includes(filterDept))
+    if (filterCategory !== 'All') base = base.filter(p => (p.projectCategory || 'Kaizen') === filterCategory)
     if (searchQuery) {
       const q = searchQuery.toLowerCase()
       base = base.filter(p =>
@@ -83,12 +84,13 @@ export function useProjectFilters(projects = [], userLocation = 'All') {
     const counts = { All: base.length }
     base.forEach(p => { counts[p.site] = (counts[p.site] || 0) + 1 })
     return counts
-  }, [projects, selectedStatuses, filterType, filterDept, filterYear, searchQuery])
+  }, [projects, selectedStatuses, filterType, filterDept, filterCategory, filterYear, searchQuery])
 
-  // Summary card counts — always based on full year + site filtered data
+  // Summary card counts — year + site + category filtered
   const cardCounts = useMemo(() => {
     let y = applyYearFilter(projects)
-    if (filterSite !== 'All') y = y.filter(p => p.site === filterSite)
+    if (filterSite     !== 'All') y = y.filter(p => p.site === filterSite)
+    if (filterCategory !== 'All') y = y.filter(p => (p.projectCategory || 'Kaizen') === filterCategory)
     return {
       all:       y.length,
       open:      y.filter(p => p.status === 'Open').length,
@@ -97,7 +99,7 @@ export function useProjectFilters(projects = [], userLocation = 'All') {
       completed: y.filter(p => p.status === 'Completed').length,
       cancelled: y.filter(p => p.status === 'Cancelled').length,
     }
-  }, [projects, filterYear, filterSite])
+  }, [projects, filterYear, filterSite, filterCategory])
 
   // Fully filtered + sorted rows for the table
   const filtered = useMemo(() => {

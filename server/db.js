@@ -59,11 +59,11 @@ let roles = load('roles', null)
 if (!roles) {
   roles = {
     admin:       { label: 'Admin',                       users: [] },
-    corpQM:      { label: 'Corp Quality Manager',        users: [{ username: 'samuelc',      site: 'Global' }] },
-    qaManager:   { label: 'QA Managers / Site Designee', users: [{ username: 'thomastr',    site: 'US' }, { username: 'tinn', site: 'US' }, { username: 'eheca_g', site: 'US' }] },
-    deptManager: { label: 'Dept Managers',               users: [{ username: 'alejandro_g', site: 'US' }, { username: 'javierf', site: 'MX' }, { username: 'wei_z', site: 'SZ' }, { username: 'amir_r', site: 'MY' }] },
-    financeRep:  { label: 'Finance Rep',                 users: [{ username: 'dan_l',        site: 'US' }] },
-    submitter:   { label: 'Owners / Submitters',         users: [{ username: 'thomas.truong', site: 'US' }, { username: 'michaela', site: 'US' }, { username: 'gonzalog', site: 'MX' }] },
+    corpQM:      { label: 'Corp Quality Manager',        users: [{ username: 'samuelc',      name: 'Samuel Castro',  site: 'Global' }] },
+    qaManager:   { label: 'QA Managers / Site Designee', users: [{ username: 'thomastr',    name: 'Thomas Truong',  site: 'US' }, { username: 'tinn', name: 'Tin N', site: 'US' }, { username: 'eheca_g', name: 'Eheca G', site: 'US' }] },
+    deptManager: { label: 'Dept Managers',               users: [{ username: 'alejandro_g', name: 'Alejandro G',    site: 'US' }, { username: 'javierf', name: 'Javier F', site: 'MX' }, { username: 'wei_z', name: 'Wei Zhang', site: 'SZ' }, { username: 'amir_r', name: 'Amir Raza', site: 'MY' }] },
+    financeRep:  { label: 'Finance Rep',                 users: [{ username: 'dan_l',        name: 'Dan L',          site: 'US' }] },
+    submitter:   { label: 'Owners / Submitters',         users: [{ username: 'thomas.truong', name: 'Thomas Truong', site: 'US' }, { username: 'michaela', name: 'Michaela', site: 'US' }, { username: 'gonzalog', name: 'Gonzalo G', site: 'MX' }] },
   }
   save('roles', roles)
 }
@@ -152,7 +152,7 @@ module.exports = {
       title:           formData.projectTitle     || projects[idx].title,
       type:            formData.projectType      || projects[idx].type,
       projectCategory: formData.projectCategory  || projects[idx].projectCategory || 'Kaizen',
-      site:            deriveSite(formData.sites || [projects[idx].site]),
+      site:            deriveSite(formData.sites?.length ? formData.sites : [projects[idx].site]),
       depts:          formData.depts            || projects[idx].depts,
       leader:         formData.teamLeader       || projects[idx].leader,
       status:         formData.status           || projects[idx].status,

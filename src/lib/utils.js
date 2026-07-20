@@ -2,6 +2,7 @@
 // utils.js — Shared utility functions
 // ─────────────────────────────────────────────────────────────────────────────
 
+import * as XLSX from 'xlsx'
 import { STATUSES } from './constants'
 
 // Compute section-based progress (0–100) from form data.
@@ -84,7 +85,8 @@ export function projectYear(project) {
 export function isOverdue(targetDate, status) {
   if (!targetDate) return false
   if (status === STATUSES.COMPLETED || status === STATUSES.CANCELLED) return false
-  return new Date(targetDate) < new Date()
+  const [y, m, d] = targetDate.split('-').map(Number)
+  return new Date(y, m - 1, d) < new Date(new Date().setHours(0, 0, 0, 0))
 }
 
 export function generateProjectCode(sites, depts, sequence = 1) {
@@ -96,38 +98,23 @@ export function generateProjectCode(sites, depts, sequence = 1) {
   return `${siteStr}-${deptStr}-${year}-${seq}`
 }
 
-export function exportToCSV(projects) {
-  const headers = [
-    'Project Code', 'Title', 'Type', 'Site', 'Dept(s)',
-    'Team Leader', 'Priority', 'Status',
-    'Start Date', 'Target Date', 'Completion Date', 'Progress %',
-  ]
-  function esc(val) {
-    const s = String(val ?? '')
-    return s.includes(',') || s.includes('"') || s.includes('\n')
-      ? '"' + s.replace(/"/g, '""') + '"'
-      : s
-  }
-  const rows = projects.map(p => [
-    p.code, p.title, p.type, p.site,
-    (p.depts || []).join(', '),
-    p.leader, p.priority || '', p.status,
-    p.startDate      ? formatDate(p.startDate)      : '',
-    p.targetDate     ? formatDate(p.targetDate)      : '',
-    p.completionDate ? formatDate(p.completionDate)  : '',
-    (p.progress ?? 0) + '%',
-  ])
-  return [headers, ...rows].map(r => r.map(esc).join(',')).join('\r\n')
-}
-
-export function downloadFile(content, filename) {
-  const blob = new Blob(['\uFEFF' + content], { type: 'text/csv;charset=utf-8;' })
-  const url = URL.createObjectURL(blob)
-  const a = document.createElement('a')
-  a.href = url
-  a.download = filename
-  document.body.appendChild(a)
-  a.click()
-  document.body.removeChild(a)
-  URL.revokeObjectURL(url)
+export function exportToXLSX(projects) {
+  const rows = projects.map(p => ({
+    'Project Code':    p.code,
+    'Type':            p.projectCategory || 'Kaizen',
+    'Title':           p.title,
+    'Site':            p.site,
+    'Dept(s)':         (p.depts || []).join(', '),
+    'Team Leader':     p.leader,
+    'Priority':        p.priority || '',
+    'Status':          p.status,
+    'Start Date':      p.startDate      ? formatDate(p.startDate)      : '',
+    'Target Date':     p.targetDate     ? formatDate(p.targetDate)      : '',
+    'Completion Date': p.completionDate ? formatDate(p.completionDate)  : '',
+    'Progress %':      (p.progress ?? 0) + '%',
+  }))
+  const ws = XLSX.utils.json_to_sheet(rows)
+  const wb = XLSX.utils.book_new()
+  XLSX.utils.book_append_sheet(wb, ws, 'CI Projects')
+  XLSX.writeFile(wb, `CI_Projects_${new Date().toISOString().split('T')[0]}.xlsx`)
 }

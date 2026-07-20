@@ -44,10 +44,12 @@ export default function WrapUp() {
         {form.wrapupBasicComplete ? (
           <>
             <span className="text-sm font-semibold text-green-700">✓ Wrap-Up marked complete</span>
-            <button onClick={() => setForm({ wrapupBasicComplete: false, financeApplicable: null })}
-              className="text-xs text-gray-400 hover:text-gray-600 underline">
-              Reopen
-            </button>
+            {form.status !== 'Completed' && form.status !== 'Cancelled' && (
+              <button onClick={() => setForm({ wrapupBasicComplete: false, financeApplicable: null, status: 'In Progress' })}
+                className="text-xs text-gray-400 hover:text-gray-600 underline">
+                Reopen
+              </button>
+            )}
           </>
         ) : (
           <button onClick={() => setForm({
@@ -69,7 +71,7 @@ export default function WrapUp() {
               className="text-sm bg-blue-600 text-white font-semibold rounded px-5 py-2 hover:bg-blue-700">
               Yes — Continue to Finance Validation
             </button>
-            <button onClick={() => setForm({ financeApplicable: false })}
+            <button onClick={() => setForm({ financeApplicable: false, status: 'Pending CQM' })}
               className="text-sm border border-gray-300 bg-white text-gray-700 font-semibold rounded px-5 py-2 hover:bg-gray-50">
               No — Skip to CQ Manager Sign-Off
             </button>
