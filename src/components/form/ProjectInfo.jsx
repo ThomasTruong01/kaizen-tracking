@@ -221,9 +221,9 @@ export default function ProjectInfo() {
     if (!form.projectTitle.trim()) e.projectTitle   = 'Project Title is required'
     if (!form.teamLeader.trim())   e.teamLeader     = 'Team Leader is required'
     if (!form.deptManager?.trim()) e.deptManager    = 'Department Manager is required'
-    if (!form.projectType)         e.projectType    = 'Type is required'
+    if (!form.projectType)         e.projectType    = 'KPI Type is required'
     if (form.projectType === 'Other' && !form.projectTypeOther?.trim())
-                                   e.projectTypeOther = 'Please describe the project type'
+                                   e.projectTypeOther = 'Please describe the KPI type'
     if (form.projectCategory !== 'Quick Win' && !form.kaizenType)
                                    e.kaizenType     = 'Kaizen Methodology is required'
     if (!form.problemDesc.trim())  e.problemDesc    = 'Project Description is required'
@@ -465,8 +465,8 @@ export default function ProjectInfo() {
         </div>
       </Field>
 
-      {/* Type */}
-      <Field label="Type" required>
+      {/* KPI Type */}
+      <Field label="KPI Type" required>
         <div className="space-y-2">
           <select value={form.projectType}
             onChange={e => setForm({ projectType: e.target.value, projectTypeOther: e.target.value !== 'Other' ? '' : form.projectTypeOther })}
@@ -481,7 +481,7 @@ export default function ProjectInfo() {
               <input type="text" value={form.projectTypeOther || ''}
                 onChange={e => setForm({ projectTypeOther: e.target.value })}
                 disabled={form.submitted && !form.editing}
-                placeholder="Please describe the project type..."
+                placeholder="Please describe the KPI type..."
                 className={`w-full text-sm border rounded px-2.5 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 disabled:bg-gray-50 ${errors.projectTypeOther ? 'border-red-400' : 'border-gray-300'}`} />
               {errors.projectTypeOther && <p className="text-red-500 text-xs mt-1">{errors.projectTypeOther}</p>}
             </div>

@@ -52,22 +52,44 @@ function FormInner({ projectId }) {
 
       {/* ── Sticky header toolbar ──────────────────────────────── */}
       <div className="bg-white border-b border-gray-200 shadow-sm sticky top-0 z-20">
-        <div className="max-w-4xl mx-auto px-6 py-3 flex items-center gap-3 min-h-[52px]">
 
-          {/* Title — shrinks and truncates on long codes instead of wrapping */}
-          <span className="font-bold text-gray-800 text-sm shrink min-w-0 truncate">
-            {form.projectCategory === 'Quick Win' ? 'Quick Win' : 'Kaizen'} Project — {code}
+        {/* Row 1 — Category badge, project title + code, nav */}
+        <div className="max-w-4xl mx-auto px-6 pt-2.5 pb-1 flex items-center gap-2 min-w-0">
+          <span className={`text-xs font-bold px-2 py-0.5 rounded-full shrink-0 ${
+            form.projectCategory === 'Quick Win'
+              ? 'bg-amber-100 text-amber-700'
+              : 'bg-gray-100 text-gray-600'
+          }`}>
+            {form.projectCategory === 'Quick Win' ? 'Quick Win' : 'Kaizen'}
           </span>
-
-          <div className="w-px h-4 bg-gray-200 mx-1 flex-shrink-0" />
-
-          {/* Req # */}
-          <div className="flex items-center gap-1 text-xs text-gray-500 flex-shrink-0">
-            <span>Req #</span>
-            <span className="border border-gray-200 rounded px-2 py-0.5 bg-gray-50">
-              {form.requestNum || '—'}
-            </span>
+          <span className="font-bold text-gray-800 text-base truncate min-w-0">
+            {form.projectCode
+              ? `${form.projectTitle || 'Untitled'} — ${form.projectCode}`
+              : `${form.projectTitle || 'New Project'}`
+            }
+          </span>
+          <div className="ml-auto flex items-center gap-3 shrink-0">
+            {/* Dev-only: role switcher for testing different user permissions */}
+            {import.meta.env.DEV && (
+              <select
+                value={user?.username}
+                onChange={e => switchUser(e.target.value)}
+                className="text-xs text-gray-600 border border-gray-200 rounded px-2 py-1 cursor-pointer focus:outline-none"
+              >
+                {TEST_USERS.map(u => (
+                  <option key={u.id} value={u.username}>{u.name}</option>
+                ))}
+              </select>
+            )}
+            <button onClick={() => navigate('/kaizen/dashboard')}
+              className="text-xs text-gray-400 hover:text-gray-700">
+              ← Dashboard
+            </button>
           </div>
+        </div>
+
+        {/* Row 2 — Status, priority, progress, save actions */}
+        <div className="max-w-4xl mx-auto px-6 pb-2.5 flex items-center gap-3">
 
           {/* Status */}
           <div className="flex items-center gap-1.5 text-xs flex-shrink-0">
@@ -91,7 +113,7 @@ function FormInner({ projectId }) {
             <span className="font-semibold text-gray-700">{progress}%</span>
           </div>
 
-          {/* Right-aligned actions */}
+          {/* Right-aligned save actions */}
           <div className="ml-auto flex items-center gap-3 shrink-0">
             {unsaved && (
               <span className="text-xs text-amber-500">● Unsaved</span>
@@ -110,21 +132,6 @@ function FormInner({ projectId }) {
             <button onClick={() => setShowHistory(true)}
               className="text-xs border border-gray-300 rounded px-3 py-1.5 bg-white hover:bg-gray-50 text-gray-600 font-medium">
               Change Hist
-            </button>
-
-            <select
-              value={user?.username}
-              onChange={e => switchUser(e.target.value)}
-              className="text-xs text-gray-600 border border-gray-200 rounded px-2 py-1 cursor-pointer focus:outline-none"
-            >
-              {TEST_USERS.map(u => (
-                <option key={u.id} value={u.username}>{u.name}</option>
-              ))}
-            </select>
-
-            <button onClick={() => navigate('/kaizen/dashboard')}
-              className="text-xs text-gray-400 hover:text-gray-700">
-              ← Dashboard
             </button>
           </div>
         </div>

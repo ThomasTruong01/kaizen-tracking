@@ -123,7 +123,8 @@ export default function Check() {
   }
 
   return (
-    <AccordionSection title="Check" stage="plan" defaultOpen={true}>
+    <AccordionSection title="Check" stage="check" defaultOpen={true}
+      complete={form.checkComplete} onToggleComplete={() => setForm({ checkComplete: !form.checkComplete })}>
 
       {/* KPI cards */}
       <div>
@@ -149,24 +150,6 @@ export default function Check() {
         <textarea value={form.analysisOfGaps} onChange={e => setForm({ analysisOfGaps: e.target.value })}
           rows={4} placeholder="Describe gaps between current state and target future state. Document last unresolved gaps identified during this project cycle."
           className="w-full text-sm border border-gray-300 rounded px-2.5 py-2 resize-vertical focus:outline-none focus:ring-2 focus:ring-blue-400 font-sans" />
-      </div>
-
-      {/* Section completion */}
-      <div className={`flex items-center justify-between pt-3 border-t ${form.checkComplete ? 'border-green-200' : 'border-gray-100'}`}>
-        {form.checkComplete ? (
-          <>
-            <span className="text-sm font-semibold text-green-700">✓ Check marked complete — 20%</span>
-            <button onClick={() => setForm({ checkComplete: false })}
-              className="text-xs text-gray-400 hover:text-gray-600 underline">
-              Reopen
-            </button>
-          </>
-        ) : (
-          <button onClick={() => setForm({ checkComplete: true })}
-            className="text-sm bg-green-600 text-white font-semibold rounded px-4 py-2 hover:bg-green-700">
-            ✓ Mark Check Complete
-          </button>
-        )}
       </div>
 
     </AccordionSection>
